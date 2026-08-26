@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import {
@@ -46,6 +46,13 @@ const heroSlides: HeroSlide[] = [
 const HeroSection = () => {
   const { t } = useLanguage();
   const [api, setApi] = useState<CarouselApi>();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const bgOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
   useEffect(() => {
     if (!api || heroSlides.length < 2) return;
@@ -58,14 +65,14 @@ const HeroSection = () => {
   }, [api]);
 
   return (
-    <section className="relative overflow-hidden">
+    <section ref={sectionRef} className="relative overflow-hidden">
       <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
         <CarouselContent className="ml-0">
           {heroSlides.map((slide, index) => (
             <CarouselItem key={slide.image + index} className="pl-0">
               <div className="relative min-h-[90vh] flex items-center">
                 {/* Background */}
-                <div className="absolute inset-0">
+                <motion.div className="absolute inset-0" style={{ opacity: bgOpacity }}>
                   <img
                     src={slide.image}
                     alt="Journey from Thailand to Australia"
@@ -73,7 +80,7 @@ const HeroSection = () => {
                     loading={index === 0 ? "eager" : "lazy"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/20" />
-                </div>
+                </motion.div>
 
                 <div className="container relative z-10 py-20">
                   <motion.div
