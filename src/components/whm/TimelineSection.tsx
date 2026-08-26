@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Users, FileCheck, Award, AlertTriangle, Clock, CalendarIcon } from "lucide-react";
 import { format, differenceInDays, parse } from "date-fns";
@@ -127,37 +127,46 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
     return diff;
   }, [prepDate]);
 
+  // "Breathing" effect: cards drift apart from the row's center card while
+  // actively scrolling, then spring back together once scrolling stops.
+  // Deliberately done as a `transform` (not `gap`/margin) so it's purely
+  // visual — it never changes scrollWidth, so it can't fight the native
+  // CSS scroll-snap the way a layout-affecting property would.
   const [isScrolling, setIsScrolling] = useState(false);
-  const scrollEndTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-  const handleTimelineScroll = useCallback(() => {
-    setIsScrolling(true);
-    if (scrollEndTimeout.current) clearTimeout(scrollEndTimeout.current);
-    scrollEndTimeout.current = setTimeout(() => setIsScrolling(false), 220);
-  }, []);
-
-  // The gap widening/collapsing shifts card positions, which can leave the
-  // scroll-snapped card off-center once it settles back to the default gap.
-  // Re-center on the nearest card once that collapse animation finishes.
-  const recenterNearestCard = useCallback(() => {
+  useEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
-    const containerCenter = scroller.scrollLeft + scroller.clientWidth / 2;
-    let closest: HTMLDivElement | null = null;
-    let closestDistance = Infinity;
-    for (const card of cardRefs.current) {
-      if (!card) continue;
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const distance = Math.abs(cardCenter - containerCenter);
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closest = card;
+
+    // Wheel/touch scrolling has an inertial tail after the input stops —
+    // a fixed silence-based debounce fires early mid-tail, flips isScrolling
+    // back and forth, and the cards visibly pulse in/out instead of settling
+    // once. `scrollend` fires exactly once true momentum has fully stopped,
+    // so prefer it; fall back to a longer debounce where it's unsupported.
+    const supportsScrollEnd = "onscrollend" in window;
+    let fallbackTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const handleScroll = () => {
+      setIsScrolling(true);
+      if (!supportsScrollEnd) {
+        if (fallbackTimeout) clearTimeout(fallbackTimeout);
+        fallbackTimeout = setTimeout(() => setIsScrolling(false), 350);
       }
-    }
-    closest?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    };
+    const handleScrollEnd = () => setIsScrolling(false);
+
+    scroller.addEventListener("scroll", handleScroll, { passive: true });
+    if (supportsScrollEnd) scroller.addEventListener("scrollend", handleScrollEnd);
+
+    return () => {
+      scroller.removeEventListener("scroll", handleScroll);
+      if (supportsScrollEnd) scroller.removeEventListener("scrollend", handleScrollEnd);
+      if (fallbackTimeout) clearTimeout(fallbackTimeout);
+    };
   }, []);
+
+  const midIndex = (steps.length - 1) / 2;
 
   const content = (
     <>
@@ -261,16 +270,8 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
         <div
           ref={scrollerRef}
           className="timeline-scroll snap-x snap-mandatory overflow-x-auto pb-6 [-webkit-overflow-scrolling:touch]"
-          onScroll={handleTimelineScroll}
         >
-          <motion.div
-            className="relative flex items-stretch px-6 sm:px-10 md:px-[clamp(24px,12vw,140px)] min-w-max"
-            animate={{ gap: isScrolling ? "3rem" : "1.5rem" }}
-            transition={{ type: "spring", stiffness: 300, damping: 28 }}
-            onAnimationComplete={() => {
-              if (!isScrolling) recenterNearestCard();
-            }}
-          >
+          <div className="relative flex items-stretch gap-6 md:gap-10 px-6 sm:px-10 md:px-[clamp(24px,12vw,140px)] min-w-max">
             {/* Dashed connector line */}
             <div
               className="absolute top-[38px] md:top-[42px] left-0 right-0 border-t-2 border-dashed"
@@ -282,10 +283,17 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
               return (
                 <motion.div
                   key={`${selectedYear}-${step.title}`}
-                  ref={(el) => { cardRefs.current[index] = el; }}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.08 }}
+                  initial={{ opacity: 0, y: 16, x: 0 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    x: isScrolling ? (index - midIndex) * 16 : 0,
+                  }}
+                  transition={{
+                    opacity: { delay: index * 0.08 },
+                    y: { delay: index * 0.08 },
+                    x: { type: "spring", stiffness: 260, damping: 24 },
+                  }}
                   className="snap-center relative flex flex-col items-center shrink-0 w-[250px] sm:w-[280px]"
                 >
                   {/* Date label */}
@@ -351,7 +359,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                 </motion.div>
               );
             })}
-          </motion.div>
+          </div>
         </div>
 
         {/* Mobile scroll hint */}
