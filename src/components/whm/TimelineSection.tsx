@@ -226,8 +226,8 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
         <div className="pointer-events-none absolute left-0 top-0 bottom-6 w-8 md:w-16 bg-gradient-to-r from-background to-transparent z-20" />
         <div className="pointer-events-none absolute right-0 top-0 bottom-6 w-8 md:w-16 bg-gradient-to-l from-background to-transparent z-20" />
 
-        <div className="timeline-scroll overflow-x-auto pb-6 [-webkit-overflow-scrolling:touch]">
-          <div className="relative flex items-start gap-6 md:gap-10 px-6 md:px-16 min-w-max">
+        <div className="timeline-scroll snap-x snap-mandatory overflow-x-auto pb-6 [-webkit-overflow-scrolling:touch]">
+          <div className="relative flex items-stretch gap-6 md:gap-10 px-[calc(50vw-135px)] min-w-max">
             {/* Dashed connector line */}
             <div
               className="absolute top-[38px] md:top-[42px] left-0 right-0 border-t-2 border-dashed"
@@ -243,7 +243,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.08 }}
-                  className="relative flex flex-col items-center shrink-0 w-[250px] sm:w-[280px]"
+                  className="snap-center relative flex flex-col items-center shrink-0 w-[250px] sm:w-[280px]"
                 >
                   {/* Date label */}
                   <span
@@ -257,7 +257,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
 
                   {/* Node */}
                   <div
-                    className="relative z-10 flex items-center justify-center w-9 h-9 rounded-full border-4 bg-background"
+                    className="relative z-10 flex items-center justify-center w-9 h-9 rounded-full border-4 bg-background shrink-0"
                     style={{ borderColor: "#BAD6EB" }}
                   >
                     <div
@@ -271,13 +271,13 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                   {/* Card */}
                   <div
                     className={cn(
-                      "mt-6 w-full rounded-2xl overflow-hidden transition-all",
-                      isActive ? "shadow-warm scale-[1.04] z-10" : "opacity-90"
+                      "mt-6 w-full flex-1 flex flex-col rounded-2xl overflow-hidden transition-shadow",
+                      isActive ? "shadow-warm z-10" : "opacity-90"
                     )}
                   >
                     <div
                       className={cn(
-                        "flex items-center gap-2 px-5 py-4",
+                        "flex items-center gap-2 px-5 py-4 shrink-0",
                         isActive ? "bg-primary" : "bg-[#D0E3FF]"
                       )}
                     >
@@ -288,7 +288,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                     </div>
 
                     <div
-                      className="p-5 min-h-[180px]"
+                      className="p-5 flex-1 flex flex-col"
                       style={{ background: isActive ? "#FFF9F0" : "rgba(186, 214, 235, 0.25)" }}
                     >
                       <p className="text-sm text-muted-foreground leading-relaxed">
