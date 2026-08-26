@@ -328,12 +328,18 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                   >
                     <div
                       className={cn(
-                        "flex items-center gap-2 px-5 py-4 shrink-0",
+                        "flex items-center gap-2 px-5 py-4 h-[68px] sm:h-[76px] shrink-0",
                         isActive ? "bg-primary" : "bg-[#D0E3FF]"
                       )}
                     >
                       <step.icon className={cn("w-4 h-4 flex-shrink-0", isActive ? "text-primary-foreground" : "text-primary")} />
-                      <h3 className={cn("text-sm sm:text-base font-bold leading-tight", isActive ? "text-primary-foreground" : "text-foreground")}>
+                      <h3
+                        title={step.title}
+                        className={cn(
+                          "text-sm sm:text-base font-bold leading-tight line-clamp-2",
+                          isActive ? "text-primary-foreground" : "text-foreground"
+                        )}
+                      >
                         {step.title}
                       </h3>
                     </div>
