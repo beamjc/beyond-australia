@@ -1,6 +1,5 @@
 import Navbar from '@/components/shared/Navbar'
 import HeroSection from '@/components/shared/HeroSection'
-import CredentialsStrip from '@/components/shared/CredentialsStrip'
 import ServicesSection from '@/components/shared/ServicesSection'
 import WHMJourneyTeaser from '@/components/shared/WHMJourneyTeaser'
 import WHMSection from '@/components/whm/WHMSection'
@@ -17,7 +16,6 @@ export default function HomePage() {
     <main>
       <Navbar />
       <HeroSection />
-      <CredentialsStrip />
       <ServicesSection />
       <WHMJourneyTeaser />
       <WHMSection />

@@ -2,8 +2,13 @@
 
 import { useLanguage } from "@/i18n/LanguageProvider";
 import SectionHeader from "./SectionHeader";
+import ReviewsCarousel from "./ReviewsCarousel";
 
-const stats = ["rating", "experience", "license", "quota"] as const;
+const highlights: { key: "experience" | "founder" | "offices"; icon: string }[] = [
+  { key: "experience", icon: "/icons/experience.png" },
+  { key: "founder", icon: "/icons/founder.png" },
+  { key: "offices", icon: "/icons/offices.png" },
+];
 
 const ProofStatsSection = () => {
   const { t } = useLanguage();
@@ -17,17 +22,19 @@ const ProofStatsSection = () => {
           subtitle={t("proof.subtitle")}
         />
 
-        <div className="max-w-4xl mx-auto rounded-2xl bg-background border border-border shadow-warm p-8 sm:p-10 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((stat) => (
-            <div key={stat} className="text-center">
-              <div className="text-xl sm:text-2xl font-bold text-primary mb-1 break-words">
-                {t(`proof.stats.${stat}.value` as const)}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground">
-                {t(`proof.stats.${stat}.label` as const)}
-              </div>
+        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8">
+          {highlights.map(({ key, icon }) => (
+            <div key={key} className="text-left">
+              <img src={icon} alt="" className="w-14 h-14 mb-4" aria-hidden />
+              <p className="text-sm sm:text-base font-medium text-foreground leading-relaxed">
+                {t(`proof.highlights.${key}` as const)}
+              </p>
             </div>
           ))}
+        </div>
+
+        <div className="max-w-4xl mx-auto mt-14">
+          <ReviewsCarousel />
         </div>
       </div>
     </section>

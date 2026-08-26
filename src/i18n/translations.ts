@@ -149,11 +149,10 @@ export const translations = {
       eyebrow: "Trusted Nationwide",
       title: "Real numbers, real trust",
       subtitle: "Backed by Beyond Study Center — our licensed education partner.",
-      stats: {
-        rating: { value: "4.9★", label: "Google Rating (93 reviews)" },
-        experience: { value: "15", label: "Years of Experience" },
-        license: { value: "#1855 · #2588 · #4069", label: "QEAC License Numbers" },
-        quota: { value: "2,000+", label: "WHM Quota Spots Tracked" },
+      highlights: {
+        experience: "15+ years of experience",
+        founder: "Personally guided by ThaiWAHClub's founder, ready to share firsthand experience and support you at every step.",
+        offices: "Offices in Bangkok, Melbourne, and Sydney, with a team ready to advise and take care of you closely.",
       },
     },
     ctaBanner: {
@@ -316,11 +315,10 @@ export const translations = {
       eyebrow: "ได้รับความไว้วางใจทั่วประเทศ",
       title: "ตัวเลขจริง ความน่าเชื่อถือจริง",
       subtitle: "สนับสนุนโดย Beyond Study Center พาร์ทเนอร์ด้านการศึกษาที่ได้รับใบอนุญาต",
-      stats: {
-        rating: { value: "4.9★", label: "คะแนน Google (93 รีวิว)" },
-        experience: { value: "15", label: "ปีแห่งประสบการณ์" },
-        license: { value: "#1855 · #2588 · #4069", label: "เลขใบอนุญาต QEAC" },
-        quota: { value: "2,000+", label: "โควต้า WHM ที่ติดตาม" },
+      highlights: {
+        experience: "ประสบการณ์มากกว่า 15 ปี",
+        founder: "ดูแลโดยผู้ก่อตั้ง ThaiWAHClub ที่พร้อมแบ่งปันประสบการณ์และให้คำปรึกษาคุณในทุกขั้นตอน",
+        offices: "มีสำนักงานในกรุงเทพฯ เมลเบิร์น และซิดนีย์ พร้อมทีมงานที่คอยให้คำปรึกษาและดูแลคุณอย่างใกล้ชิด",
       },
     },
     ctaBanner: {

@@ -1,59 +1,52 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { Star } from "lucide-react";
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
+import { Quote, Star } from "lucide-react";
 import { reviews } from "@/data/reviews";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
-const sourceLabel: Record<(typeof reviews)[number]["source"], string> = {
-  facebook: "Facebook",
-  google: "Google",
+const sourceLabel: Record<(typeof reviews)[number]["source"], { en: string; th: string }> = {
+  facebook: { en: "Facebook", th: "เฟซบุ๊ก" },
+  google: { en: "Google", th: "กูเกิล" },
 };
 
 const ReviewsCarousel = () => {
-  const [api, setApi] = useState<CarouselApi>();
-
-  useEffect(() => {
-    if (!api) return;
-
-    const interval = setInterval(() => {
-      api.canScrollNext() ? api.scrollNext() : api.scrollTo(0);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [api]);
+  const { language } = useLanguage();
 
   return (
-    <Carousel setApi={setApi} opts={{ loop: true }} className="w-full max-w-xl mx-auto lg:mx-0">
-      <CarouselContent>
-        {reviews.map((review) => (
-          <CarouselItem key={review.id}>
-            <div className="flex h-full flex-col gap-3 rounded-2xl border border-border/60 bg-background p-6">
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${
-                      i < review.rating ? "fill-primary text-primary" : "text-muted-foreground/30"
-                    }`}
-                  />
-                ))}
-              </div>
-              <p className="text-sm leading-relaxed text-foreground">&ldquo;{review.text}&rdquo;</p>
-              <div className="mt-auto flex items-center justify-between text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">{review.name}</span>
-                <span>{sourceLabel[review.source]}</span>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {reviews.map((review) => (
+        <div
+          key={review.id}
+          className="flex flex-col gap-4 rounded-2xl border border-border/60 bg-background p-6 shadow-sm"
+        >
+          <Quote className="w-8 h-8 text-primary/25 fill-primary/10" strokeWidth={1.5} aria-hidden />
+
+          <p className="flex-1 text-sm leading-relaxed text-foreground">{review.text}</p>
+
+          <div className="flex items-center gap-3 border-t border-border/40 pt-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+              {review.name.charAt(0)}
+            </div>
+            <div className="min-w-0">
+              <div className="truncate text-sm font-semibold text-foreground">{review.name}</div>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="flex items-center gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-3 w-3 ${
+                        i < review.rating ? "fill-primary text-primary" : "text-muted-foreground/30"
+                      }`}
+                    />
+                  ))}
+                </span>
+                <span>· {sourceLabel[review.source][language]}</span>
               </div>
             </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-    </Carousel>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 

@@ -113,12 +113,6 @@ const timeline2026: TimelineStep[] = [
   },
 ];
 
-const statusColors = {
-  complete: "bg-accent text-accent-foreground",
-  action: "bg-primary text-primary-foreground animate-pulse-soft",
-  upcoming: "bg-muted text-muted-foreground",
-};
-
 const QUOTA_DEADLINE = new Date(2026, 3, 7); // 7 April 2026 (last day to have everything ready)
 
 const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
@@ -227,42 +221,100 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
         </motion.div>
       )}
 
-      <div className="relative max-w-3xl mx-auto">
-        {/* Vertical line */}
-        <div className="absolute left-6 md:left-8 top-0 bottom-0 w-0.5 bg-border" />
+      <div className="relative">
+        {/* Edge fades to hint scrollability */}
+        <div className="pointer-events-none absolute left-0 top-0 bottom-6 w-8 md:w-16 bg-gradient-to-r from-background to-transparent z-20" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-6 w-8 md:w-16 bg-gradient-to-l from-background to-transparent z-20" />
 
-        {steps.map((step, index) => (
-          <motion.div
-            key={`${selectedYear}-${step.title}`}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
-            className="relative flex gap-6 md:gap-8 mb-10 last:mb-0"
-          >
-            <div className={`relative z-10 flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center ${statusColors[step.status]}`}>
-              <step.icon className="w-5 h-5 md:w-6 md:h-6" />
-            </div>
+        <div className="timeline-scroll overflow-x-auto pb-6 [-webkit-overflow-scrolling:touch]">
+          <div className="relative flex items-start gap-6 md:gap-10 px-6 md:px-16 min-w-max">
+            {/* Dashed connector line */}
+            <div
+              className="absolute top-[38px] md:top-[42px] left-0 right-0 border-t-2 border-dashed"
+              style={{ borderColor: "#BAD6EB" }}
+            />
 
-            <div className="flex-1 pb-8">
-              <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                {step.date}
-              </span>
-              <h3 className="text-lg md:text-xl font-bold text-foreground mt-1 mb-2">
-                {step.title}
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {step.description}
-              </p>
-              {step.alert && (
-                <div className="mt-3 flex items-start gap-2 text-sm bg-primary/10 border border-primary/20 rounded-lg px-4 py-2.5">
-                  <AlertTriangle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-foreground/80">{step.alert}</span>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        ))}
+            {steps.map((step, index) => {
+              const isActive = step.status === "action";
+              return (
+                <motion.div
+                  key={`${selectedYear}-${step.title}`}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.08 }}
+                  className="relative flex flex-col items-center shrink-0 w-[250px] sm:w-[280px]"
+                >
+                  {/* Date label */}
+                  <span
+                    className={cn(
+                      "text-xs sm:text-sm font-semibold uppercase tracking-wider text-center mb-3 px-2",
+                      isActive ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    {step.date}
+                  </span>
+
+                  {/* Node */}
+                  <div
+                    className="relative z-10 flex items-center justify-center w-9 h-9 rounded-full border-4 bg-background"
+                    style={{ borderColor: "#BAD6EB" }}
+                  >
+                    <div
+                      className={cn(
+                        "w-3.5 h-3.5 rounded-full",
+                        isActive ? "bg-primary animate-pulse-soft" : "bg-[#BAD6EB]"
+                      )}
+                    />
+                  </div>
+
+                  {/* Card */}
+                  <div
+                    className={cn(
+                      "mt-6 w-full rounded-2xl overflow-hidden transition-all",
+                      isActive ? "shadow-warm scale-[1.04] z-10" : "opacity-90"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "flex items-center gap-2 px-5 py-4",
+                        isActive ? "bg-primary" : "bg-[#D0E3FF]"
+                      )}
+                    >
+                      <step.icon className={cn("w-4 h-4 flex-shrink-0", isActive ? "text-primary-foreground" : "text-primary")} />
+                      <h3 className={cn("text-sm sm:text-base font-bold leading-tight", isActive ? "text-primary-foreground" : "text-foreground")}>
+                        {step.title}
+                      </h3>
+                    </div>
+
+                    <div
+                      className="p-5 min-h-[180px]"
+                      style={{ background: isActive ? "#FFF9F0" : "rgba(186, 214, 235, 0.25)" }}
+                    >
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {step.description}
+                      </p>
+                      {step.alert && (
+                        <>
+                          <div className="border-t border-dashed my-3" style={{ borderColor: "#BAD6EB" }} />
+                          <div className="flex items-start gap-2 text-xs">
+                            <AlertTriangle className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground/80">{step.alert}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Mobile scroll hint */}
+        <p className="text-center text-xs text-muted-foreground mt-1 md:hidden">
+          ← Swipe to see the full timeline →
+        </p>
       </div>
     </>
   );

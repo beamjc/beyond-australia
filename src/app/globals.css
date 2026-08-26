@@ -151,4 +151,22 @@
   .shadow-navy {
     box-shadow: 0 8px 30px -8px hsl(var(--navy-deep) / 0.4);
   }
+
+  .timeline-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #BAD6EB transparent;
+  }
+
+  .timeline-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .timeline-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .timeline-scroll::-webkit-scrollbar-thumb {
+    background-color: #BAD6EB;
+    border-radius: 9999px;
+  }
 }
