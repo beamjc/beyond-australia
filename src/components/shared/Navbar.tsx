@@ -21,11 +21,11 @@ const LanguageSwitcher = ({ className = '' }: { className?: string }) => {
   const { language, setLanguage, t } = useLanguage()
   const options: Language[] = ['en', 'th']
   return (
-    <div className={`inline-flex items-center gap-1 rounded-full border border-border bg-muted/50 px-1.5 py-1 ${className}`} role="group" aria-label={t('nav.switchLanguage')}>
-      <Languages className="w-3.5 h-3.5 ml-1 text-muted-foreground" aria-hidden />
+    <div className={`inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/10 px-1.5 py-1 ${className}`} role="group" aria-label={t('nav.switchLanguage')}>
+      <Languages className="w-3.5 h-3.5 ml-1 text-white/70" aria-hidden />
       {options.map((lng) => (
         <button key={lng} onClick={() => setLanguage(lng)} aria-pressed={language === lng}
-          className={`text-xs font-semibold uppercase px-2 py-0.5 rounded-full transition-colors ${language === lng ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+          className={`text-xs font-semibold uppercase px-2 py-0.5 rounded-full transition-colors ${language === lng ? 'bg-accent text-accent-foreground' : 'text-white/70 hover:text-white'}`}>
           {lng}
         </button>
       ))}
@@ -40,25 +40,24 @@ const Navbar = () => {
   const isHome = pathname === '/'
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground">
       <div className="container flex items-center justify-between h-16">
-        <Link href="/" className="flex items-center gap-2 font-display font-bold text-lg text-foreground">
+        <Link href="/" className="flex items-center gap-2 font-display font-bold text-lg text-white">
           <Image src="/beyond-study-logo.png" alt="Beyond Study" width={36} height={36} className="h-9 w-9 object-contain" priority />
           Beyond Australia
         </Link>
         <div className="hidden md:flex items-center gap-6">
           {sectionLinks.map((link) => (
             isHome
-              ? <a key={link.href} href={link.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">{t(link.key)}</a>
-              : <Link key={link.href} href={`/${link.href}`} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">{t(link.key)}</Link>
+              ? <a key={link.href} href={link.href} className="text-sm font-medium text-white/80 hover:text-white transition-colors">{t(link.key)}</a>
+              : <Link key={link.href} href={`/${link.href}`} className="text-sm font-medium text-white/80 hover:text-white transition-colors">{t(link.key)}</Link>
           ))}
-          <Link href="/events" className={`text-sm font-medium transition-colors ${pathname.startsWith('/events') ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+          <Link href="/events" className={`text-sm font-medium transition-colors ${pathname.startsWith('/events') ? 'text-white' : 'text-white/80 hover:text-white'}`}>
             {t('nav.events')}
           </Link>
-          <Link href="/articles" className={`text-sm font-medium transition-colors ${pathname.startsWith('/articles') ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+          <Link href="/articles" className={`text-sm font-medium transition-colors ${pathname.startsWith('/articles') ? 'text-white' : 'text-white/80 hover:text-white'}`}>
             {language === 'th' ? 'บทความ' : 'Articles'}
           </Link>
-          <LanguageSwitcher />
           <a
             href={SITE_URL}
             target="_blank"
@@ -67,27 +66,27 @@ const Navbar = () => {
           >
             {t('nav.getInTouch')}
           </a>
+          <LanguageSwitcher />
         </div>
-        <button onClick={() => setOpen(!open)} className="md:hidden p-2 text-foreground" aria-label={t('nav.toggleMenu')}>
+        <button onClick={() => setOpen(!open)} className="md:hidden p-2 text-white" aria-label={t('nav.toggleMenu')}>
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
       {open && (
-        <div className="md:hidden border-t border-border bg-background">
+        <div className="md:hidden border-t border-white/10 bg-primary">
           <div className="container py-4 flex flex-col gap-3">
             {sectionLinks.map((link) => (
               isHome
-                ? <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-sm font-medium text-muted-foreground hover:text-foreground py-2">{t(link.key)}</a>
-                : <Link key={link.href} href={`/${link.href}`} onClick={() => setOpen(false)} className="text-sm font-medium text-muted-foreground hover:text-foreground py-2">{t(link.key)}</Link>
+                ? <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-sm font-medium text-white/80 hover:text-white py-2">{t(link.key)}</a>
+                : <Link key={link.href} href={`/${link.href}`} onClick={() => setOpen(false)} className="text-sm font-medium text-white/80 hover:text-white py-2">{t(link.key)}</Link>
             ))}
-            <Link href="/events" onClick={() => setOpen(false)} className="text-sm font-medium text-muted-foreground hover:text-foreground py-2">
+            <Link href="/events" onClick={() => setOpen(false)} className="text-sm font-medium text-white/80 hover:text-white py-2">
               {t('nav.events')}
             </Link>
-            <Link href="/articles" onClick={() => setOpen(false)} className="text-sm font-medium text-muted-foreground hover:text-foreground py-2">
+            <Link href="/articles" onClick={() => setOpen(false)} className="text-sm font-medium text-white/80 hover:text-white py-2">
               {language === 'th' ? 'บทความ' : 'Articles'}
             </Link>
             <div className="pt-2 flex items-center justify-between gap-3">
-              <LanguageSwitcher />
               <a
                 href={SITE_URL}
                 target="_blank"
@@ -97,6 +96,7 @@ const Navbar = () => {
               >
                 {t('nav.getInTouch')}
               </a>
+              <LanguageSwitcher />
             </div>
           </div>
         </div>
