@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Users, FileCheck, Award, AlertTriangle, Clock, CalendarIcon } from "lucide-react";
 import { format, differenceInDays, parse } from "date-fns";
@@ -127,6 +127,38 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
     return diff;
   }, [prepDate]);
 
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollEndTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  const handleTimelineScroll = useCallback(() => {
+    setIsScrolling(true);
+    if (scrollEndTimeout.current) clearTimeout(scrollEndTimeout.current);
+    scrollEndTimeout.current = setTimeout(() => setIsScrolling(false), 220);
+  }, []);
+
+  // The gap widening/collapsing shifts card positions, which can leave the
+  // scroll-snapped card off-center once it settles back to the default gap.
+  // Re-center on the nearest card once that collapse animation finishes.
+  const recenterNearestCard = useCallback(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const containerCenter = scroller.scrollLeft + scroller.clientWidth / 2;
+    let closest: HTMLDivElement | null = null;
+    let closestDistance = Infinity;
+    for (const card of cardRefs.current) {
+      if (!card) continue;
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const distance = Math.abs(cardCenter - containerCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closest = card;
+      }
+    }
+    closest?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, []);
+
   const content = (
     <>
       <SectionHeader
@@ -226,8 +258,19 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
         <div className="pointer-events-none absolute left-0 top-0 bottom-6 w-8 md:w-16 bg-gradient-to-r from-background to-transparent z-20" />
         <div className="pointer-events-none absolute right-0 top-0 bottom-6 w-8 md:w-16 bg-gradient-to-l from-background to-transparent z-20" />
 
-        <div className="timeline-scroll snap-x snap-mandatory overflow-x-auto pb-6 [-webkit-overflow-scrolling:touch]">
-          <div className="relative flex items-stretch gap-6 md:gap-10 px-[calc(50vw-135px)] min-w-max">
+        <div
+          ref={scrollerRef}
+          className="timeline-scroll snap-x snap-mandatory overflow-x-auto pb-6 [-webkit-overflow-scrolling:touch]"
+          onScroll={handleTimelineScroll}
+        >
+          <motion.div
+            className="relative flex items-stretch px-6 sm:px-10 md:px-[clamp(24px,12vw,140px)] min-w-max"
+            animate={{ gap: isScrolling ? "3rem" : "1.5rem" }}
+            transition={{ type: "spring", stiffness: 300, damping: 28 }}
+            onAnimationComplete={() => {
+              if (!isScrolling) recenterNearestCard();
+            }}
+          >
             {/* Dashed connector line */}
             <div
               className="absolute top-[38px] md:top-[42px] left-0 right-0 border-t-2 border-dashed"
@@ -239,9 +282,9 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
               return (
                 <motion.div
                   key={`${selectedYear}-${step.title}`}
+                  ref={(el) => { cardRefs.current[index] = el; }}
                   initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.08 }}
                   className="snap-center relative flex flex-col items-center shrink-0 w-[250px] sm:w-[280px]"
                 >
@@ -308,7 +351,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                 </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
 
         {/* Mobile scroll hint */}
