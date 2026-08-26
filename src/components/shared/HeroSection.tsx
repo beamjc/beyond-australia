@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Globe } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import {
   Carousel,
@@ -18,7 +18,6 @@ const heroBg = '/hero-bg.jpg';
 
 type HeroSlide = {
   image: string;
-  badgeKey: TranslationKey;
   titleLine1Key: TranslationKey;
   titleHighlightKey: TranslationKey;
   titleLine2Key: TranslationKey;
@@ -33,7 +32,6 @@ type HeroSlide = {
 const heroSlides: HeroSlide[] = [
   {
     image: heroBg,
-    badgeKey: "hero.badge",
     titleLine1Key: "hero.titleLine1",
     titleHighlightKey: "hero.titleHighlight",
     titleLine2Key: "hero.titleLine2",
@@ -84,14 +82,7 @@ const HeroSection = () => {
                     transition={{ duration: 0.7 }}
                     className="max-w-3xl mx-auto flex flex-col items-center text-center"
                   >
-                    <div className="inline-flex items-center gap-2 rounded-full bg-primary/20 px-4 py-1.5 mb-6 border border-primary/30">
-                      <Globe className="w-4 h-4 text-gold-glow" />
-                      <span className="text-sm font-medium text-gold-glow">
-                        {t(slide.badgeKey)}
-                      </span>
-                    </div>
-
-                    <h1 className="flex flex-col gap-1.5 md:gap-2 text-4xl md:text-6xl lg:text-7xl font-bold text-secondary-foreground mt-2 mb-6">
+                    <h1 className="flex flex-col gap-1.5 md:gap-2 text-4xl md:text-6xl lg:text-7xl font-bold text-secondary-foreground mb-6">
                       <span className="leading-normal">{t(slide.titleLine1Key)}</span>
                       <span className="text-gradient-gold leading-normal">{t(slide.titleHighlightKey)}</span>
                       <span className="leading-normal">{t(slide.titleLine2Key)}</span>
