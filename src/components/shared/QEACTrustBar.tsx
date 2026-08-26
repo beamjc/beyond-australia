@@ -21,7 +21,7 @@ const QEACTrustBar = ({ className = "" }: { className?: string }) => {
 
   return (
     <div
-      className={`w-full rounded-xl border border-emerald-500/20 bg-[#e1f5ee] dark:bg-emerald-900/20 px-4 py-3 sm:px-5 sm:py-3.5 ${className}`}
+      className={`w-full rounded-xl border border-primary/15 bg-primary/5 dark:bg-primary/10 px-4 py-3 sm:px-5 sm:py-3.5 ${className}`}
     >
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
         <div className="flex items-start gap-2.5 min-w-0">

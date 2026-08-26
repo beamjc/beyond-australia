@@ -25,12 +25,12 @@ const BSCConsultationCTA = ({ variant = "standard", className = "" }: Props) => 
   const siteLabel = isTh ? "เว็บไซต์ BSC" : "BSC Website";
 
   const bgClass = isProminent
-    ? "bg-[#cdebde] dark:bg-emerald-900/30"
-    : "bg-[#e1f5ee] dark:bg-emerald-900/20";
+    ? "bg-primary/[0.07] dark:bg-primary/15"
+    : "bg-primary/5 dark:bg-primary/10";
 
   return (
     <div
-      className={`mx-auto w-full max-w-2xl rounded-xl border border-emerald-500/20 border-l-4 border-l-primary ${bgClass} ${
+      className={`mx-auto w-full max-w-2xl rounded-xl border border-primary/15 border-l-4 border-l-accent ${bgClass} ${
         isCompact ? "p-3 sm:p-4" : "p-4 sm:p-5"
       } ${className}`}
     >

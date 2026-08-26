@@ -16,11 +16,11 @@ const CTABanner = () => {
           <p className="text-secondary-foreground/70 leading-relaxed">{t("ctaBanner.subtitle")}</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-sm text-secondary-foreground/80">
             <span className="inline-flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
               {t("ctaBanner.trust1")}
             </span>
             <span className="inline-flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
               {t("ctaBanner.trust2")}
             </span>
           </div>
@@ -29,7 +29,7 @@ const CTABanner = () => {
           href={SITE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 rounded-full gradient-gold px-8 py-4 text-base font-semibold text-primary-foreground shadow-warm transition-transform hover:scale-105 shrink-0"
+          className="inline-flex items-center justify-center gap-2 rounded-full gradient-gold px-8 py-4 text-base font-semibold text-accent-foreground shadow-warm transition-transform hover:scale-105 shrink-0"
         >
           {t("ctaBanner.cta")}
           <ArrowRight className="w-5 h-5" />

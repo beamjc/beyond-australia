@@ -24,7 +24,7 @@ const serviceItems = [
 const ServicesSection = () => {
   const { t } = useLanguage();
   return (
-    <section id="services" className="py-20 bg-card">
+    <section id="services" className="py-20 bg-background">
       <div className="container">
         <SectionHeader
           eyebrow={t("services.eyebrow")}
@@ -48,8 +48,8 @@ const ServicesSection = () => {
               className="group rounded-2xl border border-border/60 bg-background p-6 transition-all hover:border-primary/40 hover:shadow-warm"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <service.icon className="w-5 h-5 text-primary" />
+                <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center group-hover:bg-accent transition-colors">
+                  <service.icon className="w-5 h-5 text-primary-foreground group-hover:text-accent-foreground transition-colors" />
                 </div>
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80 bg-muted/70 px-2.5 py-1 rounded-full">
                   {tag}

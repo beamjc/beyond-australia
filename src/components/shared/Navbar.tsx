@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Globe, Languages } from 'lucide-react'
+import { Menu, X, Languages } from 'lucide-react'
 import { useLanguage } from '@/i18n/LanguageProvider'
 import type { Language, TranslationKey } from '@/i18n/translations'
 
@@ -42,7 +43,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
       <div className="container flex items-center justify-between h-16">
         <Link href="/" className="flex items-center gap-2 font-display font-bold text-lg text-foreground">
-          <Globe className="w-6 h-6 text-primary" />
+          <Image src="/beyond-study-logo.png" alt="Beyond Study" width={36} height={36} className="h-9 w-9 object-contain" priority />
           Beyond Australia
         </Link>
         <div className="hidden md:flex items-center gap-6">
@@ -62,7 +63,7 @@ const Navbar = () => {
             href={SITE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center justify-center rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90"
           >
             {t('nav.getInTouch')}
           </a>
@@ -92,7 +93,7 @@ const Navbar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setOpen(false)}
-                className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center justify-center rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90"
               >
                 {t('nav.getInTouch')}
               </a>

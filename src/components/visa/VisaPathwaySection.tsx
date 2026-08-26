@@ -314,7 +314,7 @@ const VisaPathwaySection = () => {
   const handleReset = () => setHistory(["start"]);
 
   return (
-    <section id="visa-pathway" className="py-20 bg-card">
+    <section id="visa-pathway" className="py-20 bg-background">
       <div className="container">
         <div className="max-w-3xl mx-auto mb-8">
           <QEACTrustBar />
