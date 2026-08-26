@@ -19,8 +19,8 @@ const BSCConsultationCTA = ({ variant = "standard", className = "" }: Props) => 
 
   const heading = isTh ? "ต้องการคำแนะนำจากผู้เชี่ยวชาญ?" : "Want expert guidance?";
   const sub = isTh
-    ? "ปรึกษา Beyond Study Center ฟรี — ตัวแทน QEAC ที่ได้รับใบอนุญาต (#1855, #2588, #4069) · Google 4.9★ · ประสบการณ์ 15 ปี"
-    : "Free consultation with Beyond Study Center — licensed QEAC agent (reg. #1855, #2588, #4069) · 4.9★ on Google · 15 years experience";
+    ? "ปรึกษา Beyond Study Center ฟรี ด้วยประสบการณ์มากกว่า 15 ปี"
+    : "Free consultation with Beyond Study Center 15 years+ experience";
   const lineLabel = "LINE: @beyondstudy";
   const siteLabel = isTh ? "เว็บไซต์ BSC" : "BSC Website";
 
