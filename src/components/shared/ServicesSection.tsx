@@ -30,7 +30,6 @@ const ServicesSection = () => {
           {serviceItems.map((service, index) => {
             const title = t(`services.items.${service.key}.title` as const);
             const description = t(`services.items.${service.key}.description` as const);
-            const tag = t(`services.items.${service.key}.tag` as const);
             const isDark = index % 2 === 1;
             return (
             <motion.div
@@ -41,42 +40,38 @@ const ServicesSection = () => {
               transition={{ delay: index * 0.08 }}
               className={
                 isDark
-                  ? "group flex items-center gap-4 rounded-2xl border border-[#334eac] bg-[#334eac] p-6 transition-all hover:shadow-navy"
-                  : "group flex items-center gap-4 rounded-2xl border border-[#7096D1]/40 bg-[#D0E3FF] p-6 transition-all hover:border-[#334eac]/60 hover:shadow-warm"
+                  ? "group relative h-[380px] overflow-hidden rounded-2xl border border-[#334eac] bg-[#334eac] transition-all hover:shadow-navy"
+                  : "group relative h-[380px] overflow-hidden rounded-2xl border border-[#7096D1]/40 bg-[#D0E3FF] transition-all hover:border-[#334eac]/60 hover:shadow-warm"
               }
             >
-              <div className="flex-1 min-w-0">
+              <Image
+                src={service.image}
+                alt=""
+                aria-hidden="true"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div
+                className={
+                  isDark
+                    ? "pointer-events-none absolute inset-0 bg-gradient-to-t from-[#334eac] via-[#334eac]/85 to-transparent"
+                    : "pointer-events-none absolute inset-0 bg-gradient-to-t from-[#D0E3FF] via-[#D0E3FF]/85 to-transparent"
+                }
+              />
+              <div className="absolute inset-x-0 bottom-0 p-6">
                 <h3 className={isDark ? "text-lg font-bold text-white mb-2" : "text-lg font-bold text-[#081F5C] mb-2"}>
                   {title}
                 </h3>
                 <p
                   className={
                     isDark
-                      ? "text-sm text-[#D0E3FF] leading-relaxed mb-4"
-                      : "text-sm text-[#334eac]/80 leading-relaxed mb-4"
+                      ? "text-sm text-[#D0E3FF] leading-relaxed"
+                      : "text-sm text-[#334eac]/80 leading-relaxed"
                   }
                 >
                   {description}
                 </p>
-                <span
-                  className={
-                    isDark
-                      ? "inline-flex items-center rounded-full bg-[#bad6eb] px-4 py-2 text-sm font-semibold text-[#081F5C] transition-colors group-hover:bg-[#FFF9F0]"
-                      : "inline-flex items-center rounded-full bg-[#FFF9F0] px-4 py-2 text-sm font-semibold text-[#081F5C] transition-colors group-hover:bg-[#334eac] group-hover:text-white"
-                  }
-                >
-                  {tag}
-                </span>
-              </div>
-              <div className="relative h-28 w-28 shrink-0 sm:h-32 sm:w-32">
-                <Image
-                  src={service.image}
-                  alt=""
-                  aria-hidden="true"
-                  fill
-                  sizes="128px"
-                  className="object-contain transition-transform duration-300 group-hover:scale-105"
-                />
               </div>
             </motion.div>
             );
