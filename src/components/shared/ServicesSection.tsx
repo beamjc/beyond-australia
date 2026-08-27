@@ -40,26 +40,28 @@ const ServicesSection = () => {
               transition={{ delay: index * 0.08 }}
               className={
                 isDark
-                  ? "group relative h-[380px] overflow-hidden rounded-2xl border border-[#334eac] bg-[#334eac] transition-all hover:shadow-navy"
-                  : "group relative h-[380px] overflow-hidden rounded-2xl border border-[#7096D1]/40 bg-[#D0E3FF] transition-all hover:border-[#334eac]/60 hover:shadow-warm"
+                  ? "group relative h-48 overflow-hidden rounded-2xl border border-[#334eac] bg-[#334eac] transition-all hover:shadow-navy"
+                  : "group relative h-48 overflow-hidden rounded-2xl border border-[#7096D1]/40 bg-[#D0E3FF] transition-all hover:border-[#334eac]/60 hover:shadow-warm"
               }
             >
-              <Image
-                src={service.image}
-                alt=""
-                aria-hidden="true"
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-              />
+              <div className="absolute inset-y-0 right-0 w-1/2">
+                <Image
+                  src={service.image}
+                  alt=""
+                  aria-hidden="true"
+                  fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 17vw"
+                  className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
               <div
                 className={
                   isDark
-                    ? "pointer-events-none absolute inset-0 bg-gradient-to-t from-[#334eac] via-[#334eac]/85 to-transparent"
-                    : "pointer-events-none absolute inset-0 bg-gradient-to-t from-[#D0E3FF] via-[#D0E3FF]/85 to-transparent"
+                    ? "pointer-events-none absolute inset-0 bg-gradient-to-r from-[#334eac] via-[#334eac]/70 to-transparent"
+                    : "pointer-events-none absolute inset-0 bg-gradient-to-r from-[#D0E3FF] via-[#D0E3FF]/70 to-transparent"
                 }
               />
-              <div className="absolute inset-x-0 bottom-0 p-6">
+              <div className="relative z-10 flex h-full flex-col justify-center p-6">
                 <h3 className={isDark ? "text-lg font-bold text-white mb-2" : "text-lg font-bold text-[#081F5C] mb-2"}>
                   {title}
                 </h3>
