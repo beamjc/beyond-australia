@@ -61,7 +61,7 @@ const ServicesSection = () => {
                     : "pointer-events-none absolute inset-0 bg-gradient-to-r from-[#D0E3FF] via-[#D0E3FF]/70 to-transparent"
                 }
               />
-              <div className="relative z-10 flex h-full flex-col justify-center p-6">
+              <div className="relative z-10 flex h-full w-1/2 flex-col justify-center p-6">
                 <h3 className={isDark ? "text-lg font-bold text-white mb-2" : "text-lg font-bold text-[#081F5C] mb-2"}>
                   {title}
                 </h3>
