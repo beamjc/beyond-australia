@@ -40,7 +40,7 @@ const ServicesSection = () => {
               transition={{ delay: index * 0.08 }}
               className={
                 isDark
-                  ? "group relative h-48 overflow-hidden rounded-2xl border border-[#334eac] bg-[#334eac] transition-all hover:shadow-navy"
+                  ? "group relative h-48 overflow-hidden rounded-2xl border border-[#7096D1] bg-[#7096D1] transition-all hover:shadow-warm"
                   : "group relative h-48 overflow-hidden rounded-2xl border border-[#7096D1]/40 bg-[#D0E3FF] transition-all hover:border-[#334eac]/60 hover:shadow-warm"
               }
             >
@@ -57,18 +57,18 @@ const ServicesSection = () => {
               <div
                 className={
                   isDark
-                    ? "pointer-events-none absolute inset-0 bg-gradient-to-r from-[#334eac] via-[#334eac]/70 to-transparent"
+                    ? "pointer-events-none absolute inset-0 bg-gradient-to-r from-[#7096D1] via-[#7096D1]/70 to-transparent"
                     : "pointer-events-none absolute inset-0 bg-gradient-to-r from-[#D0E3FF] via-[#D0E3FF]/70 to-transparent"
                 }
               />
               <div className="relative z-10 flex h-full w-1/2 flex-col justify-center p-6">
-                <h3 className={isDark ? "text-lg font-bold text-white mb-2" : "text-lg font-bold text-[#081F5C] mb-2"}>
+                <h3 className="text-lg font-bold text-[#081F5C] mb-2">
                   {title}
                 </h3>
                 <p
                   className={
                     isDark
-                      ? "text-sm text-[#D0E3FF] leading-relaxed"
+                      ? "text-sm text-[#081F5C]/80 leading-relaxed"
                       : "text-sm text-[#334eac]/80 leading-relaxed"
                   }
                 >
