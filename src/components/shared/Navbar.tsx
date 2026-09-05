@@ -43,7 +43,9 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground">
       <div className="container flex items-center justify-between h-16">
         <Link href="/" className="flex items-center gap-2 font-display font-bold text-lg text-white">
-          <Image src="/beyond-study-logo.png" alt="Beyond Study" width={36} height={36} className="h-9 w-9 object-contain" priority />
+          <span className="flex items-center justify-center w-9 h-9 rounded-full bg-white p-1 shrink-0">
+            <Image src="/icons/beyond_study_logo.png" alt="Beyond Study" width={36} height={36} className="h-full w-full object-contain" priority />
+          </span>
           Beyond Australia
         </Link>
         <div className="hidden md:flex items-center gap-6">

@@ -42,13 +42,6 @@ const englishOptions: { id: EnglishLevel; label: string; numeric: number }[] = [
   { id: "6.5+",  label: "6.5+",  numeric: 6.5 },
 ];
 
-const goalMeta: Record<Goal, { label: string; sub: string; sector: "vet" | "he" | "elicos" }> = {
-  english: { label: "Learn English",     sub: "ELICOS pathway",       sector: "elicos" },
-  vet:     { label: "Skilled Diploma",   sub: "VET — IELTS 6.0",      sector: "vet" },
-  he:      { label: "Bachelor / Master", sub: "Higher Ed — IELTS 6.5", sector: "he" },
-  short:   { label: "Short experience & Skill booster", sub: "WHM · Study Tour · Fast-track", sector: "vet" },
-};
-
 const BudgetStudyPlanner = () => {
   const [location, setLocation] = useState<Location>("offshore");
   const [currency, setCurrency] = useState<"THB" | "AUD">("THB");
@@ -146,6 +139,77 @@ const BudgetStudyPlanner = () => {
           <CardContent className="p-6 space-y-6">
             <div>
               <Label className="flex items-center gap-2 mb-3 text-foreground">
+                <Target className="w-4 h-4 text-primary" /> Target Goal
+              </Label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setGoal("english")}
+                  className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
+                    goal === "english" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
+                  }`}
+                >
+                  <div className="text-sm font-semibold text-foreground">Learn English</div>
+                  <div className="text-xs text-muted-foreground">ELICOS pathway</div>
+                </button>
+                <button
+                  onClick={() => setGoal("vet")}
+                  className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
+                    goal === "vet" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
+                  }`}
+                >
+                  <div className="text-sm font-semibold text-foreground">Vet Courses</div>
+                  <div className="text-xs text-muted-foreground">VET — IELTS 6.0</div>
+                </button>
+                <button
+                  onClick={() => { setGoal("he"); setDegreeLevel("bachelor"); }}
+                  className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
+                    goal === "he" && degreeLevel === "bachelor" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
+                  }`}
+                >
+                  <div className="text-sm font-semibold text-foreground">Bachelor Degree</div>
+                  <div className="text-xs text-muted-foreground">Higher Ed — IELTS 6.5 · 3 years</div>
+                </button>
+                <button
+                  onClick={() => { setGoal("he"); setDegreeLevel("master"); }}
+                  className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
+                    goal === "he" && degreeLevel === "master" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
+                  }`}
+                >
+                  <div className="text-sm font-semibold text-foreground">Master Degree</div>
+                  <div className="text-xs text-muted-foreground">Higher Ed — IELTS 6.5 · 2 years</div>
+                </button>
+                <button
+                  onClick={() => setGoal("short")}
+                  className={`col-span-2 px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
+                    goal === "short" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
+                  }`}
+                >
+                  <div className="text-sm font-semibold text-foreground">Short experience & Skill booster</div>
+                  <div className="text-xs text-muted-foreground">WHM · Study Tour · Fast-track</div>
+                </button>
+              </div>
+              {suggestShort && (
+                <button
+                  onClick={() => setGoal("short")}
+                  className="mt-3 w-full text-left rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 hover:bg-amber-500/15 transition-all"
+                >
+                  <div className="flex items-start gap-2">
+                    <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-semibold text-amber-700">
+                        Budget under ฿180,000? Try the WHM or Study Tour pathway first.
+                      </p>
+                      <p className="text-[11px] text-amber-700/80 mt-0.5">
+                        Earn, learn and experience Australia before committing to a full degree.
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              )}
+            </div>
+
+            <div>
+              <Label className="flex items-center gap-2 mb-3 text-foreground">
                 <MapPin className="w-4 h-4 text-primary" /> Location
               </Label>
               <div className="grid grid-cols-2 gap-2">
@@ -219,128 +283,69 @@ const BudgetStudyPlanner = () => {
               <Slider value={[age]} min={15} max={50} step={1} onValueChange={([v]) => setAge(v)} />
             </div>
 
-            <div>
-              <Label className="flex items-center gap-2 mb-3 text-foreground">
-                <Languages className="w-4 h-4 text-primary" /> Current English (IELTS)
-              </Label>
-              <div className="grid grid-cols-6 gap-1.5">
-                {englishOptions.map((o) => (
-                  <button
-                    key={o.id}
-                    onClick={() => setEnglish(o.id)}
-                    className={`px-1 py-2 rounded-md border text-xs font-medium transition-all ${
-                      english === o.id
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border text-muted-foreground hover:border-primary/40"
-                    }`}
-                  >
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-              {englishPkg.needsLevel1 && (
-                <div className="mt-3 flex items-start gap-2 rounded-md bg-amber-500/10 border border-amber-500/30 p-2.5">
-                  <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                  <p className="text-xs text-amber-700">
-                    IELTS below 5.0 may require packaging with <strong>Level 1 Institutions</strong>.
-                  </p>
-                </div>
-              )}
-              {englishPkg.straightEntry && goal !== "english" && (
-                <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" /> Straight entry — no English package required.
-                </p>
-              )}
-              {englishPkg.weeks > 0 && goal !== "english" && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  Suggested ELICOS package: <strong className="text-foreground">{englishPkg.weeks} weeks</strong> @ ${elicosWeekly}/wk
-                </p>
-              )}
-            </div>
-
-            {/* Global English tuition slider — affects every pathway card */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <Label className="flex items-center gap-2 text-foreground">
-                  <GraduationCap className="w-4 h-4 text-primary" /> English Tuition
-                </Label>
-                <span className="text-sm font-semibold text-foreground">${elicosWeekly}/wk</span>
-              </div>
-              <Slider
-                value={[elicosWeekly]}
-                min={ELICOS_WEEKLY_MIN}
-                max={ELICOS_WEEKLY_MAX}
-                step={10}
-                onValueChange={([v]) => setElicosWeekly(v)}
-              />
-              <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
-                <span>${ELICOS_WEEKLY_MIN}/wk · budget</span>
-                <span>${ELICOS_WEEKLY_MAX}/wk · premium</span>
-              </div>
-            </div>
-
-            <div>
-              <Label className="flex items-center gap-2 mb-3 text-foreground">
-                <Target className="w-4 h-4 text-primary" /> Target Goal
-              </Label>
-              <div className="grid grid-cols-2 gap-2">
-                {(Object.keys(goalMeta) as Goal[]).map((g) => (
-                  <button
-                    key={g}
-                    onClick={() => setGoal(g)}
-                    className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
-                      goal === g ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                    }`}
-                  >
-                    <div className="text-sm font-semibold text-foreground">{goalMeta[g].label}</div>
-                    <div className="text-xs text-muted-foreground">{goalMeta[g].sub}</div>
-                  </button>
-                ))}
-              </div>
-            {goal === "he" && (
-              <div className="mt-3">
-                <Label className="text-xs text-muted-foreground mb-2 block">Degree level</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {([
-                    { id: "bachelor", label: "Bachelor", sub: "3 years" },
-                    { id: "master",   label: "Master",   sub: "2 years" },
-                  ] as { id: DegreeLevel; label: string; sub: string }[]).map((d) => (
-                    <button
-                      key={d.id}
-                      onClick={() => setDegreeLevel(d.id)}
-                      className={`px-3 py-2 rounded-lg border-2 text-left transition-all ${
-                        degreeLevel === d.id ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                      }`}
-                    >
-                      <div className="text-sm font-semibold text-foreground">{d.label}</div>
-                      <div className="text-[11px] text-muted-foreground">{d.sub}</div>
-                    </button>
-                  ))}
-                </div>
-                <p className="text-[11px] text-muted-foreground mt-1.5">
-                  Same annual tuition — Bachelor runs 3 years, Master runs 2 years.
-                </p>
-              </div>
-            )}
-              {suggestShort && (
-                <button
-                  onClick={() => setGoal("short")}
-                  className="mt-3 w-full text-left rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 hover:bg-amber-500/15 transition-all"
-                >
-                  <div className="flex items-start gap-2">
-                    <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs font-semibold text-amber-700">
-                        Budget under ฿180,000? Try the WHM or Study Tour pathway first.
-                      </p>
-                      <p className="text-[11px] text-amber-700/80 mt-0.5">
-                        Earn, learn and experience Australia before committing to a full degree.
+            {goal !== "english" && (
+              <>
+                <div>
+                  <Label className="flex items-center gap-2 mb-3 text-foreground">
+                    <Languages className="w-4 h-4 text-primary" /> Current English (IELTS)
+                  </Label>
+                  <div className="grid grid-cols-6 gap-1.5">
+                    {englishOptions.map((o) => (
+                      <button
+                        key={o.id}
+                        onClick={() => setEnglish(o.id)}
+                        className={`px-1 py-2 rounded-md border text-xs font-medium transition-all ${
+                          english === o.id
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground hover:border-primary/40"
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </div>
+                  {englishPkg.needsLevel1 && (
+                    <div className="mt-3 flex items-start gap-2 rounded-md bg-amber-500/10 border border-amber-500/30 p-2.5">
+                      <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                      <p className="text-xs text-amber-700">
+                        IELTS below 5.0 may require packaging with <strong>Level 1 Institutions</strong>.
                       </p>
                     </div>
+                  )}
+                  {englishPkg.straightEntry && (
+                    <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3" /> Straight entry — no English package required.
+                    </p>
+                  )}
+                  {englishPkg.weeks > 0 && (
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Suggested ELICOS package: <strong className="text-foreground">{englishPkg.weeks} weeks</strong> @ ${elicosWeekly}/wk
+                    </p>
+                  )}
+                </div>
+
+                {/* Global English tuition slider — affects every pathway card */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="flex items-center gap-2 text-foreground">
+                      <GraduationCap className="w-4 h-4 text-primary" /> English Tuition
+                    </Label>
+                    <span className="text-sm font-semibold text-foreground">${elicosWeekly}/wk</span>
                   </div>
-                </button>
-              )}
-            </div>
+                  <Slider
+                    value={[elicosWeekly]}
+                    min={ELICOS_WEEKLY_MIN}
+                    max={ELICOS_WEEKLY_MAX}
+                    step={10}
+                    onValueChange={([v]) => setElicosWeekly(v)}
+                  />
+                  <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                    <span>${ELICOS_WEEKLY_MIN}/wk · budget</span>
+                    <span>${ELICOS_WEEKLY_MAX}/wk · premium</span>
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="pt-2 border-t border-border">
               <button

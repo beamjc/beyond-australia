@@ -21,7 +21,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 pb-8 border-b border-primary-foreground/10">
           <div className="flex items-center gap-2 font-display font-bold text-lg shrink-0">
             <span className="flex items-center justify-center w-9 h-9 rounded-full bg-white p-1">
-              <Image src="/beyond-study-logo.png" alt="Beyond Study" width={28} height={28} className="h-full w-full object-contain" />
+              <Image src="/icons/beyond_study_logo.png" alt="Beyond Study" width={28} height={28} className="h-full w-full object-contain" />
             </span>
             Beyond Australia
           </div>

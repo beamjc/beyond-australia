@@ -25,9 +25,9 @@ const QEACTrustBar = ({ className = "" }: { className?: string }) => {
           <Image
             src="/icons/beyond_study_logo.png"
             alt="Beyond Study Center"
-            width={32}
-            height={32}
-            className="shrink-0 rounded object-contain"
+            width={168}
+            height={88}
+            className="h-10 w-auto sm:h-12 shrink-0 object-contain"
           />
           <div className="min-w-0">
             <p className="text-sm font-semibold text-foreground leading-snug">{intro}</p>

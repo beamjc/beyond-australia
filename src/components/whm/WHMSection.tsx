@@ -26,7 +26,7 @@ const WHMSection = () => {
   const [activeTab, setActiveTab] = useState<SubTab>("timeline");
 
   return (
-    <section id="whm" className="py-20 bg-background">
+    <section id="whm" className="py-20 bg-muted/30">
       <div className="container">
         <SectionHeader
           eyebrow={t("whm.eyebrow")}
