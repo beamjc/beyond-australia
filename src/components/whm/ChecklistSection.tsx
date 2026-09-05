@@ -569,18 +569,6 @@ const ChecklistSection = ({ embedded = false }: { embedded?: boolean }) => {
         </div>
       </div>
 
-      {/* CTA */}
-      <div className="text-center mt-10">
-        <p className="text-muted-foreground text-sm">
-          ต้องการส่วนลดค่าสอบ IELTS หรือ PTE?{" "}
-          <a
-            href="#services"
-            className="text-primary font-medium hover:underline"
-          >
-            ดูบริการของเรา →
-          </a>
-        </p>
-      </div>
     </>
   );
 
