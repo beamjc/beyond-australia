@@ -1,7 +1,6 @@
 import Navbar from '@/components/shared/Navbar'
 import HeroSection from '@/components/shared/HeroSection'
 import ServicesSection from '@/components/shared/ServicesSection'
-import WHMJourneyTeaser from '@/components/shared/WHMJourneyTeaser'
 import WHMSection from '@/components/whm/WHMSection'
 import StudySection from '@/components/study/StudySection'
 import VisaPathwaySection from '@/components/visa/VisaPathwaySection'
@@ -18,7 +17,6 @@ export default function HomePage() {
       <Navbar />
       <HeroSection />
       <RevealOnScroll><ServicesSection /></RevealOnScroll>
-      <RevealOnScroll><WHMJourneyTeaser /></RevealOnScroll>
       <RevealOnScroll><WHMSection /></RevealOnScroll>
       <RevealOnScroll><StudySection /></RevealOnScroll>
       <RevealOnScroll><VisaPathwaySection /></RevealOnScroll>

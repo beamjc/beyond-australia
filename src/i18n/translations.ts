@@ -130,21 +130,6 @@ export const translations = {
         },
       },
     },
-    whmTeaser: {
-      eyebrow: "How It Works",
-      title: "Your WHM journey, step by step",
-      subtitle:
-        "From DCY registration to your second and third year visa — everything mapped out.",
-      cta: "Start Your Timeline",
-      panelLabel: "4 Guided Steps",
-      steps: {
-        timeline: { description: "Registration dates, DCY timeline, and what to expect" },
-        checklist: { description: "Documents and to-dos before you fly" },
-        postcode: { description: "Eligible postcodes for your 2nd and 3rd year visa" },
-        faq2026: { description: "Answers to the most common 2026 questions" },
-      },
-      viewDetails: "View details",
-    },
     proof: {
       eyebrow: "Trusted Nationwide",
       title: "Real numbers, real trust",
@@ -296,20 +281,6 @@ export const translations = {
           description: "ฟังประสบการณ์ตรงจากศิษย์เก่า WHM ไทยในเรื่องการทำงานและใช้ชีวิตที่ออสเตรเลีย",
         },
       },
-    },
-    whmTeaser: {
-      eyebrow: "ขั้นตอนการทำงาน",
-      title: "เส้นทาง WHM ของคุณ ทีละขั้นตอน",
-      subtitle: "ตั้งแต่การลงทะเบียน DCY ไปจนถึงวีซ่าปีที่ 2 และ 3 — วางแผนไว้ให้ครบ",
-      cta: "เริ่มดูไทม์ไลน์",
-      panelLabel: "4 ขั้นตอนแนะนำ",
-      steps: {
-        timeline: { description: "วันลงทะเบียน ไทม์ไลน์ DCY และสิ่งที่ควรรู้" },
-        checklist: { description: "เอกสารและสิ่งที่ต้องเตรียมก่อนบิน" },
-        postcode: { description: "รหัสไปรษณีย์ที่เข้าเงื่อนไขสำหรับวีซ่าปีที่ 2 และ 3" },
-        faq2026: { description: "คำตอบคำถามยอดฮิตประจำปี 2026" },
-      },
-      viewDetails: "ดูรายละเอียด",
     },
     proof: {
       eyebrow: "ได้รับความไว้วางใจทั่วประเทศ",
