@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Calendar, DollarSign, Clock, ArrowUpDown, MapPin, Building } from "lucide-react";
 import { subjectGroups, type University } from "@/data/universities";
 import { Badge } from "@/components/ui/badge";
-import BSCConsultationCTA from "../shared/BSCConsultationCTA";
 // Button removed — sourceUrl is internal only
 
 type SortKey = "ausRank" | "worldRank" | "tuition";
@@ -83,13 +82,14 @@ const TopUniversities = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {sorted.map((uni, i) => (
-            <div key={uni.id} className="flex flex-col gap-3">
-              <UniversityCard uni={uni} index={i} />
-              <BSCConsultationCTA variant="compact" />
-            </div>
+            <UniversityCard key={uni.id} uni={uni} index={i} />
           ))}
         </div>
       )}
+
+      <p className="mt-6 text-center text-xs text-muted-foreground">
+        Rankings and tuition data compiled from each university&apos;s official website (tuition figures last verified September 2026). Figures are reviewed periodically and may change — always confirm current fees and intake dates on the university&apos;s course page before applying.
+      </p>
     </div>
   );
 };

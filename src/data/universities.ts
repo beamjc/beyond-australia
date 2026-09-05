@@ -35,7 +35,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 1,
         city: "Sydney",
         campus: "City campus",
-        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Autumn session", tuitionPerYear: 48815, tuitionYear: 2026, sourceUrl: "https://www.uts.edu.au/courses/bachelor-of-nursing" }],
+        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Autumn session", tuitionPerYear: 51045, tuitionYear: 2026, sourceUrl: "https://www.uts.edu.au/courses/bachelor-of-nursing" }],
       },
       {
         id: "monash",
@@ -44,7 +44,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 2,
         city: "Melbourne",
         campus: "Clayton",
-        courses: [{ name: "Master of Nursing Practice", durationYears: 2, intake: "Feb, July", tuitionPerYear: 47400, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/nursing-practice-m6016?international=true" }],
+        courses: [{ name: "Master of Nursing Practice", durationYears: 2, intake: "Mar, July", tuitionPerYear: 47400, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/nursing-practice-m6016?international=true" }],
       },
       {
         id: "usyd",
@@ -53,7 +53,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 2,
         city: "Sydney",
         campus: "Camperdown/Darlington campus, Westmead Campus",
-        courses: [{ name: "Master of Nursing", durationYears: 2, intake: "Feb", tuitionPerYear: 51300, tuitionYear: 2026, sourceUrl: "https://www.sydney.edu.au/courses/courses/pc/master-of-nursing.html" }],
+        courses: [{ name: "Master of Nursing", durationYears: 2, intake: "Feb", tuitionPerYear: 53900, tuitionYear: 2026, sourceUrl: "https://www.sydney.edu.au/courses/courses/pc/master-of-nursing.html" }],
       },
       {
         id: "unimelb",
@@ -62,7 +62,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 4,
         city: "Melbourne",
         campus: "Parkville",
-        courses: [{ name: "Master of Nursing Science", durationYears: 2, intake: "Feb", tuitionPerYear: 44000, tuitionYear: 2026, sourceUrl: "https://study.unimelb.edu.au/find/courses/graduate/master-of-nursing-science/" }],
+        courses: [{ name: "Master of Nursing Science", durationYears: 2, intake: "Feb", tuitionPerYear: 46624, tuitionYear: 2026, sourceUrl: "https://study.unimelb.edu.au/find/courses/graduate/master-of-nursing-science/" }],
       },
       {
         id: "griffith",
@@ -80,7 +80,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 6,
         city: "Wollongong",
         campus: "Wollongong",
-        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Autumn, Spring", tuitionPerYear: 39936, tuitionYear: 2026, sourceUrl: "https://www.uow.edu.au/study/courses/bachelor-of-nursing/" }],
+        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Autumn", tuitionPerYear: 39936, tuitionYear: 2026, sourceUrl: "https://www.uow.edu.au/study/courses/bachelor-of-nursing/" }],
       },
       {
         id: "deakin",
@@ -89,7 +89,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 7,
         city: "Melbourne",
         campus: "Burwood, Waterfront, Warrnambool",
-        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Mar (Burwood Melbourne, Waterfront Geelong, Warrnambool) · July (Burwood Melbourne, Waterfront Geelong)", tuitionPerYear: 44600, tuitionYear: 2026, sourceUrl: "https://www.deakin.edu.au/course/bachelor-nursing-international" }],
+        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Mar (Burwood Melbourne, Waterfront Geelong, Warrnambool) · July (Burwood Melbourne, Waterfront Geelong)", tuitionPerYear: 45800, tuitionYear: 2026, sourceUrl: "https://www.deakin.edu.au/course/bachelor-nursing-international" }],
       },
       {
         id: "latrobe",
@@ -98,7 +98,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 8,
         city: "Melbourne",
         campus: "Melbourne, Albury-Wodonga, Bendigo, Mildura, Shepparton",
-        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Mar", tuitionPerYear: 44600, tuitionYear: 2027, sourceUrl: "https://www.latrobe.edu.au/courses/bachelor-of-nursing" }],
+        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Mar", tuitionPerYear: 47200, tuitionYear: 2026, sourceUrl: "https://www.latrobe.edu.au/courses/bachelor-of-nursing" }],
       },
       {
         id: "adelaide",
@@ -116,7 +116,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 9,
         city: "Adelaide",
         campus: "Bedford Park, City",
-        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Mar", tuitionPerYear: 41200, tuitionYear: 2026, sourceUrl: "https://www.flinders.edu.au/study/courses/bachelor-nursing-preregistration" }],
+        courses: [{ name: "Bachelor of Nursing", durationYears: 3, intake: "Mar, July", tuitionPerYear: 44300, tuitionYear: 2026, sourceUrl: "https://www.flinders.edu.au/study/courses/bachelor-nursing-preregistration" }],
       },
     ],
   },
@@ -149,7 +149,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 3,
         city: "Canberra",
         campus: "Acton",
-        courses: [{ name: "Master of Applied Data Analytics", durationYears: 2, intake: "Feb, July", tuitionPerYear: 57640, tuitionYear: 2027, sourceUrl: "https://programsandcourses.anu.edu.au/2027/program/madan" }],
+        courses: [{ name: "Master of Applied Data Analytics", durationYears: 1.5, intake: "Paused for 2026 admissions — relaunching 2027", tuitionPerYear: 57640, tuitionYear: 2027, sourceUrl: "https://programsandcourses.anu.edu.au/2027/program/madan" }],
       },
       {
         id: "uts-ds",
@@ -203,7 +203,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 6,
         city: "Brisbane",
         campus: "St Lucia",
-        courses: [{ name: "Master of Data Science", durationYears: 2, intake: "Semester 1, Semester 2", tuitionPerYear: 58056, tuitionYear: 2026, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-data-science-5660#overview" }],
+        courses: [{ name: "Master of Data Science", durationYears: 2, intake: "Semester 1, Semester 2", tuitionPerYear: 60952, tuitionYear: 2027, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-data-science-5660#overview" }],
       },
       {
         id: "deakin-ds",
@@ -272,7 +272,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 3,
         city: "Canberra",
         campus: "Acton",
-        courses: [{ name: "Master of Computing", durationYears: 2, intake: "Feb, July", tuitionPerYear: 56120, tuitionYear: 2026, sourceUrl: "https://programsandcourses.anu.edu.au/program/7706xmcomp" }],
+        courses: [{ name: "Master of Computing", durationYears: 2, intake: "Feb, July", tuitionPerYear: 57640, tuitionYear: 2027, sourceUrl: "https://programsandcourses.anu.edu.au/program/7706xmcomp" }],
       },
       {
         id: "monash-cs",
@@ -281,7 +281,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 4,
         city: "Melbourne",
         campus: "Clayton",
-        courses: [{ name: "Master of Information Technology", durationYears: 2, intake: "Feb, July", tuitionPerYear: 55500, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/information-technology-c6001?international=true" }],
+        courses: [{ name: "Master of Information Technology", durationYears: 2, intake: "Mar, July", tuitionPerYear: 55500, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/information-technology-c6001?international=true" }],
       },
       {
         id: "unsw-cs",
@@ -299,7 +299,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 6,
         city: "Sydney",
         campus: "City campus",
-        courses: [{ name: "Master of Information Technology", durationYears: 2, intake: "Autumn, Spring", tuitionPerYear: 55375, tuitionYear: 2026, sourceUrl: "https://www.uts.edu.au/courses/master-of-information-technology" }],
+        courses: [{ name: "Master of Information Technology – Advanced Skills", durationYears: 2, intake: "Autumn, Spring", tuitionPerYear: 55375, tuitionYear: 2026, sourceUrl: "https://www.uts.edu.au/courses/master-of-information-technology" }],
       },
       {
         id: "adelaide-cs",
@@ -335,7 +335,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 10,
         city: "Melbourne",
         campus: "City Campus",
-        courses: [{ name: "Master of Information Technology", durationYears: 2, intake: "Feb, July", tuitionPerYear: 44160, tuitionYear: 2026, sourceUrl: "https://www.rmit.edu.au/study-with-us/levels-of-study/postgraduate-study/masters-by-coursework/master-of-information-technology-mc208" }],
+        courses: [{ name: "Master of Information Technology", durationYears: 2, intake: "Feb, July", tuitionPerYear: 47040, tuitionYear: 2027, sourceUrl: "https://www.rmit.edu.au/study-with-us/levels-of-study/postgraduate-study/masters-by-coursework/master-of-information-technology-mc208" }],
       },
     ],
   },
@@ -377,7 +377,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 4,
         city: "Melbourne",
         campus: "Caulfield",
-        courses: [{ name: "Master of Business", durationYears: 2, intake: "Feb, July, Nov", tuitionPerYear: 59900, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/business-b6005?international=true" }],
+        courses: [{ name: "Master of Business", durationYears: 2, intake: "Mar, July, Nov", tuitionPerYear: 59900, tuitionYear: 2027, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/business-b6005?international=true" }],
       },
       {
         id: "anu-bm",
@@ -395,7 +395,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 6,
         city: "Brisbane",
         campus: "St Lucia",
-        courses: [{ name: "Master of Business", durationYears: 2, intake: "Semester 1, Semester 2", tuitionPerYear: 58056, tuitionYear: 2026, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-business-5583" }],
+        courses: [{ name: "Master of Business", durationYears: 2, intake: "Semester 1, Semester 2", tuitionPerYear: 60952, tuitionYear: 2027, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-business-5583" }],
       },
       {
         id: "macquarie-bm",
@@ -431,7 +431,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 10,
         city: "Melbourne",
         campus: "Melbourne City",
-        courses: [{ name: "Master of International Business", durationYears: 2, intake: "Feb, July, October", tuitionPerYear: 48960, tuitionYear: 2026, sourceUrl: "https://www.rmit.edu.au/study-with-us/levels-of-study/postgraduate-study/masters-by-coursework/master-of-international-business-mc192" }],
+        courses: [{ name: "Master of International Business", durationYears: 2, intake: "Feb, July, October", tuitionPerYear: 52800, tuitionYear: 2027, sourceUrl: "https://www.rmit.edu.au/study-with-us/levels-of-study/postgraduate-study/masters-by-coursework/master-of-international-business-mc192" }],
       },
     ],
   },
@@ -491,7 +491,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 6,
         city: "Brisbane",
         campus: "St Lucia",
-        courses: [{ name: "Master of Laws (LLM)", durationYears: 1.5, intake: "Feb, July", tuitionPerYear: 54096, tuitionYear: 2026, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-laws-5591" }],
+        courses: [{ name: "Master of Laws (LLM)", durationYears: 1.5, intake: "Feb, July", tuitionPerYear: 56800, tuitionYear: 2027, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-laws-5591" }],
       },
       {
         id: "adelaide-law",
@@ -552,7 +552,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 2,
         city: "Melbourne",
         campus: "Clayton",
-        courses: [{ name: "Master of Teaching", durationYears: 2, intake: "Feb", tuitionPerYear: 45000, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/teaching-d6001?international=true" }],
+        courses: [{ name: "Master of Teaching", durationYears: 2, intake: "Mar", tuitionPerYear: 45000, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/teaching-d6001?international=true" }],
       },
       {
         id: "usyd-edu",
@@ -570,7 +570,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 4,
         city: "Melbourne",
         campus: "Burwood",
-        courses: [{ name: "Master of Teaching (Early Childhood)", durationYears: 2, intake: "Mar", tuitionPerYear: 39200, tuitionYear: 2026, sourceUrl: "https://www.deakin.edu.au/course/master-teaching-early-childhood-international#banner" }],
+        courses: [{ name: "Master of Teaching (Early Childhood)", durationYears: 2, intake: "Mar", tuitionPerYear: 41600, tuitionYear: 2026, sourceUrl: "https://www.deakin.edu.au/course/master-teaching-early-childhood-international#banner" }],
       },
       {
         id: "uq-edu",
@@ -579,7 +579,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 5,
         city: "Brisbane",
         campus: "St Lucia",
-        courses: [{ name: "Master of Teaching (Primary)", durationYears: 2, intake: "Feb", tuitionPerYear: 45792, tuitionYear: 2026, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-teaching-primary-5556" }],
+        courses: [{ name: "Master of Teaching (Primary)", durationYears: 2, intake: "Feb", tuitionPerYear: 48080, tuitionYear: 2027, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-teaching-primary-5556" }],
       },
       {
         id: "unsw-edu",
@@ -588,7 +588,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 6,
         city: "Sydney",
         campus: "Kensington",
-        courses: [{ name: "Master of Teaching (Secondary)", durationYears: 2.3, intake: "Term 1", tuitionPerYear: 47000, tuitionYear: 2026, sourceUrl: "https://www.unsw.edu.au/study/postgraduate/master-of-teaching-secondary" }],
+        courses: [{ name: "Master of Teaching (Secondary)", durationYears: 1.3, intake: "Term 1", tuitionPerYear: 47000, tuitionYear: 2026, sourceUrl: "https://www.unsw.edu.au/study/postgraduate/master-of-teaching-secondary" }],
       },
       {
         id: "adelaide-edu",
@@ -632,7 +632,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 1,
         city: "Melbourne",
         campus: "City Campus",
-        courses: [{ name: "Bachelor of Architectural Design", durationYears: 3, intake: "Feb, July", tuitionPerYear: 51840, tuitionYear: 2026, sourceUrl: "https://www.rmit.edu.au/study-with-us/levels-of-study/undergraduate-study/bachelor-degrees/bachelor-of-architectural-design-bp250" }],
+        courses: [{ name: "Bachelor of Architectural Design", durationYears: 3, intake: "Feb, July", tuitionPerYear: 52800, tuitionYear: 2027, sourceUrl: "https://www.rmit.edu.au/study-with-us/levels-of-study/undergraduate-study/bachelor-degrees/bachelor-of-architectural-design-bp250" }],
       },
       {
         id: "unimelb-arch",
@@ -679,7 +679,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 5,
         city: "Melbourne",
         campus: "Caulfield",
-        courses: [{ name: "Bachelor of Architectural Design and Master of Architecture", durationYears: 3, intake: "Feb, July", tuitionPerYear: 50900, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/architecture-f6001" }],
+        courses: [{ name: "Bachelor of Architectural Design and Master of Architecture", durationYears: 3, intake: "Mar, July", tuitionPerYear: 50900, tuitionYear: 2027, sourceUrl: "https://www.monash.edu/study/courses/find-a-course/architecture-f6001" }],
       },
       {
         id: "qut-arch",
@@ -699,7 +699,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 5,
         city: "Brisbane",
         campus: "St Lucia",
-        courses: [{ name: "Master of Architecture", durationYears: 2, intake: "Feb, July", tuitionPerYear: 50032, tuitionYear: 2026, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-architecture-5429" }],
+        courses: [{ name: "Master of Architecture", durationYears: 2, intake: "Feb, July", tuitionPerYear: 52528, tuitionYear: 2027, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-architecture-5429" }],
       },
       {
         id: "uts-arch",
@@ -752,7 +752,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 3,
         city: "Sydney",
         campus: "Camperdown/Darlington campus",
-        courses: [{ name: "Master of Engineering (Civil Engineering)", durationYears: 1.5, intake: "Feb, Aug", tuitionPerYear: 57900, tuitionYear: 2026, sourceUrl: "https://www.sydney.edu.au/courses/courses/pc/master-of-engineering-civil-engineering0.html" }],
+        courses: [{ name: "Master of Engineering (Civil Engineering)", durationYears: 1.5, intake: "Feb, Aug", tuitionPerYear: 60800, tuitionYear: 2026, sourceUrl: "https://www.sydney.edu.au/courses/courses/pc/master-of-engineering-civil-engineering0.html" }],
       },
       {
         id: "monash-cse",
@@ -761,7 +761,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 4,
         city: "Melbourne",
         campus: "Clayton",
-        courses: [{ name: "Master of Engineering", durationYears: 1, intake: "Feb, July", tuitionPerYear: 59600, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/engineering/master-engineering" }],
+        courses: [{ name: "Master of Engineering", durationYears: 1, intake: "Mar, July", tuitionPerYear: 59600, tuitionYear: 2026, sourceUrl: "https://www.monash.edu/engineering/master-engineering" }],
       },
       {
         id: "adelaide-cse",
@@ -771,7 +771,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 5,
         city: "Adelaide",
         campus: "Adelaide City Campus",
-        courses: [{ name: "Bachelor of Engineering (Honours) (Civil)", durationYears: 4, intake: "Feb, July", tuitionPerYear: 54900, tuitionYear: 2026, sourceUrl: "https://adelaide.edu.au/study/degrees/bachelor-of-engineering-civil-honours/" }],
+        courses: [{ name: "Bachelor of Engineering (Civil) (Honours)", durationYears: 4, intake: "Feb, July", tuitionPerYear: 54900, tuitionYear: 2026, sourceUrl: "https://adelaide.edu.au/study/degrees/bachelor-of-engineering-civil-honours/" }],
       },
       {
         id: "rmit-cse",
@@ -781,7 +781,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 5,
         city: "Melbourne",
         campus: "City Campus",
-        courses: [{ name: "Bachelor of Engineering (Civil and Infrastructure) (Honours)", durationYears: 4, intake: "Feb, July", tuitionPerYear: 47040, tuitionYear: 2026, sourceUrl: "https://www.rmit.edu.au/study-with-us/levels-of-study/undergraduate-study/honours-degrees/bachelor-of-engineering-civil-and-infrastructure-honours-bh077" }],
+        courses: [{ name: "Bachelor of Engineering (Civil and Infrastructure) (Honours)", durationYears: 4, intake: "Feb, July", tuitionPerYear: 48960, tuitionYear: 2027, sourceUrl: "https://www.rmit.edu.au/study-with-us/levels-of-study/undergraduate-study/honours-degrees/bachelor-of-engineering-civil-and-infrastructure-honours-bh077" }],
       },
       {
         id: "uq-cse",
@@ -791,7 +791,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 5,
         city: "Brisbane",
         campus: "St Lucia",
-        courses: [{ name: "Master of Engineering Science", durationYears: 1, intake: "Feb, July", tuitionPerYear: 58056, tuitionYear: 2026, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-engineering-science-5528" }],
+        courses: [{ name: "Master of Engineering Science", durationYears: 1, intake: "Feb, July", tuitionPerYear: 60952, tuitionYear: 2027, sourceUrl: "https://study.uq.edu.au/study-options/programs/master-engineering-science-5528" }],
       },
       {
         id: "uwa-cse",
@@ -811,7 +811,7 @@ export const subjectGroups: SubjectGroup[] = [
         ausRank: 5,
         city: "Sydney",
         campus: "City campus",
-        courses: [{ name: "Master of Engineering (Extension)", durationYears: 2, intake: "Autumn, Spring", tuitionPerYear: 50465, tuitionYear: 2026, sourceUrl: "https://www.uts.edu.au/courses/master-of-engineering-extension" }],
+        courses: [{ name: "Master of Engineering (Extension)", durationYears: 2, intake: "Autumn, Spring", tuitionPerYear: 51600, tuitionYear: 2027, sourceUrl: "https://www.uts.edu.au/courses/master-of-engineering-extension" }],
       },
       {
         id: "curtin-cse",
