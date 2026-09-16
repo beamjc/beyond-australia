@@ -116,6 +116,8 @@ const BudgetStudyPlanner = () => {
     : goal === "short" ? whmShort.upfrontLow
     : pathwayResults.length ? Math.min(...pathwayResults.map((r) => r.calc.upfront)) : 0;
 
+  const headlineUpfrontHigh = goal === "short" ? whmShort.upfrontHigh : headlineUpfront;
+
   const fmtMoney = (aud: number) => (currency === "AUD" ? fmtAUD(aud) : fmtTHB(aud * rate));
 
   return (
@@ -316,7 +318,7 @@ const BudgetStudyPlanner = () => {
                   )}
                   {englishPkg.weeks > 0 && (
                     <p className="text-xs text-muted-foreground mt-2">
-                      แนะนำให้เรียนภาษาเป็นระยะเวลา <strong className="text-foreground">{englishPkg.weeks} อาทิตย์</strong> ราคาประมาณ ${elicosWeekly}/อาทิตย์
+                      แนะนำให้เรียนภาษาเป็นระยะเวลา <strong className="text-foreground">{englishPkg.weeks} สัปดาห์</strong> ราคาประมาณ ${elicosWeekly}/สัปดาห์
                     </p>
                   )}
                 </div>
@@ -357,7 +359,12 @@ const BudgetStudyPlanner = () => {
               <Gauge pct={headlineCoverage} />
               <div className="flex-1 text-center md:text-left">
                 <p className="text-sm text-muted-foreground mb-1">จำนวนเงินคร่าวๆที่ต้องใช้</p>
-                <p className="text-3xl font-bold text-foreground">{fmtMoney(headlineUpfront)}</p>
+                <p className="text-3xl font-bold text-foreground">
+                  {fmtMoney(headlineUpfront)}
+                  {headlineUpfrontHigh !== headlineUpfront && (
+                    <span className="text-xl font-semibold text-muted-foreground"> – {fmtMoney(headlineUpfrontHigh)}</span>
+                  )}
+                </p>
                 <p className="text-xs text-muted-foreground mt-2">
                   {goal === "short"
                     ? `รวมค่าวีซ่า WAH และค่าเรียนภาษาเป็นเวลา ${shortWeeks} สัปดาห์`
@@ -367,9 +374,9 @@ const BudgetStudyPlanner = () => {
                   <Badge className="mt-3 bg-emerald-500/15 text-emerald-700 border-emerald-500/30">
                     <ShieldCheck className="w-3 h-3 mr-1" /> คุณมีเงินเพียงพอแล้วที่จะสมัครเรียนได้
                   </Badge>
-                ) : headlineUpfront > 0 ? (
+                ) : headlineUpfrontHigh > 0 ? (
                   <Badge variant="outline" className="mt-3 border-amber-500/40 text-amber-700">
-                    <AlertTriangle className="w-3 h-3 mr-1" /> ยังขาดอยู่: {fmtMoney(headlineUpfront - budgetAUD)}
+                    <AlertTriangle className="w-3 h-3 mr-1" /> ยังขาดอยู่: {fmtMoney(Math.max(0, headlineUpfrontHigh - budgetAUD))}
                   </Badge>
                 ) : null}
               </div>
@@ -906,7 +913,7 @@ const ShortCard = ({
             className={covers ? "border-emerald-500/40 text-emerald-700" : "border-amber-500/40 text-amber-700"}
           >
             {covers ? <ShieldCheck className="w-3 h-3 mr-1" /> : <AlertTriangle className="w-3 h-3 mr-1" />}
-            {covers ? "คุณมีเงินเพียงพอแล้วที่จะสมัครเรียนได้" : `ยังขาดอยู่ ${fmtMoney(Math.max(0, calc.upfrontLow - budgetAUD))}+`}
+            {covers ? "คุณมีเงินเพียงพอแล้วที่จะสมัครเรียนได้" : `ยังขาดอยู่ ${fmtMoney(Math.max(0, calc.upfrontHigh - budgetAUD))}`}
           </Badge>
 
           {tourCta && (
