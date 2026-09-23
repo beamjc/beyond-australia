@@ -106,7 +106,11 @@ const StudyOptionsForm = () => {
 
   const canProceed = () => {
     switch (step) {
-      case 0: return form.age !== "";
+      case 0: {
+        // Match the input's own min/max (15–70) instead of accepting any text.
+        const n = Number(form.age);
+        return form.age.trim() !== "" && Number.isInteger(n) && n >= 15 && n <= 70;
+      }
       case 1: return form.englishLevel !== "";
       case 2: return form.goals.length > 0;
       case 3: return form.preferredCity !== "";
@@ -269,6 +273,7 @@ const StudyOptionsForm = () => {
                 min={15}
                 max={70}
                 value={form.age}
+                aria-label={steps[0].label}
                 onChange={(e) => setForm({ ...form, age: e.target.value })}
                 placeholder="Enter your age"
                 className="w-full px-5 py-4 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-lg"

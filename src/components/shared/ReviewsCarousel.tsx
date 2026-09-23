@@ -9,12 +9,20 @@ const sourceLabel: Record<(typeof reviews)[number]["source"], { en: string; th: 
   google: { en: "Google", th: "กูเกิล" },
 };
 
+// Entries still holding template text ("[...]") are not real reviews and
+// must never be shown with star ratings. Real quotes appear automatically
+// once src/data/reviews.ts is filled in.
+const isPlaceholder = (r: (typeof reviews)[number]) => /^\[.*\]$/.test(r.text.trim()) || /^\[.*\]$/.test(r.name.trim());
+const publishedReviews = reviews.filter((r) => !isPlaceholder(r));
+
 const ReviewsCarousel = () => {
   const { language } = useLanguage();
 
+  if (publishedReviews.length === 0) return null;
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {reviews.map((review) => (
+      {publishedReviews.map((review) => (
         <div
           key={review.id}
           className="flex flex-col gap-4 rounded-2xl border border-border/60 bg-background p-6 shadow-sm"

@@ -36,10 +36,14 @@ const WHMSection = () => {
 
         {/* Sub-tab bar */}
         <div className="mb-12 -mx-4 px-4 overflow-x-auto [-webkit-overflow-scrolling:touch] flex md:justify-center">
-          <div className="inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
+          <div role="tablist" className="inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
             {subTabs.map((tab) => (
               <button
                 key={tab.id}
+                id={`whm-tab-${tab.id}`}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`whm-panel-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0 ${
                   activeTab === tab.id
@@ -47,17 +51,27 @@ const WHMSection = () => {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <tab.icon className="w-4 h-4" />
+                <tab.icon className="w-4 h-4" aria-hidden />
                 {t(tab.labelKey)}
               </button>
             ))}
           </div>
         </div>
 
-        {activeTab === "timeline" && <TimelineSection embedded />}
-        {activeTab === "checklist" && <ChecklistSection embedded />}
-        {activeTab === "postcode" && <PostcodeChecker />}
-        {activeTab === "faq2026" && <FAQ2026 />}
+        {/* Panels stay mounted (hidden) so visitors keep their inputs and
+            results when they switch tabs to compare. */}
+        <div role="tabpanel" id="whm-panel-timeline" aria-labelledby="whm-tab-timeline" hidden={activeTab !== "timeline"}>
+          <TimelineSection embedded />
+        </div>
+        <div role="tabpanel" id="whm-panel-checklist" aria-labelledby="whm-tab-checklist" hidden={activeTab !== "checklist"}>
+          <ChecklistSection embedded />
+        </div>
+        <div role="tabpanel" id="whm-panel-postcode" aria-labelledby="whm-tab-postcode" hidden={activeTab !== "postcode"}>
+          <PostcodeChecker />
+        </div>
+        <div role="tabpanel" id="whm-panel-faq2026" aria-labelledby="whm-tab-faq2026" hidden={activeTab !== "faq2026"}>
+          <FAQ2026 />
+        </div>
       </div>
       <FloatingLineButton />
       <FloatingFacebookButton />
