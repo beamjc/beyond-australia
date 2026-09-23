@@ -1,101 +1,103 @@
-# Beyond Australia — functional QA workflow
+# Beyond Australia — public QA, Thai language, and usability
 
-## Goal
-Systematically discover and test the existing website, fix confirmed implementation bugs, and retest. Keep the owner involved for product decisions, unclear intended behaviour, and changes affecting production. Do not add speculative features or redesign the site.
+## Mission and authority
+Test and improve the public bilingual site for Thai visitors considering Australia through Work and Holiday (subclass 462) or study. Help visitors understand options and reach Beyond Study Center through existing consultation links.
 
-Reference URL: https://beyond-australia.jirachaiphat-c.workers.dev/
-The reference site's functions have not yet been inspected. Treat this URL as production until the owner confirms otherwise. A local frontend can still connect to a production backend; verify the backend target before mutation tests.
+The owner authorises autonomous decisions on natural Thai wording and public-site UX. Implement reasonable, reversible improvements without asking for approval for each edit. Fix bugs, improve clarity, layout, navigation, form guidance, validation, result explanations, mobile usability, and accessibility. Preserve the brand, bilingual experience, feature set, and business purpose. Work through a bounded pass, not an endless redesign.
 
-## Known project setup
-Based on the supplied package.json; recheck against the actual repository and lockfile.
-- Next.js ^14.2.29, React ^18.3.1, TypeScript; Tailwind and Radix UI.
-- react-hook-form and Zod; Supabase and TanStack React Query.
-- Tiptap rich text editor; Framer Motion.
-- OpenNext Cloudflare adapter and Wrangler.
-- Existing scripts: dev = next dev; build = next build; start = next start; lint = next lint.
-- preview = opennextjs-cloudflare build && opennextjs-cloudflare preview.
-- deploy = opennextjs-cloudflare build && opennextjs-cloudflare deploy.
-- No test script or testing framework is declared in the supplied package.json. Inspect the repository before concluding no tests exist.
-- Determine the package manager from the lockfile. Do not silently upgrade the framework or dependencies.
+Admin, login, authentication changes, publishing, account setup, database mutations, and schema/RLS changes are OUT OF SCOPE for this pass. All existing accounts are admins by design according to the owner's code review; do not invent a non-admin role or change that model.
 
-## Start with discovery
-1. Read existing project instructions, README, package scripts, route files, components, API handlers, schema/migrations, and existing tests. Preserve unrelated work.
-2. Identify public and authenticated pages, roles, forms, calculations, searches, filters, uploads, editor flows, and external integrations actually present. Do not assume a feature exists because a dependency is installed.
-3. Create docs/qa/coverage.md with one row per feature/scenario: ID, route, role, expected behaviour and its source, preconditions, status, evidence, related bug ID. Use NOT RUN, PASS, FAIL, BLOCKED, or NOT APPLICABLE.
-4. Separate observed behaviour from intended behaviour. Derive expectations from documented requirements; label inferences and ask the owner when competing interpretations affect correctness.
-5. Identify missing test accounts, backend access, environment variables, browser tools, and product decisions. Continue independent tests while blocked areas remain recorded.
+Reference site: https://beyond-australia.jirachaiphat-c.workers.dev/
+The inventory below comes from the owner's code review, not a completed live test. Verify it against the repository and browser. Do not claim features pass merely because their code exists.
 
-## Environment and tools
-- Work on an isolated QA branch. Preserve the current working tree; never reset or discard the owner's changes.
-- Prefer a local or staging app backed by a dedicated test Supabase project, with representative synthetic data.
-- Use an available browser automation tool for exploratory testing. Add Playwright Test to the repo if no suitable end-to-end runner exists, matching installed runtime constraints and current official documentation.
-- Configure the test base URL explicitly. Mutation tests must refuse an unconfirmed target; do not default them to the public reference URL.
-- Add suitable test scripts only after inspecting the repository. Use the existing package manager and retain the lockfile.
-- Use test-only accounts for each discovered role. Load credentials through ignored environment files or a secret manager; never commit credentials, browser auth state, or service-role keys.
-- If browser automation cannot run, record browser tests as BLOCKED. Static code review is not evidence that a user flow passed.
-- Do not use the deploy script as a build check. The existing preview script builds and starts a preview; verify its bindings and backend target first.
+## Public inventory
+- `/`: hero, services, proof statistics, reviews carousel, CTA banner, footer, floating LINE/Facebook links, remembered EN/TH language selection.
+- Working Holiday section: Timeline, stage-based Checklist, Postcode Checker backed by `src/data/postcodeData.ts`, FAQ 2026.
+- Study section: Budget Study Planner (`src/lib/CalculationEngine.ts`), Top Universities, multi-step Study Options questionnaire, Financial Calculator, Savings Calculator with LINE/Facebook sharing, Visa Strength Assessment sliders.
+- Visa Pathway decision tree: employer sponsorship, points-tested, WHM, student options.
+- Home previews of published articles and events from Supabase.
+- `/articles`, `/articles/[slug]`, `/events` with date ordering and online/offline/hybrid labels.
+- Study Options only displays a result. It does not submit or save visitor answers. Consultation links go to beyondstudycenter.com, LINE, or Facebook.
+- `src/components/study/CourseFinder.tsx` is unused. Do not activate or spend QA effort on it unless actual routing contradicts this inventory.
 
-## Test coverage
-Apply each item only to discovered features; record absent features as NOT APPLICABLE.
-- Navigation: internal links, menus, deep links, refresh, back/forward, unknown routes, and protected route access.
-- Authentication: successful and invalid login, logout, session persistence/expiry, and role boundaries. Email-driven flows require a test inbox or mail capture environment.
-- Forms: valid input, empty required fields, malformed input, boundaries, Thai/English text, submission errors, duplicate clicks, and successful persistence after reload.
-- Data operations: create/read/update/delete on synthetic records; cancellation, confirmation, failure handling, and refreshing dependent lists/details.
-- Search/filter/sort/pagination: matching/no results, combined controls, reset, boundaries, and stale cache after mutations.
-- Calculations: independently calculate expected values from agreed rules; cover zero, boundaries, rounding, and units. Do not copy the implementation as the test oracle.
-- Rich text and uploads: formatting, save/reopen, links/images, rejected files, and safe display of user content using harmless test fixtures in the test environment.
-- Reliability: loading, empty, error, retry, and controlled network failure states; console errors and failed requests associated with each scenario.
-- Access control: test anonymous access, each role, and two separate users' data against agreed permissions. Test backend enforcement in the test environment using ordinary user sessions, not an admin bypass. Hidden UI controls do not prove RLS correctness.
-- Usability: exercise core flows at desktop and mobile viewport sizes; keyboard access, focus, dialogs, labels, and validation visibility. Record actual browser/viewports used; do not claim device coverage from viewport emulation alone.
-- Deployment compatibility: run existing lint/build checks and a Cloudflare runtime preview smoke test where the environment permits. A Next.js development-server pass alone does not verify Cloudflare behaviour.
+## Setup and execution
+1. Read project instructions, README, routes, translation resources, calculations, package scripts, lockfile, and existing tests. Preserve unrelated changes and work on a dedicated branch.
+2. Use the lockfile's package manager. No tests/test script exist according to the owner's review; verify before adding tools. Install Playwright Test and Chromium if needed. Add a lightweight unit runner for pure calculation tests only where useful.
+3. Configure Playwright to start the local app using its webServer configuration. Discover the actual Supabase environment-variable names. Use only the public publishable/anon key for published-content reads; no admin credentials or service-role key are needed.
+4. Do not block the whole task on Supabase access. Run client-only tools and clearly labelled mocked content tests while recording real content integration as BLOCKED if unavailable. Mocks are not proof of live integration or RLS correctness.
+5. Keep credentials, browser state, personal data, and sensitive logs out of Git. Do not print environment values.
+6. Test locally or on preview. Reading published production content is within scope; do not write to Supabase, submit external inquiries, send LINE/Facebook messages, or post shares. Verify link targets/payloads without sending anything.
+7. Existing scripts from the supplied package.json: dev = next dev; build = next build; lint = next lint; preview = opennextjs-cloudflare build && opennextjs-cloudflare preview; deploy = opennextjs-cloudflare build && opennextjs-cloudflare deploy. Recheck against the actual repo. Use build/preview checks, never deploy as a test.
+8. No Cloudflare, Gmail, Google Calendar, or Morningstar connector authorisation is needed for this scoped work. If a specific test is blocked, explain the exact dependency and continue independent work.
+9. If browser tools are unavailable, mark interactive tests BLOCKED and continue code/copy review. Never report browser tests as executed when they were not.
 
-## Confirmed priority: login and admin publishing
-The owner confirms that the site has login and that admins can post articles and events. Test these journeys first. Editing, deletion, drafts, scheduling, password reset, and registration are not yet confirmed; discover whether they exist before including them as requirements.
+## Thai language and bilingual style
+Review every public UI string: headings, tabs, field labels, placeholders, options, helper text, validation, buttons, empty/loading/error states, calculated results, tooltips, pathway outcomes, and contact/share copy.
 
-### Accounts and permissions
-- Use separate browser contexts for an anonymous visitor, a test admin, and an authenticated non-admin if that role exists. Ask for a test fixture if the non-admin role cannot currently be exercised; do not silently mark permission checks passed.
-- Test the actual login UI, not only preloaded authentication state: valid admin login, incorrect credentials, required-field validation, refresh/session persistence, logout, and protected deep links after logout.
-- Use only a few intentional invalid-login attempts on dedicated test accounts; do not brute force or lock out real users.
-- Verify anonymous and non-admin users cannot create, update, publish, or delete content through admin routes or the underlying API/database operations discovered in the repo. Run negative mutation checks only against the confirmed test backend. Assert both denial and unchanged data.
-- Verify role enforcement uses trusted backend permissions. Changing client state or submitting an admin-like role value must not grant privileges. Use harmless fixtures in the test environment.
-- Public read permissions for published content must follow the intended audience. If drafts exist, verify they cannot be read by unauthorised users via listings, direct URLs, or data endpoints.
+- Write natural contemporary Thai for a first-time visitor, not literal translations from English. Use short, concrete sentences and everyday vocabulary; keep technical terms when necessary and explain them briefly.
+- Use a warm, clear, professional tone. Avoid bureaucratic wording, unnecessary English, hype, pressure, and repeating ครับ/ค่ะ on every label. Use a consistent voice.
+- Explain what a tool helps the visitor decide, what information to enter, and what its result means. Buttons should describe the real next action. For example, use ดูผลแนะนำ rather than ส่งข้อมูล when nothing is sent; use สอบถามผ่าน LINE when the button opens LINE.
+- Candidate wording such as วางแผนงบเรียนต่อ, ประมาณการเงินเก็บ, and ปรึกษาเรื่องเรียนต่อ is illustrative, not mandatory. Choose text that fits the actual function.
+- Distinguish budget, tuition, living costs, funds to demonstrate, gross income, tax, and estimated savings. Make AUD/THB, monthly/yearly periods, hours/week, and conversion assumptions explicit.
+- Preserve legal and factual meaning during copy edits. Explain estimates as estimates. Avoid visa-approval guarantees, fabricated success rates, and unsupported promises of savings, jobs, or eligibility.
+- A slider-based Visa Strength Assessment is not a validated approval probability. Inspect the model; make its limitations and self-assessment nature clear without inventing probability claims or silently changing scoring weights.
+- Keep English and Thai aligned. If an English concept changes for clarity, update both languages. Check mixed-language fallbacks, untranslated strings, Thai wrapping, font readability, dates, and number/currency formatting.
+- Preserve entered answers and results when switching language unless a documented requirement says otherwise. Check language persistence across refresh and public-page navigation.
+- Do not invent reviews, proof statistics, partner credentials, university claims, fees, or business promises. Flag unsupported claims.
+- Record representative before/after examples and reasons in the change log; no approval is required for routine copy choices.
+- Review displayed Supabase article/event text, but do not rewrite database records. Put suggested editorial corrections in the report. UI labels and rendering code remain editable.
 
-### Articles
-- Complete the admin login → create article → save/publish → public listing → article detail journey using synthetic content in the test environment.
-- Discover required fields and test empty/invalid input, Thai and English text, rich text formatting, links, and cover/inline images where supported.
-- Confirm successful content persists after reload, and a separate anonymous browser session sees the published version where public access is intended.
-- Verify save failure produces a useful error without a false success message or losing entered content. Check duplicate submission behaviour.
-- If implemented, test edit, draft/publish/unpublish, slug collision handling, preview, and deletion/cancellation. Verify public listings and details reflect changes without stale content. Do not invent missing lifecycle controls.
+## UX decision rules
+Autonomously improve issues supported by browser observation or clear code evidence: confusing hierarchy, unclear CTAs, small targets, horizontal overflow, hidden validation, weak contrast, lost state, unclear units, inconsistent controls, and poor result explanations. Reuse existing Tailwind/Radix component patterns and brand styling.
 
-### Events
-- Complete the admin login → create event → save/publish → public listing → event detail journey using synthetic content in the test environment.
-- Discover actual fields, then validate required values, dates/times, location, images, descriptions, and registration links where supported.
-- Establish the intended event timezone before judging date/time correctness. Check storage/display agreement and date boundaries; test end-before-start rejection if both fields exist. Test daylight-saving boundaries only where applicable.
-- Verify list/detail consistency and persistence after reload. Exercise event filters, ordering, past/upcoming classification, status changes, editing, and deletion only if implemented.
-- Do not follow through with real registrations, outbound notifications, or payments. Use test integrations, or record those steps as blocked.
+Show useful results before consultation prompts, preserve optional contact actions, and avoid adding lead capture, tracking, new personal-data storage, accounts, or obstructive popups. Keep consultation destinations unchanged unless the owner confirms a replacement; report broken/ambiguous links.
 
-### Priority completion evidence
-Record separate results for admin login, article creation/public visibility, event creation/public visibility, and non-admin/anonymous write denial. A working admin UI alone does not prove backend permissions are correct. Retain IDs of uniquely labelled QA records and clean up only those records in the confirmed test environment.
+Ask only when a material business decision is unresolved: changing service offers or contact destinations, removing a major feature, adding paid services/data collection, altering unsupported financial/scoring assumptions, or deploying. Prepare a concrete recommendation and continue other work. Do not ask the owner to decide routine wording or spacing.
 
-## Test, fix, retest loop
-1. Test high-value end-to-end journeys first, then work through the feature inventory.
-2. For failures, record reproducible steps, expected/actual result, environment, severity, and screenshots/traces or concise logs in docs/qa/bugs.md. Remove personal data and tokens from evidence.
-3. Fix confirmed implementation bugs within existing requirements. Keep changes small and retain existing component patterns.
-4. Add a meaningful regression test where practical. Do not weaken assertions, skip failures, disable RLS, or replace real integrations with mocks merely to get a pass. Label mocked tests distinctly.
-5. Retest the original failure and affected neighbouring flows. Use a separate reviewer subagent if available to review the fix and evidence; otherwise explicitly review it yourself.
-6. Continue through independent scenarios without asking permission after every step. After three unsuccessful attempts on the same issue, record a blocker with attempted approaches, and continue other work.
-7. Update docs/qa/progress.md after each feature group with completed work, remaining scenarios, commands/results, and the next action so another session can resume.
+## Required coverage
+Create `docs/qa/coverage.md`: scenario ID, feature, language, viewport/browser, expected behaviour/source, result, evidence, related issue. Use NOT RUN, PASS, FAIL, BLOCKED, NOT APPLICABLE.
 
-## Decision boundaries
-May proceed: inspect code, add QA documentation/test tooling, run local tests, create and clean up uniquely labelled test data in a confirmed test environment, and make reversible fixes consistent with existing requirements.
+### Navigation and home
+- All section links/tabs, deep links, back/forward, refresh, sticky navigation if present, carousel controls, CTA destinations, footer, floating buttons, and page-not-found states.
+- Working Holiday's four tabs and Study's six tabs are reachable and legible on mobile. Keyboard navigation, visible focus, form labels, error associations, slider keyboard controls, and reduced-motion behaviour.
+- Both languages at representative mobile (390px), tablet (768px), and desktop (1440px) widths. Cover every tab in both languages; repeat full journeys at mobile and desktop. Do not call viewport emulation real-device testing.
 
-Ask the owner when needed for: ambiguous business rules, changing scope or core UX, paid services, production deployment, production schema/data changes, or tests that send real communications or charge money. Prepare a concrete recommendation first. Honour any explicit approval already given for the exact scope.
+### Working Holiday tools
+- Timeline order and clarity; checklist stage navigation, checking/unchecking/reset, and persistence only if implemented.
+- Postcodes as strings: blank, whitespace, nonnumeric, too short/long, unknown valid-format values, boundary entries, and leading zeros. Do not destroy leading zeros through numeric conversion.
+- Distinguish postcode-list membership from full specified-work eligibility. Check any location/work-type/date conditions against official sources before making claims. Do not invent those conditions from memory.
+- FAQs: expand/collapse, bilingual completeness, dates, links, and factual freshness.
 
-On an unconfirmed/public production target, limit testing to read-only browsing and interactions with no submissions or external side effects. Do not send contact forms, create real leads/accounts, initiate password resets, or delete existing records. Never clean up records not created by this QA run.
+### Study tools
+- Budget Planner: valid, zero/negative, blank, excessive and boundary values; age, English level, goal combinations; no-result states; THB/AUD conversion and rounding; changes recalculate consistently without double conversion. Derive expected values independently from documented assumptions rather than copying the implementation.
+- Top Universities: readable bilingual content, working links/images, and unsupported claims flagged.
+- Study Options: required answers, next/back, answer preservation, result consistency, restart, and appropriate labels. Inspect network behaviour and code to confirm answers are not transmitted or saved; preserve that behaviour.
+- Financial Calculator: tuition/living/travel components, partner/children toggles and counts, zero dependants, stale hidden values, invalid inputs, units, totals, and clear breakdown. Separate budgeting estimates from official financial-evidence requirements.
+- Savings Calculator: WHM/student scenarios, income, tax assumptions, expenses, periods, negative savings, boundary inputs, and comparison consistency. Verify LINE/Facebook URL encoding, Unicode, intended shared content and fallback where implemented, without sending shares.
+- Visa Strength Assessment: slider endpoints/keyboard input, result updates, consistency, understandable explanations, and appropriate presentation of uncertainty. Do not treat a heuristic score as a legal eligibility decision.
 
-## Completion and reporting
-- Finish a bounded QA pass when every discovered scenario is PASS, FAIL, BLOCKED, or NOT APPLICABLE, with reasons and evidence. Do not leave NOT RUN entries unexplained.
-- QA completed is not the same as release ready. Outstanding failures and blocked critical flows must remain visible.
-- Report scenario counts, tested environments/roles/viewports, confirmed bugs and fixes, remaining issues, unverified assumptions, and specific owner decisions needed.
-- Only claim tests that actually ran. Provide exact commands and outcomes, distinguish existing failures from regressions, and do not claim that testing guarantees the absence of bugs.
-- Do not deploy unless explicitly authorised.
+### Visa Pathway
+- Traverse every reachable branch/outcome, back/reset, changed earlier answers, and stale downstream state. Check that Thai explanations and next steps match the selected route without guaranteeing eligibility.
+
+### Public articles and events
+- Published-content loading, empty/error states, retries if implemented, previews, list/detail links, unknown article slugs, bilingual fallback, long titles/content, and image failures.
+- Event dates/order, ongoing entries, online/offline/hybrid labels, location text, and explicit timezone where needed. Use a controlled clock and mock fixtures for date boundaries; distinguish those results from real published-content reads.
+- Confirm public queries filter published content. Without a controlled unpublished fixture, do not claim full verification that drafts cannot be accessed. Record that limit without expanding into admin or RLS work.
+
+## Facts, calculations, and official sources
+Visa, specified-work, financial-evidence, work-rights, and tax information is time-sensitive. Inspect the code for assumptions and dated values. Verify proposed factual corrections against current primary sources: Australian Department of Home Affairs for immigration and the Australian Taxation Office for tax. Use other official providers for their own fees; identify exchange rates as dated rates or explicit planning assumptions.
+
+For each factual check, record the exact source URL, date checked, rule/effective period, current site value, and proposed correction in `docs/qa/factual-checks.md`. Check nationality, visa subclass, work type, tax year, and other applicable conditions before applying a rule. If sources conflict, are inaccessible, or require legal interpretation, mark UNVERIFIED and flag the decision; continue other work. Never claim a whole calculator is accurate solely because its arithmetic tests pass.
+
+Unambiguous source-backed corrections may be implemented with evidence and regression coverage. Business-specific estimates, scoring weights, and ambiguous eligibility interpretations require a recommendation to the owner. Do not remove important qualifications simply to shorten Thai copy.
+
+## Workflow and completion
+1. Inventory actual features and copy, then create a bounded test plan. Prioritise broken journeys/calculations, misleading wording, and mobile friction before cosmetic polish.
+2. Test → record evidence → fix/improve → retest. Add meaningful regression tests for calculations, stateful journeys, and confirmed bugs; do not create brittle tests that merely mirror implementation or snapshot every sentence.
+3. Use a reviewer subagent if available for independent Thai/UX and regression review. Otherwise perform a separate review pass yourself. Avoid simultaneous edits to the same files.
+4. Maintain `docs/qa/issues.md`, `docs/qa/changes.md` (including before/after Thai examples), and `docs/qa/progress.md`. Record next steps so a later cloud session can resume.
+5. After three unsuccessful attempts on an issue, record the blocker and continue independent scenarios. Do not lower assertions, suppress real errors, or claim mocked results as live passes.
+6. Run relevant tests, lint/type checks supported by the repo, Next.js build, and OpenNext Cloudflare build/preview smoke checks where possible. Report environment restrictions and pre-existing failures separately. Do not use deployment to verify build compatibility.
+7. Finish when all scoped scenarios have a result or an explicit blocker, priority improvements are implemented/retested, and the report is ready. Do not keep generating cosmetic work indefinitely.
+8. Report tested scope/languages/viewports, actual command results, fixes, Thai/UX improvements, official-source checks, remaining bugs, unverified integrations, and decisions needed. Include useful before/after screenshots and reproduction evidence without secrets.
+9. Commit only task-related code, lockfile/test changes, and documentation to the QA branch as appropriate. Prepare reviewable changes; do not merge or deploy without explicit authorisation. Report honestly if Git access prevents committing or pushing.
