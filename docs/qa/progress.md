@@ -40,6 +40,7 @@ Live content needs real `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_
 
 1. **Thai batch 1 (Budget Planner)** — when the editor returns the file: move all planner strings into `src/i18n/translations.ts` (EN + TH), apply only approved Thai, then apply the held fix for ISS-010 (needs BSP-053) and the ISS-013 rounding answer. Retest with `-g "Budget Study Planner"` and retake screenshots.
 2. Owner decisions still open: ISS-003 (visa "pass %" — calculation explained in issues.md), ISS-011/012, real reviews (ISS-004), confirm Supabase env in Cloudflare (ISS-015).
+   Deferred by owner 2026-09-24: real reviews / Google API; sending batch 1 to the Thai editor.
    Decided 2026-09-24: keep budget promises (ISS-023); keep university rankings as is (ISS-030); leave ⚠️ claims BSP-001/040/062/084/087.
 
 3. Re-run `factual-checks.md` with sources reachable; update constants + unit tests only for unambiguous, source-backed changes.
