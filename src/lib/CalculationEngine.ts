@@ -43,11 +43,18 @@ export const SECTOR_ENTRY_IELTS: Record<"vet" | "he", number> = {
 
 export const MIN_PACKAGE_IELTS = 5.0;
 
-// March 2026 base grant rates (Thai nationals, July 2025 – Mar 2026)
+// Student visa grant rates for Thai citizens, primary applicants,
+// decisions 1 Sep 2025 – 31 Aug 2026 (latest 12 months).
+// Source: Department of Home Affairs, BP0015 Student visa grant rates
+// (data.gov.au dataset "student-visas", file at 2026-08-31).
+// Grant rate = granted / (granted + refused). Refresh with
+// scripts/qa/grant_rates_thailand.py; see docs/qa/grant-rate-check.md.
+// on/offTrend are legacy values and are not displayed anywhere.
+export const GRANT_RATE_PERIOD = { from: "2025-09", to: "2026-08" } as const;
 export const sectorRates = {
-  he: { onshore: 93.1, offshore: 93.6, onTrend: 0.2, offTrend: -0.4 },
-  elicos: { onshore: 83.2, offshore: 49.5, onTrend: 1.0, offTrend: 0.6 },
-  vet: { onshore: 55.7, offshore: 25.0, onTrend: 1.3, offTrend: -2.5 },
+  he: { onshore: 93.4, offshore: 94.6, onTrend: 0.2, offTrend: -0.4 },
+  elicos: { onshore: 87.3, offshore: 51.7, onTrend: 1.0, offTrend: 0.6 },
+  vet: { onshore: 63.4, offshore: 23.8, onTrend: 1.3, offTrend: -2.5 },
 } as const;
 
 /**

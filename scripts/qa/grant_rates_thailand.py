@@ -5,7 +5,8 @@ https://data.gov.au/data/dataset/student-visas, then
     python3 scripts/qa/grant_rates_thailand.py path/to/file.xlsx
 Needs pandas. Reads the pivot cache (all raw rows), keeps Thai citizens,
 and prints grant rate = granted / (granted + refused) by sector, client
-location and age group for primary applicants, Jul 2025 – Mar 2026.
+location and age group for primary applicants over the latest 12 months
+in the file (the values used in src/lib/CalculationEngine.ts).
 """
 import re, sys, zipfile, io
 import pandas as pd
@@ -34,8 +35,13 @@ df = pd.DataFrame(rows, columns=names[:11] + ['granted', 'refused'])
 sector = {'Higher Education Sector': 'HE', 'Vocational Education and Training Sector': 'VET', 'Independent ELICOS Sector': 'ELICOS'}
 df['sec'] = df['Sector'].map(sector)
 df['loc'] = df['Client Location'].map({'In Australia': 'onshore', 'Outside Australia': 'offshore'})
-w = df[(df['Financial Year of Decision'] == '2025-26') & df['Financial Year Quarter'].str[:2].isin(['Q1', 'Q2', 'Q3'])
-       & df.sec.notna() & (df['Applicant Type'] == 'Primary')]
+# Month index: FY "2025-26" + "M03 Sep" -> 2025*12 + 2 (Jul = 0).
+df['mi'] = df['Financial Year of Decision'].str[:4].astype(int) * 12 + df['Month'].str[1:3].astype(int) - 1
+latest = df['mi'].max()
+w = df[(df['mi'] > latest - 12) & df.sec.notna() & (df['Applicant Type'] == 'Primary')]
+first = w['mi'].min()
+ym = lambda mi: f"{mi // 12 + (1 if mi % 12 >= 6 else 0)}-{(mi % 12 + 6) % 12 + 1:02d}"
+print(f'Period: {ym(first)} to {ym(latest)} (calendar year-month)\n')
 for keys in (['sec', 'loc'], ['sec', 'loc', 'Age Group']):
     g = w.groupby(keys)[['granted', 'refused']].sum()
     g['decisions'] = g.granted + g.refused

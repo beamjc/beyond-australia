@@ -1,5 +1,21 @@
 # Budget Planner "visa pass %" — check against official data
 
+## Current values used by the site (updated 2026-09-24, owner-approved)
+
+Thai citizens, primary applicants, decisions **1 Sep 2025 – 31 Aug 2026** (latest 12 months in BP0015 at 2026-08-31). Set in `CalculationEngine.ts` (`sectorRates`, `GRANT_RATE_PERIOD`); guarded by a unit test.
+
+| Sector | Applied from | Before (Jul 2025 – Mar 2026) | **Now** | Decisions |
+|---|---|---|---|---|
+| University (HE) | Thailand | 93.6 | **94.6** | 822 |
+| University (HE) | Australia | 93.1 | **93.4** | 470 |
+| English (ELICOS) | Thailand | 49.5 | **51.7** | 741 |
+| English (ELICOS) | Australia | 83.2 | **87.3** | 355 |
+| Vocational (VET) | Thailand | 25.0 | **23.8** | 101 |
+| Vocational (VET) | Australia | 55.7 | **63.4** | 2,874 |
+
+The age multipliers were **not** changed (not approved), so for most ages the figure shown is still base × age factor, not the official average. The analysis below uses the earlier period and remains valid for the age-factor question.
+
+
 Checked: 2026-09-24. Source: Department of Home Affairs, **BP0015 Student visa grant rates** (data.gov.au, dataset `student-visas`, file listed as "at 2026-08-31"; licence CC BY 2.5 AU), https://data.gov.au/data/dataset/student-visas. Grant rate = granted ÷ (granted + refused). Filter: Citizenship = Thailand, **primary applicants**, decisions **Jul 2025 – Mar 2026** (FY 2025-26 Q1–Q3), the period named in `CalculationEngine.ts`. Reproduce with `scripts/qa/grant_rates_thailand.py`. The data is marked provisional and is revised monthly.
 
 ## 1. Base rates — match the official data

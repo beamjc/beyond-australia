@@ -41,3 +41,9 @@ Branch: `claude/tender-tesla-7g4bgt`. Nothing merged or deployed.
 - `vitest.config.ts`, `tests/unit/*` (engine + postcode), `tests/e2e/*` (fixtures + public journeys).
 - `.eslintrc.json` (`next/core-web-vitals`, `react/no-unescaped-entities` off). Note: this makes `next build` run lint; it now passes.
 - `.gitignore`: Playwright output folders.
+
+## 2026-09-24 — Grant-rate data update (owner-approved)
+
+- `src/lib/CalculationEngine.ts`: `sectorRates` updated to Home Affairs BP0015, Thai citizens, primary applicants, 1 Sep 2025 – 31 Aug 2026 (HE 94.6/93.4, ELICOS 51.7/87.3, VET 23.8/63.4 offshore/onshore); added `GRANT_RATE_PERIOD` and source comment. Age multipliers unchanged.
+- Unit test guards the recorded values; `scripts/qa/grant_rates_thailand.py` recomputes them from the latest 12 months of any new BP0015 file.
+- Visible label change ("average approval rate … not a prediction") is approved in principle; Thai wording waits for the editor (BSP-074).

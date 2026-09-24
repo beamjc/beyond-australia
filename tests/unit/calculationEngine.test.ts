@@ -129,3 +129,16 @@ describe('formatters', () => {
     expect(fmtTHB(800000)).toBe('฿800,000')
   })
 })
+
+describe('grant-rate base values', () => {
+  // Snapshot of Home Affairs BP0015 (Thai citizens, primary applicants,
+  // Sep 2025 – Aug 2026), rounded to 0.1. Update together with
+  // docs/qa/grant-rate-check.md when the data is refreshed.
+  it('match the recorded official figures', async () => {
+    const { sectorRates, GRANT_RATE_PERIOD } = await import('@/lib/CalculationEngine')
+    expect(GRANT_RATE_PERIOD).toEqual({ from: '2025-09', to: '2026-08' })
+    expect(sectorRates.he).toMatchObject({ offshore: 94.6, onshore: 93.4 })
+    expect(sectorRates.elicos).toMatchObject({ offshore: 51.7, onshore: 87.3 })
+    expect(sectorRates.vet).toMatchObject({ offshore: 23.8, onshore: 63.4 })
+  })
+})
