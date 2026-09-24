@@ -54,3 +54,7 @@ Branch: `claude/tender-tesla-7g4bgt`. Nothing merged or deployed.
 - `CalculationEngine.ts`: removed hand-made `ageMultiplier` and unused `trend` values; new `grantRateFor()` returns the age-group rate (≥ 30 decisions) or the all-ages average, clamped 8–98 %; results carry `ageSpecific` for the future label.
 - Example changes a visitor will see: University from Thailand age 32: 73.0 → **84.5**; Vocational in Australia age 42: 36.2 → **22.1**; English from Thailand age 22: 62.9 → **61.5**.
 - Unit tests cover lookup, fallback, clamp and age boundaries. Label text still waits for the Thai editor (BSP-074).
+
+### Follow-up 2026-09-24 — small groups use the old method
+
+- Owner: for age groups with < 30 decisions, keep the old calculation (all-ages average × original age factor) rather than the plain average. `ageMultiplier` restored for this fallback only. Example: University from Thailand, age 37: 94.6 → **56.8**.

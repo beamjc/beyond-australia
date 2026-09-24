@@ -142,11 +142,17 @@ describe('grantRateFor (official Home Affairs rates, Thai primary applicants)', 
     expect(grantRateFor('elicos', 'offshore', 27).rate).toBe(49.3)
   })
 
-  it('falls back to the sector average for small groups', () => {
-    expect(grantRateFor('he', 'offshore', 37)).toMatchObject({ rate: 94.6, ageSpecific: false, decisions: 822 })
-    for (const age of [15, 22, 27, 32, 37, 45]) {
-      expect(grantRateFor('vet', 'offshore', age)).toMatchObject({ rate: 23.8, ageSpecific: false })
-    }
+  it('small groups fall back to sector average × legacy age factor', () => {
+    // HE offshore 35–39 has 17 decisions: 94.6 × 0.6 = 56.76
+    const r = grantRateFor('he', 'offshore', 37)
+    expect(r).toMatchObject({ ageSpecific: false, decisions: 822 })
+    expect(r.rate).toBeCloseTo(56.76, 2)
+    // VET offshore: every group is small; legacy factors 1.0 (≤29), 0.85 (30–34), 0.65 (35+)
+    expect(grantRateFor('vet', 'offshore', 22).rate).toBeCloseTo(23.8, 2)
+    expect(grantRateFor('vet', 'offshore', 32).rate).toBeCloseTo(20.23, 2)
+    expect(grantRateFor('vet', 'offshore', 45).rate).toBeCloseTo(15.47, 2)
+    // English offshore 35–39 (21 decisions): 51.7 × 0.5
+    expect(grantRateFor('elicos', 'offshore', 36).rate).toBeCloseTo(25.85, 2)
   })
 
   it('never shows 100 % or 0 %', () => {

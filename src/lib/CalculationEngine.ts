@@ -65,21 +65,66 @@ export function ageGroupFor(age: number): AgeGroup {
 export interface GrantRateResult {
   rate: number;          // % shown to the visitor (clamped 8–98)
   sectorAverage: number; // % for the sector + location, all ages
-  ageSpecific: boolean;  // false = age group too small, average used
-  decisions: number;     // decisions behind the figure used
+  ageSpecific: boolean;  // false = age group too small, legacy estimate used
+  decisions: number;     // decisions behind the official figure used
+}
+
+/**
+ * Legacy age multipliers (original planner model, no cited source). Used
+ * only as the fallback for age groups too small in the official data:
+ * sector average × multiplier (owner decision 2026-09-24).
+ */
+export function ageMultiplier(sector: Sector, location: Location, age: number): number {
+  if (sector === "he") {
+    if (location === "onshore") {
+      if (age <= 29) return 1.0;
+      if (age <= 34) return 0.95;
+      if (age <= 39) return 0.78;
+      return 0.68;
+    }
+    if (age <= 24) return 1.0;
+    if (age <= 29) return 0.92;
+    if (age <= 34) return 0.78;
+    if (age <= 39) return 0.6;
+    return 0.5;
+  }
+  if (sector === "elicos") {
+    if (location === "onshore") {
+      if (age <= 34) return 1.05; // 80–100% bracket
+      if (age <= 39) return 0.85;
+      return 0.55;
+    }
+    // Offshore ELICOS — peak 20–24
+    if (age >= 20 && age <= 24) return 1.27;
+    if (age < 20) return 0.9;
+    if (age <= 29) return 0.85;
+    if (age <= 34) return 0.7;
+    return 0.5;
+  }
+  // VET
+  if (location === "onshore") {
+    if (age <= 19) return 1.2;
+    if (age <= 34) return 1.0;
+    if (age <= 39) return 0.8;
+    return 0.65;
+  }
+  // VET offshore — global risk: no bracket exceeds 40%
+  if (age <= 29) return 1.0;
+  if (age <= 34) return 0.85;
+  return 0.65;
 }
 
 /**
  * Official grant rate for the visitor's sector, application location and
- * age group. Falls back to the sector average when the age group has
- * fewer than MIN_AGE_GROUP_DECISIONS decisions. The 8–98 clamp avoids
- * showing 0 % or 100 %, which would read as certainty.
+ * age group. When the age group has fewer than MIN_AGE_GROUP_DECISIONS
+ * decisions, falls back to sector average × legacy age multiplier. The
+ * 8–98 clamp avoids showing 0 % or 100 %, which would read as certainty.
  */
 export function grantRateFor(sector: Sector, location: Location, age: number): GrantRateResult {
   const loc = grantRates[sector][location];
   const cell = loc.byAge[ageGroupFor(age)];
   const ageSpecific = cell.n >= MIN_AGE_GROUP_DECISIONS;
-  const raw = ageSpecific ? cell.rate : loc.average;
+  const raw = ageSpecific ? cell.rate : loc.average * ageMultiplier(sector, location, age);
   return {
     rate: Math.min(98, Math.max(8, raw)),
     sectorAverage: loc.average,
@@ -162,7 +207,7 @@ export interface PathwayCalc {
   totalCourseValue: number;
   baseRate: number; // sector average for this location, all ages
   adjusted: number; // official rate for the visitor's age group (or average)
-  ageSpecific: boolean; // false = age group too small, sector average shown
+  ageSpecific: boolean; // false = age group too small, legacy age-factor estimate shown
   coverage: number; // % of upfront covered by budget
 }
 
