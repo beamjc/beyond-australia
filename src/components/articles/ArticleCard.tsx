@@ -21,9 +21,9 @@ const ArticleCard = ({ article }: { article: Article }) => {
           </div>
         )}
         <div className="p-5">
-          {article.tags.length > 0 && (
+          {(article.tags ?? []).length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-3">
-              {article.tags.slice(0, 3).map((tag) => <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>)}
+              {(article.tags ?? []).slice(0, 3).map((tag) => <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>)}
             </div>
           )}
           <h3 className="font-display font-semibold text-lg leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">{title}</h3>

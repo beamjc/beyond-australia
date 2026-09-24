@@ -97,9 +97,9 @@ const riskFactors: RiskFactor[] = [
 ];
 
 const getScoreColor = (score: number) => {
-  if (score <= 30) return "text-emerald-400";
-  if (score <= 55) return "text-amber-400";
-  return "text-red-400";
+  if (score <= 30) return "text-emerald-700";
+  if (score <= 55) return "text-amber-700";
+  return "text-red-700";
 };
 
 const getProgressColor = (score: number) => {
@@ -244,20 +244,20 @@ const VisaStrengthAssessment = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <Shield className={`w-4 h-4 ${
                       risk <= 33
-                        ? "text-emerald-400"
+                        ? "text-emerald-700"
                         : risk <= 66
-                        ? "text-amber-400"
-                        : "text-red-400"
+                        ? "text-amber-700"
+                        : "text-red-700"
                     }`} />
                     <h4 className="font-medium text-foreground text-sm">
                       {factor.label}
                     </h4>
                     <span className={`ml-auto text-xs font-medium px-2 py-0.5 rounded-full ${
                       risk <= 33
-                        ? "bg-emerald-500/15 text-emerald-400"
+                        ? "bg-emerald-500/15 text-emerald-700"
                         : risk <= 66
-                        ? "bg-amber-500/15 text-amber-400"
-                        : "bg-red-500/15 text-red-400"
+                        ? "bg-amber-500/15 text-amber-700"
+                        : "bg-red-500/15 text-red-700"
                     }`}>
                       {risk <= 33 ? "Low" : risk <= 66 ? "Medium" : "High"} risk
                     </span>
@@ -268,12 +268,13 @@ const VisaStrengthAssessment = () => {
                     onValueChange={(val) => handleChange(factor.id, val)}
                     max={100}
                     step={1}
+                    aria-label={factor.label}
                     className="mb-3"
                   />
 
                   <div className="flex justify-between">
                     <div className="max-w-[45%]">
-                      <span className="text-xs font-medium text-emerald-400 block">
+                      <span className={`text-xs font-medium block ${factor.inverted ? "text-red-700" : "text-emerald-700"}`}>
                         {factor.inverted ? "⚠ " : "✓ "}
                         {factor.lowLabel}
                       </span>
@@ -282,7 +283,7 @@ const VisaStrengthAssessment = () => {
                       </span>
                     </div>
                     <div className="max-w-[45%] text-right">
-                      <span className="text-xs font-medium text-red-400 block">
+                      <span className={`text-xs font-medium block ${factor.inverted ? "text-emerald-700" : "text-red-700"}`}>
                         {factor.inverted ? "✓ " : "⚠ "}
                         {factor.highLabel}
                       </span>

@@ -373,6 +373,8 @@ const ChecklistSection = ({ embedded = false }: { embedded?: boolean }) => {
             >
               {/* Stage Header */}
               <button
+                type="button"
+                aria-expanded={isExpanded}
                 onClick={() =>
                   setExpandedStage(isExpanded ? null : stage.id)
                 }
@@ -472,8 +474,12 @@ const ChecklistSection = ({ embedded = false }: { embedded?: boolean }) => {
                             >
                               <div className="flex items-start gap-3">
                                 <button
+                                  type="button"
+                                  role="checkbox"
+                                  aria-checked={isChecked}
+                                  aria-label={item.name}
                                   onClick={() => toggleCheck(key)}
-                                  className="flex-shrink-0 mt-0.5"
+                                  className="flex-shrink-0 mt-0.5 -m-2 p-2"
                                 >
                                   {isChecked ? (
                                     <CheckCircle2 className="w-5 h-5 text-primary" />

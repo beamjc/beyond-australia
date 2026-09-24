@@ -43,11 +43,16 @@ const englishOptions: { id: EnglishLevel; label: string; numeric: number }[] = [
 const BudgetStudyPlanner = () => {
   const [location, setLocation] = useState<Location>("offshore");
   const [currency, setCurrency] = useState<"THB" | "AUD">("THB");
-  const [budget, setBudget] = useState<number>(800_000);
+  // Budget is stored once, in AUD, and displayed in the selected currency.
+  // Converting the stored value back and forth on every currency toggle
+  // accumulated rounding drift (฿800,000 → $34,072 → ฿800,011).
+  const [budgetAUD, setBudgetAUD] = useState<number>(800_000 / DEFAULT_FX_THB_PER_AUD);
   const [age, setAge] = useState<number>(24);
   const [english, setEnglish] = useState<EnglishLevel>("5.0");
   const [goal, setGoal] = useState<Goal>("he");
   const rate = DEFAULT_FX_THB_PER_AUD;
+  const budget = Math.round(currency === "AUD" ? budgetAUD : budgetAUD * rate);
+  const setBudget = (v: number) => setBudgetAUD(currency === "AUD" ? v : v / rate);
   const [elicosWeekly, setElicosWeekly] = useState<number>(DEFAULT_ELICOS_WEEKLY);
   // Short Experience controls
   const [shortWeeks, setShortWeeks] = useState<number>(10);
@@ -57,7 +62,6 @@ const BudgetStudyPlanner = () => {
   // Higher Education degree level — affects course duration only
   const [degreeLevel, setDegreeLevel] = useState<DegreeLevel>("bachelor");
 
-  const budgetAUD = currency === "AUD" ? budget : budget / rate;
   const englishNumeric = englishOptions.find((o) => o.id === english)?.numeric ?? 0;
 
   const targetSector: "vet" | "he" = goal === "he" ? "he" : "vet";
@@ -94,7 +98,7 @@ const BudgetStudyPlanner = () => {
   );
   const elicosCalc = standaloneWeeks === 24 ? elicos24 : elicos40;
 
-  const budgetTHB = currency === "THB" ? budget : budget * rate;
+  const budgetTHB = budgetAUD * rate;
   const suggestShort = budgetTHB < 180_000 && goal !== "short";
 
   const whmShort = useMemo(
@@ -142,6 +146,8 @@ const BudgetStudyPlanner = () => {
               </Label>
               <div className="grid grid-cols-2 gap-2">
                 <button
+                  type="button"
+                  aria-pressed={goal === "english"}
                   onClick={() => setGoal("english")}
                   className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
                     goal === "english" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
@@ -151,6 +157,8 @@ const BudgetStudyPlanner = () => {
                   <div className="text-xs text-muted-foreground">หลักสูตร ELICOS</div>
                 </button>
                 <button
+                  type="button"
+                  aria-pressed={goal === "vet"}
                   onClick={() => setGoal("vet")}
                   className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
                     goal === "vet" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
@@ -160,6 +168,8 @@ const BudgetStudyPlanner = () => {
                   <div className="text-xs text-muted-foreground">IELTS ขั้นต่ำ 6.0</div>
                 </button>
                 <button
+                  type="button"
+                  aria-pressed={goal === "he" && degreeLevel === "bachelor"}
                   onClick={() => { setGoal("he"); setDegreeLevel("bachelor"); }}
                   className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
                     goal === "he" && degreeLevel === "bachelor" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
@@ -169,6 +179,8 @@ const BudgetStudyPlanner = () => {
                   <div className="text-xs text-muted-foreground">ควรจะมี IELTS อย่างน้อย 6.5 ใช้เวลาเรียนประมาณ 3 ปี</div>
                 </button>
                 <button
+                  type="button"
+                  aria-pressed={goal === "he" && degreeLevel === "master"}
                   onClick={() => { setGoal("he"); setDegreeLevel("master"); }}
                   className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
                     goal === "he" && degreeLevel === "master" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
@@ -178,6 +190,8 @@ const BudgetStudyPlanner = () => {
                   <div className="text-xs text-muted-foreground">ควรจะมี IELTS อย่างน้อย 6.5 ใช้เวลาเรียนประมาณ 2 ปี</div>
                 </button>
                 <button
+                  type="button"
+                  aria-pressed={goal === "short"}
                   onClick={() => setGoal("short")}
                   className={`col-span-2 px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
                     goal === "short" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
@@ -215,6 +229,8 @@ const BudgetStudyPlanner = () => {
                 {(["offshore", "onshore"] as Location[]).map((loc) => (
                   <button
                     key={loc}
+                    type="button"
+                    aria-pressed={location === loc}
                     onClick={() => setLocation(loc)}
                     className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
                       location === loc
@@ -230,18 +246,16 @@ const BudgetStudyPlanner = () => {
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <Label className="flex items-center gap-2 text-foreground">
+                <Label htmlFor="bsp-budget" id="bsp-budget-label" className="flex items-center gap-2 text-foreground">
                   <Wallet className="w-4 h-4 text-primary" /> งบที่เตรียมไว้
                 </Label>
                 <div className="flex rounded-md border border-border overflow-hidden text-xs">
                   {(["THB", "AUD"] as const).map((c) => (
                     <button
                       key={c}
-                      onClick={() => {
-                        if (c === currency) return;
-                        setBudget(c === "AUD" ? Math.round(budget / rate) : Math.round(budget * rate));
-                        setCurrency(c);
-                      }}
+                      type="button"
+                      aria-pressed={currency === c}
+                      onClick={() => setCurrency(c)}
                       className={`px-2.5 py-1 ${currency === c ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground"}`}
                     >
                       {c}
@@ -250,6 +264,7 @@ const BudgetStudyPlanner = () => {
                 </div>
               </div>
               <Input
+                id="bsp-budget"
                 type="text"
                 inputMode="numeric"
                 value={budget.toLocaleString()}
@@ -265,21 +280,22 @@ const BudgetStudyPlanner = () => {
                 max={currency === "AUD" ? 150_000 : 3_500_000}
                 step={currency === "AUD" ? 500 : 10_000}
                 onValueChange={([v]) => setBudget(v)}
+                aria-labelledby="bsp-budget-label"
                 className="mt-4"
               />
               <p className="text-xs text-muted-foreground mt-2">
-                ≈ {currency === "AUD" ? fmtTHB(budget * rate) : fmtAUD(budget / rate)}
+                ≈ {currency === "AUD" ? fmtTHB(budgetTHB) : fmtAUD(budgetAUD)}
               </p>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <Label className="flex items-center gap-2 text-foreground">
+                <Label id="bsp-age-label" className="flex items-center gap-2 text-foreground">
                   <User className="w-4 h-4 text-primary" /> อายุผู้สมัคร
                 </Label>
                 <span className="text-sm font-semibold text-foreground">{age} ปี</span>
               </div>
-              <Slider value={[age]} min={15} max={50} step={1} onValueChange={([v]) => setAge(v)} />
+              <Slider value={[age]} min={15} max={50} step={1} onValueChange={([v]) => setAge(v)} aria-labelledby="bsp-age-label" />
             </div>
 
             {goal !== "english" && (
@@ -292,6 +308,8 @@ const BudgetStudyPlanner = () => {
                     {englishOptions.map((o) => (
                       <button
                         key={o.id}
+                        type="button"
+                        aria-pressed={english === o.id}
                         onClick={() => setEnglish(o.id)}
                         className={`px-1 py-2 rounded-md border text-xs font-medium transition-all ${
                           english === o.id
@@ -326,7 +344,7 @@ const BudgetStudyPlanner = () => {
                 {/* Global English tuition slider — affects every pathway card */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <Label className="flex items-center gap-2 text-foreground">
+                    <Label id="bsp-elicos-label" className="flex items-center gap-2 text-foreground">
                       <GraduationCap className="w-4 h-4 text-primary" /> ค่าเรียนภาษา
                     </Label>
                     <span className="text-sm font-semibold text-foreground">${elicosWeekly}/สัปดาห์</span>
@@ -337,6 +355,7 @@ const BudgetStudyPlanner = () => {
                     max={ELICOS_WEEKLY_MAX}
                     step={10}
                     onValueChange={([v]) => setElicosWeekly(v)}
+                    aria-labelledby="bsp-elicos-label"
                   />
                   <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
                     <span>${ELICOS_WEEKLY_MIN}/สัปดาห์</span>
@@ -498,6 +517,8 @@ const PathwayCard = ({
 
           {/* Expandable budget breakdown */}
           <button
+            type="button"
+            aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
             className="w-full flex items-center justify-between text-xs font-medium text-primary hover:text-primary/80 mb-2"
           >
@@ -602,7 +623,9 @@ const ElicosCard = ({
         )}
 
         <button
-          onClick={() => setOpen((o) => !o)}
+          type="button"
+            aria-expanded={open}
+            onClick={() => setOpen((o) => !o)}
           className="mt-3 flex items-center justify-between w-full text-xs font-medium text-primary hover:text-primary/80"
         >
           <span>รายละเอียดค่าใช้จ่าย</span>
@@ -670,6 +693,8 @@ const StandaloneEnglishSection = ({
             {([24, 40] as const).map((w) => (
               <button
                 key={w}
+                type="button"
+                aria-pressed={selected === w}
                 onClick={() => onSelect(w)}
                 className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
                   selected === w ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
@@ -733,7 +758,7 @@ const ShortPathwaySection = ({
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-foreground text-sm">ระยะเวลาที่ต้องเรียนภาษาเพิ่ม</Label>
+              <Label id="bsp-short-weeks-label" className="text-foreground text-sm">ระยะเวลาที่ต้องเรียนภาษาเพิ่ม</Label>
               <span className="text-sm font-semibold text-foreground">
                 {shortWeeks} สัปดาห์
               </span>
@@ -744,6 +769,7 @@ const ShortPathwaySection = ({
               max={WHM_MAX_STUDY_WEEKS}
               step={1}
               onValueChange={([v]) => setShortWeeks(Math.min(WHM_MAX_STUDY_WEEKS, v))}
+              aria-labelledby="bsp-short-weeks-label"
             />
             <p className="text-[11px] text-muted-foreground mt-1">
               สำหรับวีซ่า WAH จะเรียนได้มากสุด 17 สัปดาห์
@@ -760,6 +786,8 @@ const ShortPathwaySection = ({
               ] as { id: SkillBoosterKey; label: string; sub: string }[]).map((s) => (
                 <button
                   key={s.id}
+                  type="button"
+                  aria-pressed={shortSkill === s.id}
                   onClick={() => setShortSkill(s.id)}
                   className={`px-2 py-2 rounded-lg border-2 text-left transition-all ${
                     shortSkill === s.id ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
@@ -866,6 +894,8 @@ const ShortCard = ({
           </div>
 
           <button
+            type="button"
+            aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
             className="w-full flex items-center justify-between text-xs font-medium text-primary hover:text-primary/80 mb-2"
           >

@@ -445,6 +445,8 @@ const FaqAccordionItem = ({ faq }: { faq: FaqItem }) => {
       }`}
     >
       <button
+        type="button"
+        aria-expanded={open}
         onClick={() => setOpen(!open)}
         className="w-full flex items-start gap-3 p-4 text-left"
       >

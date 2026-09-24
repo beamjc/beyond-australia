@@ -23,8 +23,9 @@ const FinancialCalculator = () => {
   const TRAVEL_INSIDE = 1000;
 
   const result = useMemo(() => {
-    const fee = parseFloat(annualCourseFee) || 0;
-    const paid = parseFloat(amountPaid) || 0;
+    // Negative amounts are not meaningful here; typing "-" bypasses min={0}.
+    const fee = Math.max(0, parseFloat(annualCourseFee) || 0);
+    const paid = Math.max(0, parseFloat(amountPaid) || 0);
     const remainingFee = Math.max(0, fee - paid);
 
     // Determine living cost multiplier
@@ -82,10 +83,11 @@ const FinancialCalculator = () => {
       <div className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6">
         {/* Course fees */}
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="fc-annual-fee" className="block text-sm font-semibold text-foreground mb-2">
             Annual course fee (AUD)
           </label>
           <input
+            id="fc-annual-fee"
             type="number"
             min={0}
             value={annualCourseFee}
@@ -96,10 +98,11 @@ const FinancialCalculator = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="fc-amount-paid" className="block text-sm font-semibold text-foreground mb-2">
             Amount already paid (AUD)
           </label>
           <input
+            id="fc-amount-paid"
             type="number"
             min={0}
             value={amountPaid}
@@ -140,10 +143,11 @@ const FinancialCalculator = () => {
 
         {isOneYearOrMore === false && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}>
-            <label className="block text-sm font-semibold text-foreground mb-2">
+            <label htmlFor="fc-course-months" className="block text-sm font-semibold text-foreground mb-2">
               How many months is your course?
             </label>
             <select
+              id="fc-course-months"
               value={courseMonths ?? ""}
               onChange={(e) => setCourseMonths(parseInt(e.target.value))}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -177,16 +181,17 @@ const FinancialCalculator = () => {
             </label>
 
             <div>
-              <label className="block text-sm text-foreground mb-1">
+              <label htmlFor="fc-children" className="block text-sm text-foreground mb-1">
                 Number of children coming with you
               </label>
               <input
+                id="fc-children"
                 type="number"
                 min={0}
                 max={10}
                 value={numChildren}
                 onChange={(e) => {
-                  const v = parseInt(e.target.value) || 0;
+                  const v = Math.min(10, Math.max(0, parseInt(e.target.value) || 0));
                   setNumChildren(v);
                   if (v < numSchoolChildren) setNumSchoolChildren(v);
                 }}
@@ -196,15 +201,16 @@ const FinancialCalculator = () => {
 
             {numChildren > 0 && (
               <div>
-                <label className="block text-sm text-foreground mb-1">
+                <label htmlFor="fc-school-children" className="block text-sm text-foreground mb-1">
                   Of these, how many are school-age?
                 </label>
                 <input
+                  id="fc-school-children"
                   type="number"
                   min={0}
                   max={numChildren}
                   value={numSchoolChildren}
-                  onChange={(e) => setNumSchoolChildren(Math.min(parseInt(e.target.value) || 0, numChildren))}
+                  onChange={(e) => setNumSchoolChildren(Math.max(0, Math.min(parseInt(e.target.value) || 0, numChildren)))}
                   className="w-24 px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>

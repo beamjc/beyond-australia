@@ -3,7 +3,7 @@
 ## Mission and authority
 Test and improve the public bilingual site for Thai visitors considering Australia through Work and Holiday (subclass 462) or study. Help visitors understand options and reach Beyond Study Center through existing consultation links.
 
-The owner authorises autonomous decisions on natural Thai wording and public-site UX. Implement reasonable, reversible improvements without asking for approval for each edit. Fix bugs, improve clarity, layout, navigation, form guidance, validation, result explanations, mobile usability, and accessibility. Preserve the brand, bilingual experience, feature set, and business purpose. Work through a bounded pass, not an endless redesign.
+The owner authorises autonomous decisions on public-site UX (not Thai wording; see "Thai copy review gate" below). Implement reasonable, reversible improvements without asking for approval for each edit. Fix bugs, improve layout, navigation, validation behaviour, mobile usability, and accessibility. Preserve the brand, bilingual experience, feature set, and business purpose. Work through a bounded pass, not an endless redesign.
 
 Admin, login, authentication changes, publishing, account setup, database mutations, and schema/RLS changes are OUT OF SCOPE for this pass. All existing accounts are admins by design according to the owner's code review; do not invent a non-admin role or change that model.
 
@@ -31,6 +31,15 @@ The inventory below comes from the owner's code review, not a completed live tes
 8. No Cloudflare, Gmail, Google Calendar, or Morningstar connector authorisation is needed for this scoped work. If a specific test is blocked, explain the exact dependency and continue independent work.
 9. If browser tools are unavailable, mark interactive tests BLOCKED and continue code/copy review. Never report browser tests as executed when they were not.
 
+## Thai copy review gate (overrides the wording autonomy below)
+Do NOT rewrite, replace, or reword visible Thai copy autonomously. An external Thai editor reviews all Thai wording suggestions before they are applied.
+- Put Thai suggestions in a review file (e.g. `docs/qa/thai-review-<feature>.md`) with: string ID and source file, where the text appears and what the user is doing, English text, current Thai text, suggested Thai text, and variables/length constraints. Add desktop and mobile screenshots where possible.
+- Apply Thai suggestions only after the editor has approved them, and only the approved wording. Record the approval batch in `docs/qa/changes.md`.
+- Review batches go one feature at a time. Batch 1 = Budget Study Planner.
+- Allowed without review: functional bug fixes, non-copy usability/accessibility fixes (layout, targets, focus, ARIA attributes, overflow, state), and moving existing strings into translation keys without changing their Thai wording. New visible Thai text needed for a fix must be proposed in a review file first; until approved, prefer fixes that need no new Thai copy.
+- English copy changes that would require matching Thai changes wait for the same review.
+- The style rules in the next section are the criteria for writing suggestions, not permission to apply them.
+
 ## Thai language and bilingual style
 Review every public UI string: headings, tabs, field labels, placeholders, options, helper text, validation, buttons, empty/loading/error states, calculated results, tooltips, pathway outcomes, and contact/share copy.
 
@@ -44,7 +53,7 @@ Review every public UI string: headings, tabs, field labels, placeholders, optio
 - Keep English and Thai aligned. If an English concept changes for clarity, update both languages. Check mixed-language fallbacks, untranslated strings, Thai wrapping, font readability, dates, and number/currency formatting.
 - Preserve entered answers and results when switching language unless a documented requirement says otherwise. Check language persistence across refresh and public-page navigation.
 - Do not invent reviews, proof statistics, partner credentials, university claims, fees, or business promises. Flag unsupported claims.
-- Record representative before/after examples and reasons in the change log; no approval is required for routine copy choices.
+- Record representative before/after examples and reasons in the change log. Thai copy changes require external editor approval first (see the review gate above).
 - Review displayed Supabase article/event text, but do not rewrite database records. Put suggested editorial corrections in the report. UI labels and rendering code remain editable.
 
 ## UX decision rules
@@ -52,7 +61,7 @@ Autonomously improve issues supported by browser observation or clear code evide
 
 Show useful results before consultation prompts, preserve optional contact actions, and avoid adding lead capture, tracking, new personal-data storage, accounts, or obstructive popups. Keep consultation destinations unchanged unless the owner confirms a replacement; report broken/ambiguous links.
 
-Ask only when a material business decision is unresolved: changing service offers or contact destinations, removing a major feature, adding paid services/data collection, altering unsupported financial/scoring assumptions, or deploying. Prepare a concrete recommendation and continue other work. Do not ask the owner to decide routine wording or spacing.
+Ask only when a material business decision is unresolved: changing service offers or contact destinations, removing a major feature, adding paid services/data collection, altering unsupported financial/scoring assumptions, or deploying. Prepare a concrete recommendation and continue other work. Do not ask the owner to decide routine spacing. Thai wording goes through the external editor review gate.
 
 ## Required coverage
 Create `docs/qa/coverage.md`: scenario ID, feature, language, viewport/browser, expected behaviour/source, result, evidence, related issue. Use NOT RUN, PASS, FAIL, BLOCKED, NOT APPLICABLE.

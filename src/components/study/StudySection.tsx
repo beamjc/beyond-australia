@@ -44,10 +44,14 @@ const StudySection = () => {
 
         {/* Sub-tab bar */}
         <div className="mb-12 -mx-4 px-4 overflow-x-auto [-webkit-overflow-scrolling:touch] flex md:justify-center">
-          <div className="inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
+          <div role="tablist" className="inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
             {subTabs.map((tab) => (
               <button
                 key={tab.id}
+                id={`study-tab-${tab.id}`}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`study-panel-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0 ${
                   activeTab === tab.id
@@ -55,19 +59,33 @@ const StudySection = () => {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <tab.icon className="w-4 h-4" />
+                <tab.icon className="w-4 h-4" aria-hidden />
                 {t(tab.labelKey)}
               </button>
             ))}
           </div>
         </div>
 
-        {activeTab === "courses" && <BudgetStudyPlanner />}
-        {activeTab === "universities" && <TopUniversities />}
-        {activeTab === "options" && <StudyOptionsForm />}
-        {activeTab === "calculator" && <FinancialCalculator />}
-        {activeTab === "savings" && <SavingsCalculator />}
-        {activeTab === "strength" && <VisaStrengthAssessment />}
+        {/* Panels stay mounted (hidden) so visitors keep their inputs and
+            results when they switch tabs to compare. */}
+        <div role="tabpanel" id="study-panel-courses" aria-labelledby="study-tab-courses" hidden={activeTab !== "courses"}>
+          <BudgetStudyPlanner />
+        </div>
+        <div role="tabpanel" id="study-panel-universities" aria-labelledby="study-tab-universities" hidden={activeTab !== "universities"}>
+          <TopUniversities />
+        </div>
+        <div role="tabpanel" id="study-panel-options" aria-labelledby="study-tab-options" hidden={activeTab !== "options"}>
+          <StudyOptionsForm />
+        </div>
+        <div role="tabpanel" id="study-panel-calculator" aria-labelledby="study-tab-calculator" hidden={activeTab !== "calculator"}>
+          <FinancialCalculator />
+        </div>
+        <div role="tabpanel" id="study-panel-savings" aria-labelledby="study-tab-savings" hidden={activeTab !== "savings"}>
+          <SavingsCalculator />
+        </div>
+        <div role="tabpanel" id="study-panel-strength" aria-labelledby="study-tab-strength" hidden={activeTab !== "strength"}>
+          <VisaStrengthAssessment />
+        </div>
       </div>
     </section>
   );

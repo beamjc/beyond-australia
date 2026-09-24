@@ -31,12 +31,12 @@ export default function ArticlesPage() {
       })
   }, [])
 
-  const allTags = Array.from(new Set(articles.flatMap((a) => a.tags)))
+  const allTags = Array.from(new Set(articles.flatMap((a) => a.tags ?? [])))
 
   const filtered = articles.filter((a) => {
-    const title = language === 'th' ? a.title_th : a.title_en
+    const title = (language === 'th' ? a.title_th : a.title_en) ?? ''
     const matchSearch = title.toLowerCase().includes(search.toLowerCase())
-    const matchTag = !activeTag || a.tags.includes(activeTag)
+    const matchTag = !activeTag || (a.tags ?? []).includes(activeTag)
     return matchSearch && matchTag
   })
 

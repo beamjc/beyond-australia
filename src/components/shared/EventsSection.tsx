@@ -7,7 +7,7 @@ import { Calendar, MapPin, Monitor, Users, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { supabase } from "@/lib/supabase";
 import { Event } from "@/types/event";
-import { format } from "date-fns";
+import { format, startOfToday } from "date-fns";
 
 const typeStyles = {
   online: { icon: Monitor, className: "bg-accent/10 text-accent" },
@@ -25,6 +25,9 @@ const EventsSection = () => {
       .from("events")
       .select("*")
       .eq("is_published", true)
+      // "Upcoming" preview: ongoing events plus anything from today onwards.
+      // Without this, ascending order + limit(3) shows the oldest past events.
+      .or(`is_ongoing.eq.true,event_date.gte.${startOfToday().toISOString()}`)
       .order("event_date", { ascending: true, nullsFirst: false })
       .limit(3)
       .then(({ data, error }) => {

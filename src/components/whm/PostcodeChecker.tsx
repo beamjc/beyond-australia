@@ -43,6 +43,7 @@ const PostcodeChecker = () => {
               setSearched(false);
             }}
             placeholder="Enter postcode (e.g. 4810)"
+            aria-label="Enter postcode (e.g. 4810)"
             className="w-full pl-12 pr-4 py-4 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-lg"
           />
         </div>

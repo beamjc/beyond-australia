@@ -12,23 +12,27 @@ const RevealOnScroll = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  // Tracks this section's journey through the viewport: 0 as its top edge
-  // reaches the bottom of the screen (about to enter), 1 as its bottom edge
-  // reaches the top of the screen (about to fully exit). Opacity ramps up
-  // over the first stretch (fade in, entering from the bottom), holds at 1
-  // while it's the main content on screen, then ramps back down over the
-  // last stretch (fade out, as it scrolls away past the top) — so it keeps
-  // fading in and out continuously as the user scrolls, not just once.
+  // Fade in as the section's top edge moves from the bottom of the screen to
+  // 75% of the way up, then stay fully opaque. Progress is tied to the top
+  // edge only (not the whole section), so tall sections — e.g. the Study
+  // tools on mobile — never render partly transparent while being read.
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"],
+    offset: ["start end", "start 75%"],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [40, 0, 0, -40]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const y = useTransform(scrollYProgress, [0, 1], [40, 0]);
 
+  // Reduced motion: a CSS override (!important beats framer's inline styles)
+  // keeps sections static and fully visible. Toggling the style prop from JS
+  // after hydration left framer's initial inline opacity: 0 in place.
   return (
-    <motion.div ref={ref} style={{ opacity, y }} className={className}>
+    <motion.div
+      ref={ref}
+      style={{ opacity, y }}
+      className={`motion-reduce:!opacity-100 motion-reduce:!transform-none ${className ?? ""}`}
+    >
       {children}
     </motion.div>
   );
