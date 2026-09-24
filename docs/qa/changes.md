@@ -47,3 +47,10 @@ Branch: `claude/tender-tesla-7g4bgt`. Nothing merged or deployed.
 - `src/lib/CalculationEngine.ts`: `sectorRates` updated to Home Affairs BP0015, Thai citizens, primary applicants, 1 Sep 2025 – 31 Aug 2026 (HE 94.6/93.4, ELICOS 51.7/87.3, VET 23.8/63.4 offshore/onshore); added `GRANT_RATE_PERIOD` and source comment. Age multipliers unchanged.
 - Unit test guards the recorded values; `scripts/qa/grant_rates_thailand.py` recomputes them from the latest 12 months of any new BP0015 file.
 - Visible label change ("average approval rate … not a prediction") is approved in principle; Thai wording waits for the editor (BSP-074).
+
+## 2026-09-24 — Official rates by age group (owner-approved)
+
+- New generated data file `src/data/grantRates.ts` (BP0015, Thai primary applicants, 1 Sep 2025 – 31 Aug 2026): average + six age groups per course type/location, with decision counts.
+- `CalculationEngine.ts`: removed hand-made `ageMultiplier` and unused `trend` values; new `grantRateFor()` returns the age-group rate (≥ 30 decisions) or the all-ages average, clamped 8–98 %; results carry `ageSpecific` for the future label.
+- Example changes a visitor will see: University from Thailand age 32: 73.0 → **84.5**; Vocational in Australia age 42: 36.2 → **22.1**; English from Thailand age 22: 62.9 → **61.5**.
+- Unit tests cover lookup, fallback, clamp and age boundaries. Label text still waits for the Thai editor (BSP-074).

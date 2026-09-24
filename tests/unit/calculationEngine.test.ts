@@ -11,9 +11,13 @@ import {
   computeShortPathway,
   tiers,
   visaDurationMonths,
+  grantRateFor,
+  ageGroupFor,
+  GRANT_RATE_PERIOD,
   fmtAUD,
   fmtTHB,
 } from '@/lib/CalculationEngine'
+import { grantRates } from '@/data/grantRates'
 
 const tier = (id: string) => tiers.find((t) => t.id === id)!
 
@@ -130,15 +134,53 @@ describe('formatters', () => {
   })
 })
 
-describe('grant-rate base values', () => {
-  // Snapshot of Home Affairs BP0015 (Thai citizens, primary applicants,
-  // Sep 2025 – Aug 2026), rounded to 0.1. Update together with
-  // docs/qa/grant-rate-check.md when the data is refreshed.
-  it('match the recorded official figures', async () => {
-    const { sectorRates, GRANT_RATE_PERIOD } = await import('@/lib/CalculationEngine')
+describe('grantRateFor (official Home Affairs rates, Thai primary applicants)', () => {
+  // Expected values read from docs/qa/grant-rate-check.md (Sep 2025 – Aug 2026).
+  it('uses the age-group rate when the group has ≥ 30 decisions', () => {
+    expect(grantRateFor('he', 'offshore', 22)).toEqual({ rate: 97.8, sectorAverage: 94.6, ageSpecific: true, decisions: 269 })
+    expect(grantRateFor('vet', 'onshore', 42).rate).toBe(22.1)
+    expect(grantRateFor('elicos', 'offshore', 27).rate).toBe(49.3)
+  })
+
+  it('falls back to the sector average for small groups', () => {
+    expect(grantRateFor('he', 'offshore', 37)).toMatchObject({ rate: 94.6, ageSpecific: false, decisions: 822 })
+    for (const age of [15, 22, 27, 32, 37, 45]) {
+      expect(grantRateFor('vet', 'offshore', age)).toMatchObject({ rate: 23.8, ageSpecific: false })
+    }
+  })
+
+  it('never shows 100 % or 0 %', () => {
+    // HE onshore 15–19: 34 decisions, all granted → shown as 98
+    expect(grantRateFor('he', 'onshore', 17)).toMatchObject({ rate: 98, ageSpecific: true })
+  })
+
+  it('maps age-group boundaries correctly', () => {
+    expect(ageGroupFor(15)).toBe('15-19')
+    expect(ageGroupFor(24)).toBe('20-24')
+    expect(ageGroupFor(25)).toBe('25-29')
+    expect(ageGroupFor(39)).toBe('35-39')
+    expect(ageGroupFor(40)).toBe('40+')
+    expect(ageGroupFor(50)).toBe('40+')
+  })
+
+  it('is what the pathway and English-only cards display', () => {
+    const c = computePathway(tier('vet-std'), calcEnglishPackage(6, 'vet'), 'onshore', 36, 0)
+    expect(c.adjusted).toBe(35.6)
+    expect(c.baseRate).toBe(63.4)
+    expect(computeElicosOnly(24, 250, 'onshore', 26, 0).adjusted).toBe(88.4)
+  })
+
+  it('data file is internally consistent', () => {
     expect(GRANT_RATE_PERIOD).toEqual({ from: '2025-09', to: '2026-08' })
-    expect(sectorRates.he).toMatchObject({ offshore: 94.6, onshore: 93.4 })
-    expect(sectorRates.elicos).toMatchObject({ offshore: 51.7, onshore: 87.3 })
-    expect(sectorRates.vet).toMatchObject({ offshore: 23.8, onshore: 63.4 })
+    for (const sector of Object.values(grantRates)) {
+      for (const loc of Object.values(sector)) {
+        const cells = Object.values(loc.byAge)
+        expect(cells.reduce((s, c) => s + c.n, 0)).toBeLessThanOrEqual(loc.n)
+        for (const c of cells) {
+          expect(c.rate).toBeGreaterThanOrEqual(0)
+          expect(c.rate).toBeLessThanOrEqual(100)
+        }
+      }
+    }
   })
 })
