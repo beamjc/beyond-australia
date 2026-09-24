@@ -39,7 +39,14 @@ Live content needs real `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_
 ## Next steps (in order)
 
 1. **Thai batch 1 (Budget Planner)** — when the editor returns the file: move all planner strings into `src/i18n/translations.ts` (EN + TH), apply only approved Thai, then apply the held fix for ISS-010 (needs BSP-053) and the ISS-013 rounding answer. Retest with `-g "Budget Study Planner"` and retake screenshots.
-2. Owner decisions: ISS-003 (visa "pass %"), ISS-023 (budget taglines), ISS-011/012, ISS-030, supply real reviews (ISS-004), confirm Supabase env in Cloudflare (ISS-015).
+2. Owner decisions still open: ISS-003 (visa "pass %" — calculation explained in issues.md), ISS-011/012, real reviews (ISS-004), confirm Supabase env in Cloudflare (ISS-015).
+   Decided 2026-09-24: keep budget promises (ISS-023); keep university rankings as is (ISS-030); leave ⚠️ claims BSP-001/040/062/084/087.
+
+## Google reviews option (asked 2026-09-24, not built)
+
+- **Google Places API (Place Details, `reviews` field):** official; returns at most 5 reviews chosen by Google (not selectable), needs a Google Cloud API key with billing, must show Google attribution and the reviewer's name/photo/link, must not edit review text, and caching is restricted. Call it from the server (Cloudflare Worker route) so the key isn't exposed; needs a Place ID and network access to `places.googleapis.com`.
+- **Manual copy** into `src/data/reviews.ts` (current design): free, you choose the reviews, but it doesn't update itself. Show source + link for each review.
+- **Third-party widgets:** add an external script/tracking, which CLAUDE.md asks us to avoid.
 3. Re-run `factual-checks.md` with sources reachable; update constants + unit tests only for unambiguous, source-backed changes.
 4. Next review batches (suggested order by visitor impact): Visa Pathway → Financial Calculator → Savings Calculator → Postcode Checker (with ISS-019) → Study Options → Visa Strength → Top Universities → Timeline/Checklist/FAQ → events/articles states (ISS-016/017/018).
 5. Remaining NOT RUN rows in `coverage.md` (back/forward, full keyboard focus audit, FIN-03, SAV-03, OPT-04, CON-11).
