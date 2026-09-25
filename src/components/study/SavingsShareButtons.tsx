@@ -6,7 +6,7 @@ import { useLanguage } from "@/i18n/LanguageProvider";
 interface Props {
   netIncome: string;
   annualSavings: string;
-  bufferLabel: string; // "Buffer" or "Shortfall"
+  bufferLabel: string; // e.g. "ยังขาดอีก" / "Still short by"
   bufferAmount: string;
 }
 
@@ -28,27 +28,26 @@ const SavingsShareButtons = ({ netIncome, annualSavings, bufferLabel, bufferAmou
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mt-3">
-      <span className="text-xs text-muted-foreground inline-flex items-center gap-1 mr-1">
-        <Share2 className="w-3.5 h-3.5" />
+    <div className="mt-4 flex flex-wrap items-center gap-2">
+      <span className="mr-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+        <Share2 className="w-4 h-4" aria-hidden />
+        {isTh ? "แชร์ผลคำนวณ" : "Share your result"}
       </span>
       <a
         href={lineUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
-        style={{ backgroundColor: "#00B900" }}
+        className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
       >
-        <MessageCircle className="w-3.5 h-3.5" />
+        <MessageCircle className="w-4 h-4 text-[#00B900]" aria-hidden />
         {isTh ? "แชร์ไป LINE" : "Share to LINE"}
       </a>
       <a
         href={fbUrl}
         onClick={handleFb}
-        className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
-        style={{ backgroundColor: "#1877F2" }}
+        className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
       >
-        <Facebook className="w-3.5 h-3.5" fill="white" strokeWidth={0} />
+        <Facebook className="w-4 h-4 text-[#1877F2]" aria-hidden />
         {isTh ? "แชร์ใน Facebook" : "Share on Facebook"}
       </a>
     </div>

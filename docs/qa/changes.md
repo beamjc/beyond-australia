@@ -58,3 +58,62 @@ Branch: `claude/tender-tesla-7g4bgt`. Nothing merged or deployed.
 ### Follow-up 2026-09-24 — small groups use the old method
 
 - Owner: for age groups with < 30 decisions, keep the old calculation (all-ages average × original age factor) rather than the plain average. `ageMultiplier` restored for this fallback only. Example: University from Thailand, age 37: 94.6 → **56.8**.
+
+
+# Owner-requested changes — 2026-09-25
+
+Branch: `qa/study-tools-redesign` (from `main` @ 646194a). Nothing merged or deployed.
+
+## Budget Study Planner — one university card
+
+- Owner request: Bachelor and Master show **one** university card instead of Affordable / Good Quality / Go8 cards, priced at an average, with a note that fees depend on faculty and university.
+- `src/lib/CalculationEngine.ts`: the three `he-*` tiers are replaced by `he-avg`. Annual tuition = mean of the former tier midpoints (30,000 + 40,000 + 55,000) / 3 = **$41,667**. `PathwayTier.annual` (optional) overrides the low/high midpoint; VET tiers are unchanged. Duration still comes from the degree choice (3 years bachelor, 2 years master). Grant-rate figures were already identical for all university tiers.
+- `src/components/study/BudgetStudyPlanner.tsx`: the university card spans the full result width, the title reuses the existing ปริญญาตรี / ปริญญาโท labels, and it shows the owner's note verbatim (BSP-130). A polished version and an optional "average per year" line are in `thai-review-budget-planner.md` (BSP-130, BSP-131) for the editor.
+- Example (bachelor, offshore, IELTS 5.0, $250/wk): before, first payment $27,329 / $32,329 / $39,829 across three cards; after, one card at **$33,163** (English $7,500 + 50% deposit $20,833.50 + visa $2,000 + OSHC $2,829.17).
+- Tests: `tests/unit/calculationEngine.test.ts` now checks the `he-avg` figures (derived above), that only one university tier exists, and that VET tiers still use the midpoint.
+
+## Visa Readiness Check (replaces the Visa Strength Assessment layout)
+
+- Owner brief: turn the "risk calculator" into an "application readiness assistant"; do not change the assessment logic.
+- **Logic unchanged**: 8 factors, weights (1, 1.2, 1.3, 1, 1.5, 1, 0.8 inverted, 1.1 inverted), weighted risk formula, per-factor thresholds (≤33 / ≤66) and verdict bands (≤20 / ≤40 / ≤55 / ≤75) moved as-is into `src/lib/visaReadiness.ts`, with unit tests. The only presentation change: the headline shows **readiness = 100 − risk score**.
+- **Flow**: the sliders were both the input and the "result". Now: step 1 = 8 compact slider questions → "ดูผลความพร้อม"; step 2 = result with no sliders (summary + 3 counts, top-3 priority card, grouped accordions — high open by default, empty groups hidden — and a final plan + consultation CTA). "แก้ไขคำตอบ" returns to step 1 with answers kept. Focus moves to the result heading; scrolling honours reduced motion.
+- **Content is data**: all copy (EN + TH), factor results per level, explanations, checklists and actions live in `src/data/visaReadiness.ts`; components only render. Components: `AssessmentQuestions`, `AssessmentSummary`, `AssessmentPriorityActions`, `AssessmentGroup`, `AssessmentFactorRow`, `AssessmentFactorDetail`, `AssessmentActionPlan` (`src/components/study/readiness/`).
+- **Bilingual**: the tool now follows the EN/TH switch (was English-only, ISS-001). Tab label: "เช็กความพร้อมก่อนยื่นวีซ่า" / "Visa Readiness Check".
+- **Thai**: owner-supplied text applied verbatim; 92 draft strings listed in `thai-review-visa-readiness.md` for the editor (review gate).
+- Consultation links unchanged (`SITE_URL`, `LINE_URL`, now exported from `BSCConsultationCTA`).
+
+| Before | After |
+|---|---|
+| "Higher Risk" red card, score "61 /100 risk" | "คะแนนความพร้อม 39 / 100", "มีหลายจุดที่ควรเตรียมเพิ่มเติม" (neutral card; colour only on dots/badges) |
+| "Low / Medium / High risk" chips | ไม่มีข้อกังวลเด่นชัด / ควรเตรียมข้อมูลเพิ่มเติม / ควรตรวจสอบเป็นพิเศษ |
+| English disclaimer | Owner's Thai disclaimer, small and neutral |
+
+## Savings planner — one calculator
+
+- Owner brief: one savings planner, visa type as an input; Thai-first layout; do not change the calculation or tax logic.
+- **What differed between the old WHM / Student modes** (checked in code before refactoring): only (1) the tax function — WHM scale vs resident scale, (2) the work-rights info box, (3) the student-only warning when the income needs > 48 h/fortnight at minimum wage. Goal, currency, FX, duration, income, expenses, the savings maths and the result layout were already shared.
+- `src/lib/savings.ts`: the unchanged tax functions behind `calculateTax({ visaType, annualIncome })`, a shared `computeSavingsPlan`, and `requiredGrossIncome` (owner's optional "income needed" line — bisection on the same tax function, exact to the dollar; unit-tested). Unit tests in `tests/unit/savings.test.ts` use hand-derived figures.
+- UI: `SavingsCalculator.tsx` + `savings/` (`SavingsGoalInput`, `DurationSelector`, `VisaTypeSelector`, `IncomeSelector`, `ExpenseSelector`, `SavingsResult`, `SavingsConsultationCTA`). Order: goal → duration → visa → income → expenses → result → CTA → share; result sits beside the inputs on desktop (sticky only on screens ≥ 1000 px tall so it is never cut off). Switching visa type changes only the tax figures, tax note, work-rights note and student-hours check — nothing resets.
+- Status box replaces the red-bordered panel: neutral result card; green/red only in the status area and the gap figure. The owner's status body and personal summary were combined into one sentence block to avoid repeating the same numbers twice; "ลองปรับแผน" and the quick actions were combined (buttons scroll to and focus the matching input). "เพิ่มระยะเวลา" is hidden when 3 years is already selected or the goal is reached.
+- Bugs fixed: ISS-032 (currency toggle changed the goal), ISS-033 (FX "last updated" was always today).
+- CTA: "ปรึกษาฟรีทาง LINE" → existing LINE URL; "ดูบริการของเรา" → the site's `#services` section. Share buttons now secondary (outline), same URLs and message.
+- Example (WHM, A$60,000, A$2,000/month, ฿1,000,000, 1 year): tax A$11,250, take-home A$48,750, savings A$24,750, still short A$18,728, income needed A$86,755. Student Visa: tax A$8,788, savings A$27,212.
+
+## Planning hub: Study Pathway Finder + Visa Options Explorer
+
+- **IA / navigation**: Study section eyebrow "เส้นทางการศึกษา" → "วางแผนเส้นทางไปออสเตรเลีย" (EN "Plan your pathway to Australia"). Tab "ทางเลือกการเรียน" → "วางแผนเส้นทาง" (tab id `options` kept). Nav item "เส้นทางวีซ่า" → "วางแผนเส้นทาง" linking to `#plan`; hero "Explore Visa Pathways" → `#plan`. The separate Visa Pathway Finder section was removed from the home page; `/#visa-pathway` still works and opens the explorer. Removed: `src/components/visa/VisaPathwaySection.tsx`, `src/components/study/StudyOptionsForm.tsx`.
+- **Hub** (`src/components/plan/PlanningPathwayHub.tsx`): landing with two cards; both tools stay mounted, so answers survive switching. Compact tool header (← back to hub, tool name, "คำถาม X จาก Y" + bar); no hero per step, no breadcrumbs.
+- **Connections**: study result → "กำลังวางแผนเรื่องวีซ่าด้วย?" opens the explorer on the Student branch; explorer Student results → Study Finder; "Related tools" (2–3) open the planner, cost/savings calculators, readiness check or universities tab. Neither tool requires the other.
+- **Old Study Options logic** (for the record): 8 questions, then an if/else list — low English → ELICOS; "Migrate permanently" → skilled-list courses and (age > 30) a points warning; lowest budget → "VET from ~A$6,000/year… strong visa pathway outcomes"; age 18–30 with some English → "eligible for a WHM visa… stepping stone". No pathway was ranked.
+- **New Study Finder logic** (`src/lib/studyFinder.ts`): three scores (ELICOS / VET / University) built only from English, course interest, goals and qualification with the owner's weights (`src/data/studyFinder.ts`); age and city have no weight; "study and work in Australia" adds no weight (context note + visa step only). Top two within 1 point → shown as two similar options. Budget is a constraint note, never a score change (Profile E stays University). Reasons list only answers that added weight to the pathway shown. Profiles A–E and tie/age/city rules are unit-tested.
+- **Old Visa Pathway tree** (for the record): 18 nodes starting with "employer willing to pay ≥ A$76,515"; results included "You're competitive!", "You're on a strong path", "Fastest to PR", WHM/Student "stepping stone", "study a new field to qualify"; one generic Home Affairs link on "info" results only.
+- **New explorer** (`src/data/visaExplorer.ts`, `src/lib/visaExplorer.ts`): situation-first start question; WHM (age, passport, goal), Student (plan → study-linked results), Skilled (list → points, never a dead end: "เช็ก Skilled Occupation List" + "กลับมาทำต่อ"), Employer (status → role match → checks), Not sure → comparison of 4 options. Every result: summary, why (from the choices made), what to check, actions, related tools, official sources. Migration topics point to a qualified adviser (OMARA register), not BSC; study topics show the BSC LINE CTA. Tree integrity, sources and banned phrases are unit-tested.
+- Auto-advance after a 200 ms selected state on single-choice questions (not on the last Study question); Back keeps earlier answers.
+
+## Owner decisions applied — 2026-09-26
+
+- **Tax (checked on ato.gov.au):** tables moved to `src/data/taxRates.ts` with source and date. Student Visa now uses the **2026–27 resident** rates (15% on $18,201–45,000; was 16% in 2025–26). WHM keeps the **2025–26** table, the latest the ATO has published (15% on the first $45,000). The footnote names the year per visa type. Example at A$60,000: Student tax A$8,788 → **A$8,520**; WHM unchanged at A$11,250.
+- **FX:** one planning rate, **23.5 THB per AUD**, for the Budget Planner (was 23.48) and the Savings planner (was 23). ฿800,000 → A$34,043; ฿1,000,000 → A$42,553.
+- **Study Finder CTA:** "ดูหลักสูตรที่เหมาะกับฉัน" → **"ติดต่อปรึกษาเราได้เลย"**, linking to the Beyond Study Center inquiry page. The consultation card below keeps LINE only (no duplicate website button).
+- **Skilled result title:** "คุณสมบัติครบตามเกณฑ์คะแนนขั้นต่ำของ Points Test" (owner's "คุณสมบัติครบ", limited to the points minimum; the summary still says an invitation depends on other factors).
+- **Visa facts:** WHM 462 age 18–30 and the 65-point pass mark are now marked VERIFIED; student work hours verified (no code change).

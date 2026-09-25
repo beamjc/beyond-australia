@@ -8,8 +8,8 @@ interface Props {
   className?: string;
 }
 
-const LINE_URL = "https://line.me/ti/p/@beyondstudy";
-const SITE_URL = "https://www.beyondstudycenter.com/inquiry-form/";
+export const LINE_URL = "https://line.me/ti/p/@beyondstudy";
+export const SITE_URL = "https://www.beyondstudycenter.com/inquiry-form/";
 
 const BSCConsultationCTA = ({ variant = "standard", className = "" }: Props) => {
   const { language } = useLanguage();

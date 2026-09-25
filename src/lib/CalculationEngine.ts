@@ -10,7 +10,7 @@ export const VISA_FEE_AUD = 2_000; // March 2026 student visa application charge
 export const VISA_FEE_WHM_AUD = 670; // Working Holiday Maker (subclass 417) fee
 export const VISA_FEE_TOURIST_AUD = 200; // approx tourist visa (subclass 600) — display only
 export const OSHC_PER_YEAR = 700;
-export const DEFAULT_FX_THB_PER_AUD = 23.48;
+export const DEFAULT_FX_THB_PER_AUD = 23.5; // planning rate, owner decision 2026-09-26
 export const DEFAULT_ELICOS_WEEKLY = 250;
 export const ELICOS_WEEKLY_OPTIONS = [200, 250, 300] as const;
 export const ELICOS_WEEKLY_MIN = 200;
@@ -178,19 +178,22 @@ export interface PathwayTier {
   tier: string;
   annualLow: number;
   annualHigh: number;
+  annual?: number; // planning figure; defaults to the low/high midpoint
   depositPct: number; // 0.25 or 0.50
   durationYears: number;
   extraStayMonths: 1 | 2; // post-course stay
   badge?: string;
 }
 
+export const HE_AVERAGE_ANNUAL_AUD = Math.round((30_000 + 40_000 + 55_000) / 3); // $41,667
+
 export const tiers: PathwayTier[] = [
   { id: "vet-budget",  sector: "vet", tier: "Budget Diploma",         annualLow: 6_000,  annualHigh: 7_000,  depositPct: 0.25, durationYears: 2, extraStayMonths: 1, badge: "No 485 pathway" },
   { id: "vet-std",     sector: "vet", tier: "Skilled (Standard)",     annualLow: 8_000,  annualHigh: 12_000, depositPct: 0.25, durationYears: 2, extraStayMonths: 1 },
   { id: "vet-prem",    sector: "vet", tier: "Skilled (Premium)",      annualLow: 12_001, annualHigh: 20_000, depositPct: 0.50, durationYears: 2, extraStayMonths: 2 },
-  { id: "he-aff",      sector: "he",  tier: "Affordable University",  annualLow: 28_000, annualHigh: 32_000, depositPct: 0.50, durationYears: 3, extraStayMonths: 2 },
-  { id: "he-good",     sector: "he",  tier: "Good Quality University",annualLow: 35_000, annualHigh: 45_000, depositPct: 0.50, durationYears: 3, extraStayMonths: 2 },
-  { id: "he-elite",    sector: "he",  tier: "Go8 / Elite",            annualLow: 50_000, annualHigh: 60_000, depositPct: 0.50, durationYears: 3, extraStayMonths: 2 },
+  // Single higher-education card: annual tuition is the average of the former
+  // Affordable ($28–32k), Good Quality ($35–45k) and Go8/Elite ($50–60k) midpoints.
+  { id: "he-avg",      sector: "he",  tier: "University (average)",   annualLow: 28_000, annualHigh: 60_000, annual: HE_AVERAGE_ANNUAL_AUD, depositPct: 0.50, durationYears: 3, extraStayMonths: 2 },
 ];
 
 export interface PathwayCalc {
@@ -230,7 +233,7 @@ export function computePathway(
   age: number,
   budgetAUD: number,
 ): PathwayCalc {
-  const annual = (tier.annualLow + tier.annualHigh) / 2;
+  const annual = tier.annual ?? (tier.annualLow + tier.annualHigh) / 2;
   const totalTuition = annual * tier.durationYears;
   const deposit = annual * tier.depositPct;
   const visaMonths = visaDurationMonths(englishPkg.weeks, tier.durationYears, tier.extraStayMonths);

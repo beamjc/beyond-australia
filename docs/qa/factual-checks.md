@@ -26,3 +26,47 @@ Why: this session's network policy blocks the primary sources. Direct requests t
 | FC-16 | Employer sponsorship salary threshold | "≥ A$76,515/year" — `VisaPathwaySection.tsx:57` | Core Skills Income Threshold, indexed each 1 July | https://immi.homeaffairs.gov.au/visas/employing-and-sponsoring-someone/sponsoring-workers/pathways-to-permanent-residence (CSIT) | 1 Jul 2026 indexation | — | Likely stale (76,515 was the 1 Jul 2025 figure) — verify. | UNVERIFIED |
 | FC-17 | Specified work postcode list | `src/data/postcodeData.ts` | Area, industry and work-date conditions (e.g. "from 22 June 2021") | https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462/specified-462-work | — | — | Unit tests only prove the lookup matches the encoded list. | UNVERIFIED |
 | FC-18 | University world/Australia ranks and 2026 tuition | `src/data/universities.ts` (e.g. UTS nursing world #16, $51,045) | Ranking source/year is not named in the UI | Each university's course page (URLs are stored in `sourceUrl`, not shown) + the ranking publisher | 2026 | — | Name the ranking source and year in the UI (copy batch). | UNVERIFIED |
+
+
+## Savings planner assumptions found 2026-09-25 (not changed — UNVERIFIED, owner/official check needed)
+
+| ID | Value in code | Where | Note |
+|---|---|---|---|
+| FC-16 | Student Visa uses the **resident** tax scale (tax-free threshold $18,200) | `src/lib/savings.ts` `calcResidentTax` | Residency for tax is decided by ATO residency tests, not visa type. The UI now says tax is an estimate and depends on tax status (owner copy). No Medicare levy or offsets are included in either scale. |
+| FC-17 | Student work limit 48 h per fortnight in study periods; unlimited in holidays and for Master by Research / PhD | `savingsCopy.workStudent`, `STUDENT_FORTNIGHT_HOURS_CAP` | Check Home Affairs student visa work conditions (condition 8105). |
+| FC-18 | WHM: no weekly cap; generally 6 months per employer (extensions possible); tax 15% from $1 | `savingsCopy.workWhm`, `calcWhmTax` | Check Home Affairs WHM work conditions and ATO WHM rates for 2025–26. |
+| FC-19 | Minimum wage $24.95/h (preset $49,301 = 24.95 × 38 × 52) | `INCOME_PRESETS`, `MIN_WAGE_HOURLY_AUD` | Check Fair Work national minimum wage from 1 July 2025. |
+| FC-20 | Income presets Low $40k, Median $72k, Average $100k, High $183.1k; expenses $2,000 / $2,500 / $3,200 per month | `INCOME_PRESETS`, `EXPENSE_PRESETS` | No source in code. "Low" is below the full-time minimum-wage preset. |
+| FC-21 | Default FX 23 THB/AUD (Budget Planner uses 23.48) | `DEFAULT_SAVINGS_FX_THB_PER_AUD` | Planning assumption; now labelled as such. |
+
+
+## Planning hub facts (2026-09-25)
+
+Home Affairs pages return HTTP 200 to a browser user-agent but render their content client-side, so the rule text could not be read automatically. Values below are carried over from the previous Visa Pathway Finder and kept in `src/data/visaFacts.ts` with `status: "UNVERIFIED"`.
+
+| ID | Fact | Current value | Source URL (checked 2026-09-25) | Status |
+|---|---|---|---|---|
+| FC-22 | Work and Holiday (462) age range for Thai passport holders | 18–30 | https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462 (200) | UNVERIFIED — owner to confirm on the page |
+| FC-23 | Points test pass mark | 65 | https://immi.homeaffairs.gov.au/help-support/tools/points-calculator (200) | UNVERIFIED — shown only as "minimum"; results say an invitation depends on other factors |
+| FC-24 | Employer-sponsored salary threshold | A$76,515 in the old first question | — | REMOVED from the tool (thresholds change; the Home Affairs news feed on 2026-09-25 mentions skilled income thresholds increasing). Not displayed anywhere now. |
+| FC-25 | WHM: IELTS 4.5, ~A$5,000 funds, tertiary study, DCY support letter | old WHM check | — | REMOVED from the explorer (results point to the official page and the site's WHM section instead). |
+| FC-26 | Student visa: IELTS 5.5+, 48 h/fortnight, "no age limit", "pathway to skilled migration" | old Student node | — | REMOVED (study-intention framing; no migration-outcome claims). |
+| FC-27 | "VET from ~A$6,000/year" | old Study Options + Visa Pathway | — | REMOVED. The finder's budget check uses the planner's own tier data (lowest university tier A$28,000/yr) only to show a "some courses may cost more" note. |
+
+Official links used (all returned HTTP 200 on 2026-09-25): visa finder, 462, 500, skilled occupation list, points calculator, working in Australia, ENS 186 (Home Affairs); OMARA register (portal.mara.gov.au). `…/working-in-australia/employer-sponsored` returned 404 and is not used.
+
+
+## Update 2026-09-26 (owner asked to check official sources)
+
+| ID | Rule | Source (checked 2026-09-26) | Result | Change |
+|---|---|---|---|---|
+| FC-16 | Resident tax scale used for Student Visa | ATO "Tax rates – Australian resident", last updated 13 Aug 2026: https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents | **Corrected.** 2026–27: nil to $18,200; 15% to $45,000 (was 16% in 2025–26); $4,020 + 30% to $135,000; $31,020 + 37% to $190,000; $51,370 + 45% above. Excludes Medicare levy (2%). | Calculator now uses 2026–27 (`src/data/taxRates.ts`). Tax residency still depends on ATO residency tests; the UI keeps the owner's "estimate" note. |
+| FC-18 (tax) | WHM tax | ATO "Tax rates – working holiday maker", last updated 18 Jun 2025: https://www.ato.gov.au/tax-rates-and-codes/tax-rates-working-holiday-makers | VERIFIED for 2025–26 (latest year published): 15% to $45,000; $6,750 + 30% to $135,000; $33,750 + 37% to $190,000; $54,100 + 45% above. No 2026–27 WHM table published yet. | Unchanged values; footnote now names the year per visa type. |
+| FC-17 | Student work limit | Home Affairs "Work restrictions for student visa holders": https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500/temporary-relaxation-of-working-hours-for-student-visa-holders | VERIFIED (search excerpt): from 1 July 2023, no more than 48 hours a fortnight while studying; no restriction when the course is not in session; masters by research / doctoral students may work more. | None. |
+| FC-18 (work) | WHM "6 months per employer" | — | UNVERIFIED (not checked this round). | None. |
+| FC-19 | Minimum wage $24.95/h | — | UNVERIFIED (not checked this round). | None. |
+| FC-21 | Planning FX rate | Owner decision 2026-09-26 | 23.5 THB per AUD for both the Budget Planner and the Savings planner. | `DEFAULT_FX_THB_PER_AUD = 23.5`; savings reuses it. |
+| FC-22 | WHM 462 age for Thai passports | Home Affairs 462 page (search excerpt): "available to people 18 to 30"; Thailand listed as eligible. https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462 | VERIFIED | `visaFacts.status = "VERIFIED"` |
+| FC-23 | Points pass mark | Home Affairs 189 points-tested stream (search excerpt): "meet or exceed the points threshold of 65". https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189/points-tested | VERIFIED | `visaFacts.status = "VERIFIED"` |
+
+Home Affairs and ATO pages block automated fetching; the ATO rate tables were read from the ATO's own "print whole section" PDFs, Home Affairs facts from the official page text shown in search results.
