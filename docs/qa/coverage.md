@@ -68,6 +68,8 @@ Results: NOT RUN · PASS · FAIL · BLOCKED · NOT APPLICABLE. "(M)" = mocked co
 | SAV-01 | LINE/Facebook share URLs encode Thai + page URL (not sent) | TH | D/T/M | CLAUDE.md | PASS | e2e | — |
 | SAV-02 | Tax / wage assumptions current | — | — | FC-12…15 | BLOCKED | — | ISS-027 |
 | SAV-03 | Negative savings / boundary inputs | EN | — | — | NOT RUN | — | — |
+| SAV-04 | One calculator: visa switch changes tax only; defaults match hand-derived figures; 3 years reaches goal; THB↔AUD round-trip | TH | e2e (new) + 390/1440 script | owner brief; `tests/unit/savings.test.ts` | PASS (script, dev server); e2e run pending | `screenshots/savings/` | ISS-032 |
+| SAV-05 | Income needed to reach goal | — | unit | derived: WHM (67,478.26 − 6,750)/0.7 = 86,754.66 | PASS | unit | — |
 | VSA-01 | 8 sliders named; safe/risky ends → readiness 100 "You look well prepared overall" / 0 "Get professional advice…"; no sliders on the result; Edit keeps answers; rows expand | EN | e2e (updated) | code (weights unchanged, `tests/unit/visaReadiness.test.ts`) | NOT RUN (e2e rewritten 2026-09-25; run pending) | — | ISS-021 |
 | VSA-02 | Uncertainty presentation: owner disclaimer + "score is not a chance of approval" note; status terms describe preparation priority | TH | M/D (viewport emulation) | owner brief 2026-09-25 | PASS (screenshots) — Thai drafts await editor | `screenshots/visa-readiness/` | — |
 | VSA-03 | Scoring formula, weights, per-factor thresholds and verdict bands identical to the original | — | unit | original component (main @ 646194a) | PASS | `tests/unit/visaReadiness.test.ts` | — |

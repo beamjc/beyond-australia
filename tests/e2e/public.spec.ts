@@ -182,6 +182,36 @@ test.describe('Study Options', () => {
   })
 })
 
+test.describe('Savings planner', () => {
+  test.use({ lang: 'th' })
+  test('one calculator: visa type changes tax only; goal survives THB/AUD toggles', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    await page.locator('#study-tab-savings').click()
+    const panel = page.locator('#study-panel-savings')
+    const result = panel.locator('section[aria-labelledby="sav-result"]')
+    // Defaults: WHM, A$60,000, A$2,000/month, ฿1,000,000 at 23 THB/AUD, 1 year
+    await expect(result).toContainText('− A$11,250')   // 15% × 45,000 + 30% × 15,000
+    await expect(result).toContainText('A$24,750')     // 48,750 − 24,000
+    await expect(result).toContainText('A$18,728')     // 43,478 − 24,750
+    await expect(result).toContainText('A$86,755')     // gross needed: (67,478.26 − 6,750) / 0.7
+    await panel.getByRole('radio', { name: /Student Visa/ }).click()
+    await expect(result).toContainText('− A$8,788')    // 16% × 26,800 + 30% × 15,000
+    await expect(result).toContainText('A$27,212')
+    await expect(panel.locator('#sav-goal')).toHaveValue('1,000,000')
+    await expect(panel.getByRole('button', { name: 'ประหยัด' })).toHaveAttribute('aria-pressed', 'true')
+    const aud = panel.getByRole('button', { name: 'AUD', exact: true })
+    const thb = panel.getByRole('button', { name: 'THB', exact: true })
+    for (let i = 0; i < 3; i++) { await aud.click(); await thb.click() }
+    await expect(panel.locator('#sav-goal')).toHaveValue('1,000,000')
+    await aud.click()
+    await expect(panel.locator('#sav-goal')).toHaveValue('43,478')
+    await panel.getByRole('button', { name: '3 ปี' }).click()
+    await expect(result).toContainText('แผนนี้มีโอกาสถึงเป้าหมายที่ตั้งไว้')
+    await expect(result).toContainText('A$81,636')     // 27,212 × 3
+  })
+})
+
 test.describe('Savings share links', () => {
   test.use({ lang: 'th' })
   test('LINE/Facebook share URLs encode Thai text and page URL (not opened)', async ({ page }) => {

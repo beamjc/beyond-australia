@@ -26,3 +26,15 @@ Why: this session's network policy blocks the primary sources. Direct requests t
 | FC-16 | Employer sponsorship salary threshold | "≥ A$76,515/year" — `VisaPathwaySection.tsx:57` | Core Skills Income Threshold, indexed each 1 July | https://immi.homeaffairs.gov.au/visas/employing-and-sponsoring-someone/sponsoring-workers/pathways-to-permanent-residence (CSIT) | 1 Jul 2026 indexation | — | Likely stale (76,515 was the 1 Jul 2025 figure) — verify. | UNVERIFIED |
 | FC-17 | Specified work postcode list | `src/data/postcodeData.ts` | Area, industry and work-date conditions (e.g. "from 22 June 2021") | https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462/specified-462-work | — | — | Unit tests only prove the lookup matches the encoded list. | UNVERIFIED |
 | FC-18 | University world/Australia ranks and 2026 tuition | `src/data/universities.ts` (e.g. UTS nursing world #16, $51,045) | Ranking source/year is not named in the UI | Each university's course page (URLs are stored in `sourceUrl`, not shown) + the ranking publisher | 2026 | — | Name the ranking source and year in the UI (copy batch). | UNVERIFIED |
+
+
+## Savings planner assumptions found 2026-09-25 (not changed — UNVERIFIED, owner/official check needed)
+
+| ID | Value in code | Where | Note |
+|---|---|---|---|
+| FC-16 | Student Visa uses the **resident** tax scale (tax-free threshold $18,200) | `src/lib/savings.ts` `calcResidentTax` | Residency for tax is decided by ATO residency tests, not visa type. The UI now says tax is an estimate and depends on tax status (owner copy). No Medicare levy or offsets are included in either scale. |
+| FC-17 | Student work limit 48 h per fortnight in study periods; unlimited in holidays and for Master by Research / PhD | `savingsCopy.workStudent`, `STUDENT_FORTNIGHT_HOURS_CAP` | Check Home Affairs student visa work conditions (condition 8105). |
+| FC-18 | WHM: no weekly cap; generally 6 months per employer (extensions possible); tax 15% from $1 | `savingsCopy.workWhm`, `calcWhmTax` | Check Home Affairs WHM work conditions and ATO WHM rates for 2025–26. |
+| FC-19 | Minimum wage $24.95/h (preset $49,301 = 24.95 × 38 × 52) | `INCOME_PRESETS`, `MIN_WAGE_HOURLY_AUD` | Check Fair Work national minimum wage from 1 July 2025. |
+| FC-20 | Income presets Low $40k, Median $72k, Average $100k, High $183.1k; expenses $2,000 / $2,500 / $3,200 per month | `INCOME_PRESETS`, `EXPENSE_PRESETS` | No source in code. "Low" is below the full-time minimum-wage preset. |
+| FC-21 | Default FX 23 THB/AUD (Budget Planner uses 23.48) | `DEFAULT_SAVINGS_FX_THB_PER_AUD` | Planning assumption; now labelled as such. |

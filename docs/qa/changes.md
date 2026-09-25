@@ -87,3 +87,14 @@ Branch: `qa/study-tools-redesign` (from `main` @ 646194a). Nothing merged or dep
 | "Higher Risk" red card, score "61 /100 risk" | "คะแนนความพร้อม 39 / 100", "มีหลายจุดที่ควรเตรียมเพิ่มเติม" (neutral card; colour only on dots/badges) |
 | "Low / Medium / High risk" chips | ไม่มีข้อกังวลเด่นชัด / ควรเตรียมข้อมูลเพิ่มเติม / ควรตรวจสอบเป็นพิเศษ |
 | English disclaimer | Owner's Thai disclaimer, small and neutral |
+
+## Savings planner — one calculator
+
+- Owner brief: one savings planner, visa type as an input; Thai-first layout; do not change the calculation or tax logic.
+- **What differed between the old WHM / Student modes** (checked in code before refactoring): only (1) the tax function — WHM scale vs resident scale, (2) the work-rights info box, (3) the student-only warning when the income needs > 48 h/fortnight at minimum wage. Goal, currency, FX, duration, income, expenses, the savings maths and the result layout were already shared.
+- `src/lib/savings.ts`: the unchanged tax functions behind `calculateTax({ visaType, annualIncome })`, a shared `computeSavingsPlan`, and `requiredGrossIncome` (owner's optional "income needed" line — bisection on the same tax function, exact to the dollar; unit-tested). Unit tests in `tests/unit/savings.test.ts` use hand-derived figures.
+- UI: `SavingsCalculator.tsx` + `savings/` (`SavingsGoalInput`, `DurationSelector`, `VisaTypeSelector`, `IncomeSelector`, `ExpenseSelector`, `SavingsResult`, `SavingsConsultationCTA`). Order: goal → duration → visa → income → expenses → result → CTA → share; result sits beside the inputs on desktop (sticky only on screens ≥ 1000 px tall so it is never cut off). Switching visa type changes only the tax figures, tax note, work-rights note and student-hours check — nothing resets.
+- Status box replaces the red-bordered panel: neutral result card; green/red only in the status area and the gap figure. The owner's status body and personal summary were combined into one sentence block to avoid repeating the same numbers twice; "ลองปรับแผน" and the quick actions were combined (buttons scroll to and focus the matching input). "เพิ่มระยะเวลา" is hidden when 3 years is already selected or the goal is reached.
+- Bugs fixed: ISS-032 (currency toggle changed the goal), ISS-033 (FX "last updated" was always today).
+- CTA: "ปรึกษาฟรีทาง LINE" → existing LINE URL; "ดูบริการของเรา" → the site's `#services` section. Share buttons now secondary (outline), same URLs and message.
+- Example (WHM, A$60,000, A$2,000/month, ฿1,000,000, 1 year): tax A$11,250, take-home A$48,750, savings A$24,750, still short A$18,728, income needed A$86,755. Student Visa: tax A$8,788, savings A$27,212.
