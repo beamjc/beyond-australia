@@ -67,3 +67,5 @@ Next steps:
 - External Thai editor: review DRAFT rows in the four review files before merging.
 - Owner decisions: see "Decisions needed" in the session report (FX 23 vs 23.48; UNVERIFIED visa facts FC-16…23; "ดูหลักสูตรที่เหมาะกับฉัน" destination; floating buttons on mobile ISS-030; "ผ่าน" wording in skilled result).
 - OpenNext Cloudflare build/preview smoke check not run this session.
+
+- 2026-09-26: owner decisions applied (tax 2026–27 resident rates, FX 23.5, CTA "ติดต่อปรึกษาเราได้เลย", skilled title). Remaining open: floating buttons on mobile (ISS-030) — suggestion sent to owner; WHM 6-months-per-employer and minimum wage still UNVERIFIED.

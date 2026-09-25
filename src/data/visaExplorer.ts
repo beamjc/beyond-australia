@@ -256,7 +256,7 @@ export const explorerNodes: ExplorerNode[] = [
     kind: "result",
     id: "skilled-min-met",
     eyebrow: EXPLORE,
-    title: bi("คุณผ่านเกณฑ์คะแนนขั้นต่ำที่ใช้ใน Points Test เบื้องต้น", "You may meet the basic minimum points score"),
+    title: bi("คุณสมบัติครบตามเกณฑ์คะแนนขั้นต่ำของ Points Test", "You meet the minimum points score for the points test"),
     summary: bi(
       "แต่การได้รับ invitation ขึ้นอยู่กับประเภทวีซ่า อาชีพ รอบการเชิญ และปัจจัยอื่น ๆ ด้วย",
       "But whether you're invited depends on the visa, your occupation, invitation rounds and other factors.",

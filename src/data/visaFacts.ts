@@ -1,8 +1,8 @@
 // Dated visa facts and official links used by the pathway tools.
 // Keep every number that can change here, with where it came from.
-// status: "UNVERIFIED" = carried over from the previous tool and not yet
-// confirmed against the live official page (Home Affairs pages are rendered
-// client-side and could not be read automatically on 2026-09-25).
+// status: "VERIFIED" = confirmed against the official page on checkedOn
+// (Home Affairs pages render client-side; 2026-09-26 checks used the official
+// page text shown in search results).
 // See docs/qa/factual-checks.md (FC-22…).
 
 export interface DatedFact<T> {
@@ -19,18 +19,18 @@ export const visaFacts = {
     ageRange: {
       value: { min: 18, max: 30 },
       source: "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-462",
-      checkedOn: "2026-09-25",
-      status: "UNVERIFIED",
-      note: "Age range for Thai passport holders, carried over from the previous Visa Pathway Finder.",
+      checkedOn: "2026-09-26",
+      status: "VERIFIED",
+      note: "Home Affairs 462 page (via search excerpt): available to people 18 to 30; Thailand is an eligible country.",
     } satisfies DatedFact<{ min: number; max: number }>,
   },
   skilledPointsTest: {
     passMark: {
       value: 65,
       source: "https://immi.homeaffairs.gov.au/help-support/tools/points-calculator",
-      checkedOn: "2026-09-25",
-      status: "UNVERIFIED",
-      note: "Minimum points score for the points-tested skilled visas. Meeting it does not mean an invitation.",
+      checkedOn: "2026-09-26",
+      status: "VERIFIED",
+      note: "Home Affairs 189 points-tested stream (via search excerpt): points threshold of 65. Meeting it does not mean an invitation.",
     } satisfies DatedFact<number>,
   },
 } as const;

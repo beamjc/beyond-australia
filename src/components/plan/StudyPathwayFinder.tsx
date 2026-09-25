@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Info, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, Info, RotateCcw } from "lucide-react";
+import { SITE_URL } from "../shared/BSCConsultationCTA";
 import {
   budgetOptions, cityOptions, englishOptions, finderCopy as c, goalOptions, interestOptions,
   nextStepCopy, pathwayInfo, qualificationOptions, timingOptions, type GoalId, type NextStepId, type PathwayId,
@@ -297,9 +298,9 @@ const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswer
         </ol>
         {city && <p className="mt-4 text-xs text-muted-foreground">{fill(t(c.cityNote), { city })}</p>}
         <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <button type="button" onClick={() => nav.openTab("courses")} className={btnPrimary}>
-            {t(c.primaryCta)} <ArrowRight className="h-4 w-4" aria-hidden />
-          </button>
+          <a href={SITE_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
+            {t(c.primaryCta)} <ExternalLink className="h-4 w-4" aria-hidden />
+          </a>
         </div>
       </Card>
 
@@ -311,7 +312,7 @@ const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswer
       </Card>
 
       <RelatedTools tools={related} />
-      <ConsultBlock kind="study" title={c.consultTitle} sub={c.consultSub} siteLabel={c.consultSite} />
+      <ConsultBlock kind="study" title={c.consultTitle} sub={c.consultSub} />
 
       <div className="space-y-1 px-1 text-xs leading-relaxed text-muted-foreground">
         <p>{t(c.disclaimer)}</p>

@@ -109,3 +109,11 @@ Branch: `qa/study-tools-redesign` (from `main` @ 646194a). Nothing merged or dep
 - **Old Visa Pathway tree** (for the record): 18 nodes starting with "employer willing to pay ≥ A$76,515"; results included "You're competitive!", "You're on a strong path", "Fastest to PR", WHM/Student "stepping stone", "study a new field to qualify"; one generic Home Affairs link on "info" results only.
 - **New explorer** (`src/data/visaExplorer.ts`, `src/lib/visaExplorer.ts`): situation-first start question; WHM (age, passport, goal), Student (plan → study-linked results), Skilled (list → points, never a dead end: "เช็ก Skilled Occupation List" + "กลับมาทำต่อ"), Employer (status → role match → checks), Not sure → comparison of 4 options. Every result: summary, why (from the choices made), what to check, actions, related tools, official sources. Migration topics point to a qualified adviser (OMARA register), not BSC; study topics show the BSC LINE CTA. Tree integrity, sources and banned phrases are unit-tested.
 - Auto-advance after a 200 ms selected state on single-choice questions (not on the last Study question); Back keeps earlier answers.
+
+## Owner decisions applied — 2026-09-26
+
+- **Tax (checked on ato.gov.au):** tables moved to `src/data/taxRates.ts` with source and date. Student Visa now uses the **2026–27 resident** rates (15% on $18,201–45,000; was 16% in 2025–26). WHM keeps the **2025–26** table, the latest the ATO has published (15% on the first $45,000). The footnote names the year per visa type. Example at A$60,000: Student tax A$8,788 → **A$8,520**; WHM unchanged at A$11,250.
+- **FX:** one planning rate, **23.5 THB per AUD**, for the Budget Planner (was 23.48) and the Savings planner (was 23). ฿800,000 → A$34,043; ฿1,000,000 → A$42,553.
+- **Study Finder CTA:** "ดูหลักสูตรที่เหมาะกับฉัน" → **"ติดต่อปรึกษาเราได้เลย"**, linking to the Beyond Study Center inquiry page. The consultation card below keeps LINE only (no duplicate website button).
+- **Skilled result title:** "คุณสมบัติครบตามเกณฑ์คะแนนขั้นต่ำของ Points Test" (owner's "คุณสมบัติครบ", limited to the points minimum; the summary still says an invitation depends on other factors).
+- **Visa facts:** WHM 462 age 18–30 and the 65-point pass mark are now marked VERIFIED; student work hours verified (no code change).

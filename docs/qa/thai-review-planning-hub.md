@@ -8,10 +8,10 @@
 - Screenshots: `docs/qa/screenshots/planning-hub/`.
 
 Look first:
-- `skilled-min-met.title` — owner text "คุณผ่านเกณฑ์คะแนนขั้นต่ำ…" says "ผ่าน" (passed). The English was softened to "You may meet…". Owner/editor: keep "ผ่าน", or use "คะแนนของคุณอาจถึงเกณฑ์ขั้นต่ำ…"?
-- `whm-age.*`, `whm-age-over.summary` state the Thai 462 age range from `visaFacts` (18–30, UNVERIFIED).
+- `skilled-min-met.title` — owner decision 2026-09-26: use "คุณสมบัติครบ"; applied as "คุณสมบัติครบตามเกณฑ์คะแนนขั้นต่ำของ Points Test" so it refers to the points minimum only.
+- `whm-age.*`, `whm-age-over.summary` state the Thai 462 age range from `visaFacts` (18–30, verified 2026-09-26).
 - Study Finder reasons are written as clauses so they work both in the checklist and in the sentence "จากคำตอบของคุณ {reason} และ{reason} {closing}".
-- `primaryCta` "ดูหลักสูตรที่เหมาะกับฉัน" opens the Budget Study Planner tab — there is no course database to filter yet (decision needed).
+- `primaryCta` — owner decision 2026-09-26: "ติดต่อปรึกษาเราได้เลย", linking to Beyond Study Center.
 
 | ID | Key | English | Thai | Status |
 |---|---|---|---|---|
@@ -56,7 +56,7 @@ Look first:
 | PLN-039 | downgradeNote | If you're considering a course below your current qualification level, check how it connects to your career goals. | **Owner text** — หากกำลังพิจารณาหลักสูตรที่อยู่ในระดับต่ำกว่าวุฒิเดิม ควรดูว่าหลักสูตรนั้นเชื่อมโยงกับเป้าหมายด้านอาชีพของคุณอย่างไร | Applied verbatim |
 | PLN-040 | nextTitle | What to do next | **Owner text** — สิ่งที่ควรทำต่อ | Applied verbatim |
 | PLN-041 | cityNote | Preferred city: {city} | เมืองที่สนใจ: {city} | DRAFT — needs editor |
-| PLN-042 | primaryCta | See courses for me | **Owner text** — ดูหลักสูตรที่เหมาะกับฉัน | Applied verbatim |
+| PLN-042 | primaryCta | Contact us for advice | **Owner text** — ติดต่อปรึกษาเราได้เลย | Applied (owner 2026-09-26); links to the Beyond Study Center inquiry page |
 | PLN-043 | visaBridgeTitle | Planning your visa too? | **Owner text** — กำลังวางแผนเรื่องวีซ่าด้วย? | Applied verbatim |
 | PLN-044 | visaBridgeCta | Explore related visa options | **Owner text** — สำรวจตัวเลือกวีซ่าที่เกี่ยวข้อง | Applied verbatim |
 | PLN-045 | consultTitle | Not sure where to start? | **Owner text** — ยังไม่แน่ใจว่าจะเริ่มจากตรงไหน? | Applied verbatim |
@@ -258,7 +258,7 @@ Look first:
 | PLN-241 | skilled-points.opt.low.label | Under 65 | ต่ำกว่า 65 คะแนน | DRAFT — needs editor |
 | PLN-242 | skilled-points.opt.unsure.label | Not sure | ยังไม่แน่ใจ | DRAFT — needs editor |
 | PLN-243 | skilled-min-met.eyebrow | Worth exploring | **Owner text** — ตัวเลือกที่ควรศึกษาต่อ | Applied verbatim |
-| PLN-244 | skilled-min-met.title | You may meet the basic minimum points score | **Owner text** — คุณผ่านเกณฑ์คะแนนขั้นต่ำที่ใช้ใน Points Test เบื้องต้น | Applied verbatim |
+| PLN-244 | skilled-min-met.title | You meet the minimum points score for the points test | คุณสมบัติครบตามเกณฑ์คะแนนขั้นต่ำของ Points Test | Owner chose "คุณสมบัติครบ" (2026-09-26); scoped to the points minimum — editor to confirm |
 | PLN-245 | skilled-min-met.summary | But whether you're invited depends on the visa, your occupation, invitation rounds and other factors. | **Owner text** — แต่การได้รับ invitation ขึ้นอยู่กับประเภทวีซ่า อาชีพ รอบการเชิญ และปัจจัยอื่น ๆ ด้วย | Applied verbatim |
 | PLN-246 | skilled-min-met.checksTitle | What to check next | **Owner text** — สิ่งที่ควรตรวจสอบต่อ | Applied verbatim |
 | PLN-247 | skilled-min-met.checks.1 | Skills assessment | Skills Assessment | DRAFT — needs editor |

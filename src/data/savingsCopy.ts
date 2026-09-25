@@ -129,7 +129,7 @@ export const savingsCopy = {
   adjustExpenses: { th: "ลดค่าใช้จ่าย", en: "Spend less" },
   adjustDuration: { th: "เพิ่มระยะเวลา", en: "Stay longer" },
 
-  footTax: { th: "คำนวณภาษีจากอัตรา ATO ปี 2025–26", en: "Tax based on ATO 2025–26 rates" },
+  footTax: { th: "คำนวณภาษีจากอัตรา ATO ปี {year}", en: "Tax based on ATO {year} rates" },
   footFx: { th: "อัตราแลกเปลี่ยนที่ใช้วางแผน 1 AUD = {rate} บาท", en: "Planning exchange rate 1 AUD = {rate} THB" },
 
   ctaTitle: { th: "ไม่แน่ใจว่าควรวางแผนงบเท่าไหร่?", en: "Not sure how much to budget?" },

@@ -2,7 +2,7 @@
 
 import { CheckCircle2, Info, TrendingUp } from "lucide-react";
 import { fill, savingsCopy as c } from "@/data/savingsCopy";
-import type { computeSavingsPlan, SavingsVisaType } from "@/lib/savings";
+import { taxTableFor, type computeSavingsPlan, type SavingsVisaType } from "@/lib/savings";
 import { fmtA, useT, yearsText } from "./shared";
 
 type Plan = ReturnType<typeof computeSavingsPlan>;
@@ -131,7 +131,7 @@ const SavingsResult = ({ plan, visaType, income, monthly, goalAUD, years, requir
       <div className="mt-4 space-y-1 border-t border-border pt-3 text-xs text-muted-foreground leading-relaxed">
         <p>{t(visaType === "whm" ? c.taxNoteWhm : c.taxNoteStudent)}</p>
         <p>{t(c.taxShared)}</p>
-        <p>{t(c.footTax)}</p>
+        <p>{fill(t(c.footTax), { year: taxTableFor(visaType).incomeYear })}</p>
         <p>{fill(t(c.footFx), { rate })}</p>
       </div>
     </section>

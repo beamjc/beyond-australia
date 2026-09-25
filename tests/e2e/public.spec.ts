@@ -55,8 +55,8 @@ test.describe('Budget Study Planner', () => {
     }
     await expect(input).toHaveValue('800,000')
     await aud.click()
-    // 800,000 / 23.48 = 34,071.55 → shown rounded
-    await expect(input).toHaveValue('34,072')
+    // 800,000 / 23.5 = 34,042.55 → shown rounded
+    await expect(input).toHaveValue('34,043')
   })
 
   test('inputs survive switching to another Study tab and back', async ({ page }) => {
@@ -224,14 +224,14 @@ test.describe('Savings planner', () => {
     await page.locator('#study-tab-savings').click()
     const panel = page.locator('#study-panel-savings')
     const result = panel.locator('section[aria-labelledby="sav-result"]')
-    // Defaults: WHM, A$60,000, A$2,000/month, ฿1,000,000 at 23 THB/AUD, 1 year
+    // Defaults: WHM, A$60,000, A$2,000/month, ฿1,000,000 at 23.5 THB/AUD (= A$42,553.19), 1 year
     await expect(result).toContainText('− A$11,250')   // 15% × 45,000 + 30% × 15,000
     await expect(result).toContainText('A$24,750')     // 48,750 − 24,000
-    await expect(result).toContainText('A$18,728')     // 43,478 − 24,750
-    await expect(result).toContainText('A$86,755')     // gross needed: (67,478.26 − 6,750) / 0.7
+    await expect(result).toContainText('A$17,803')     // 42,553.19 − 24,750
+    await expect(result).toContainText('A$85,434')     // gross needed: (66,553.19 − 6,750) / 0.7
     await panel.getByRole('radio', { name: /Student Visa/ }).click()
-    await expect(result).toContainText('− A$8,788')    // 16% × 26,800 + 30% × 15,000
-    await expect(result).toContainText('A$27,212')
+    await expect(result).toContainText('− A$8,520')    // 2026–27 resident: 15% × 26,800 + 30% × 15,000
+    await expect(result).toContainText('A$27,480')
     await expect(panel.locator('#sav-goal')).toHaveValue('1,000,000')
     await expect(panel.getByRole('button', { name: 'ประหยัด' })).toHaveAttribute('aria-pressed', 'true')
     const aud = panel.getByRole('button', { name: 'AUD', exact: true })
@@ -239,10 +239,10 @@ test.describe('Savings planner', () => {
     for (let i = 0; i < 3; i++) { await aud.click(); await thb.click() }
     await expect(panel.locator('#sav-goal')).toHaveValue('1,000,000')
     await aud.click()
-    await expect(panel.locator('#sav-goal')).toHaveValue('43,478')
+    await expect(panel.locator('#sav-goal')).toHaveValue('42,553')
     await panel.getByRole('button', { name: '3 ปี' }).click()
     await expect(result).toContainText('แผนนี้มีโอกาสถึงเป้าหมายที่ตั้งไว้')
-    await expect(result).toContainText('A$81,636')     // 27,212 × 3
+    await expect(result).toContainText('A$82,440')     // 27,480 × 3
   })
 })
 

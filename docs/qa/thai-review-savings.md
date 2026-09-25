@@ -10,7 +10,7 @@
 
 Look first:
 - `copy.workWhm`, `copy.workStudent`, `copy.studentHours` restate the existing English work-rights notes (48 h/fortnight, 6 months per employer). Facts are UNVERIFIED — see `factual-checks.md` FC-16…18.
-- `copy.fxHint` / `copy.footFx` replace "FX last updated {today}", which was always today's date (ISS-033).
+- 2026-09-26: planning FX rate is now 23.5 (owner). `copy.fxHint` / `copy.footFx` replace "FX last updated {today}", which was always today's date (ISS-033).
 - Owner example "ถ้าอยู่ 3 ปี … จากเป้าหมาย A$130,434" treats the goal as per-year; the calculator's goal is a **total**, so the sentence shows the total goal (e.g. A$43,478).
 
 | ID | Key | English | Thai | Status |
@@ -75,7 +75,7 @@ Look first:
 | SAV-058 | copy.adjustIncome | Earn more | **Owner text** — เพิ่มรายได้ | Applied verbatim |
 | SAV-059 | copy.adjustExpenses | Spend less | **Owner text** — ลดค่าใช้จ่าย | Applied verbatim |
 | SAV-060 | copy.adjustDuration | Stay longer | **Owner text** — เพิ่มระยะเวลา | Applied verbatim |
-| SAV-061 | copy.footTax | Tax based on ATO 2025–26 rates | **Owner text** — คำนวณภาษีจากอัตรา ATO ปี 2025–26 | Applied verbatim |
+| SAV-061 | copy.footTax | Tax based on ATO {year} rates | **Owner text** — คำนวณภาษีจากอัตรา ATO ปี {{year}} | Applied — year is now filled by code (WHM 2025–26, Student 2026–27) after the 2026-09-26 tax check |
 | SAV-062 | copy.footFx | Planning exchange rate 1 AUD = {rate} THB | อัตราแลกเปลี่ยนที่ใช้วางแผน 1 AUD = {rate} บาท | DRAFT — needs editor |
 | SAV-063 | copy.ctaTitle | Not sure how much to budget? | **Owner text** — ไม่แน่ใจว่าควรวางแผนงบเท่าไหร่? | Applied verbatim |
 | SAV-064 | copy.ctaSub | The Beyond Study Center team can help you plan tuition, living costs and an overall budget. | **Owner text** — ทีม Beyond Study Center ช่วยวางแผนค่าเรียน ค่าครองชีพ และงบประมาณเบื้องต้นให้คุณได้ | Applied verbatim |

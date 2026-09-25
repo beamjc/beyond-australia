@@ -1,38 +1,28 @@
 // Savings planner calculations (Study → Savings tab). All money is AUD per year
-// unless noted. Tax brackets are the ones the calculator already used; only the
-// structure changed: one shared plan, with visa type selecting the tax strategy.
+// unless noted. One shared plan; visa type selects the tax table
+// (src/data/taxRates.ts, checked against the ATO on 2026-09-26).
+
+import { DEFAULT_FX_THB_PER_AUD } from "@/lib/CalculationEngine";
+import { taxFromTable, taxTables } from "@/data/taxRates";
 
 export type SavingsVisaType = "whm" | "student";
 
 export const MIN_WAGE_HOURLY_AUD = 24.95;
 export const STUDENT_FORTNIGHT_HOURS_CAP = 48;
-export const DEFAULT_SAVINGS_FX_THB_PER_AUD = 23;
+/** Same planning rate as the Budget Planner (owner decision 2026-09-26: 23.5). */
+export const DEFAULT_SAVINGS_FX_THB_PER_AUD = DEFAULT_FX_THB_PER_AUD;
 
-/** 2025–26 Working Holiday Maker rates (15% from the first dollar). */
-export const calcWhmTax = (income: number) => {
-  if (income <= 0) return 0;
-  if (income <= 45000) return income * 0.15;
-  if (income <= 135000) return 6750 + (income - 45000) * 0.30;
-  if (income <= 190000) return 33750 + (income - 135000) * 0.37;
-  return 54100 + (income - 190000) * 0.45;
-};
+/** Working Holiday Maker rates: 15% from the first dollar up to $45,000. */
+export const calcWhmTax = (income: number) => taxFromTable(income, taxTables.workingHolidayMaker);
 
-/** 2025–26 resident rates (tax-free threshold $18,200; no Medicare levy or offsets). */
-export const calcResidentTax = (income: number) => {
-  if (income <= 18200) return 0;
-  if (income <= 45000) return (income - 18200) * 0.16;
-  if (income <= 135000) return 4288 + (income - 45000) * 0.30;
-  if (income <= 190000) return 31288 + (income - 135000) * 0.37;
-  return 51638 + (income - 190000) * 0.45;
-};
+/** Resident rates: nil to $18,200 (no Medicare levy or offsets). */
+export const calcResidentTax = (income: number) => taxFromTable(income, taxTables.resident);
 
-const taxStrategies: Record<SavingsVisaType, (income: number) => number> = {
-  whm: calcWhmTax,
-  student: calcResidentTax,
-};
+export const taxTableFor = (visaType: SavingsVisaType) =>
+  visaType === "whm" ? taxTables.workingHolidayMaker : taxTables.resident;
 
 export function calculateTax({ visaType, annualIncome }: { visaType: SavingsVisaType; annualIncome: number }) {
-  return taxStrategies[visaType](annualIncome);
+  return taxFromTable(annualIncome, taxTableFor(visaType));
 }
 
 export interface SavingsInputs {
