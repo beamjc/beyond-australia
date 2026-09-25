@@ -58,3 +58,16 @@ Branch: `claude/tender-tesla-7g4bgt`. Nothing merged or deployed.
 ### Follow-up 2026-09-24 — small groups use the old method
 
 - Owner: for age groups with < 30 decisions, keep the old calculation (all-ages average × original age factor) rather than the plain average. `ageMultiplier` restored for this fallback only. Example: University from Thailand, age 37: 94.6 → **56.8**.
+
+
+# Owner-requested changes — 2026-09-25
+
+Branch: `qa/study-tools-redesign` (from `main` @ 646194a). Nothing merged or deployed.
+
+## Budget Study Planner — one university card
+
+- Owner request: Bachelor and Master show **one** university card instead of Affordable / Good Quality / Go8 cards, priced at an average, with a note that fees depend on faculty and university.
+- `src/lib/CalculationEngine.ts`: the three `he-*` tiers are replaced by `he-avg`. Annual tuition = mean of the former tier midpoints (30,000 + 40,000 + 55,000) / 3 = **$41,667**. `PathwayTier.annual` (optional) overrides the low/high midpoint; VET tiers are unchanged. Duration still comes from the degree choice (3 years bachelor, 2 years master). Grant-rate figures were already identical for all university tiers.
+- `src/components/study/BudgetStudyPlanner.tsx`: the university card spans the full result width, the title reuses the existing ปริญญาตรี / ปริญญาโท labels, and it shows the owner's note verbatim (BSP-130). A polished version and an optional "average per year" line are in `thai-review-budget-planner.md` (BSP-130, BSP-131) for the editor.
+- Example (bachelor, offshore, IELTS 5.0, $250/wk): before, first payment $27,329 / $32,329 / $39,829 across three cards; after, one card at **$33,163** (English $7,500 + 50% deposit $20,833.50 + visa $2,000 + OSHC $2,829.17).
+- Tests: `tests/unit/calculationEngine.test.ts` now checks the `he-avg` figures (derived above), that only one university tier exists, and that VET tiers still use the midpoint.

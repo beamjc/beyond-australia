@@ -439,6 +439,7 @@ const BudgetStudyPlanner = () => {
                     calc={calc}
                     fmtMoney={fmtMoney}
                     elicosWeekly={elicosWeekly}
+                    degreeLevel={goal === "he" ? degreeLevel : undefined}
                   />
                 ))
               )}
@@ -483,26 +484,30 @@ const Gauge = ({ pct }: { pct: number }) => {
 };
 
 const PathwayCard = ({
-  tier, calc, fmtMoney, elicosWeekly,
+  tier, calc, fmtMoney, elicosWeekly, degreeLevel,
 }: {
   tier: PathwayTier;
   calc: PathwayCalc;
   fmtMoney: (aud: number) => string;
   elicosWeekly: number;
+  degreeLevel?: DegreeLevel;
 }) => {
   const [open, setOpen] = useState(false);
   const risk = riskBadge(calc.adjusted);
+  const isDegree = tier.sector === "he";
 
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
+    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }} className={isDegree ? "sm:col-span-2" : undefined}>
       <Card className={`h-full border-2 ring-1 ${risk.ring}`}>
         <CardContent className="p-5">
           <div className="flex items-start justify-between mb-3">
             <div>
               <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                {tier.sector === "he" ? "เรียนระดับปริญญาตรีขึ้นไป" : "เรียนวิชาชีพ"}
+                {isDegree ? "เรียนระดับปริญญาตรีขึ้นไป" : "เรียนวิชาชีพ"}
               </p>
-              <h4 className="font-bold text-foreground leading-tight">{tier.tier}</h4>
+              <h4 className="font-bold text-foreground leading-tight">
+                {isDegree ? (degreeLevel === "master" ? "ปริญญาโท" : "ปริญญาตรี") : tier.tier}
+              </h4>
             </div>
             {tier.badge && <Badge variant="outline" className="text-[10px]">{tier.badge}</Badge>}
           </div>
@@ -514,6 +519,15 @@ const PathwayCard = ({
               ค่าเรียนทั้งหมด: {fmtMoney(calc.totalCourseValue)} ({tier.durationYears} ปี · วีซ่า ~{calc.visaMonths} เดือน)
             </p>
           </div>
+
+          {isDegree && (
+            <div className="mb-4 flex items-start gap-2 rounded-md bg-amber-500/10 border border-amber-500/30 p-2.5">
+              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-700">
+                ราคาค่าเรียนเป็นการประมาณเท่านั้น ค่าเรียนจะขึ้นอยู่คณะและมหาลัยที่นักเรียนเลือกเรียน
+              </p>
+            </div>
+          )}
 
           {/* Expandable budget breakdown */}
           <button

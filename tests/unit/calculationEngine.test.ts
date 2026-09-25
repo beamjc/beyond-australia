@@ -56,20 +56,29 @@ describe('visaDurationMonths', () => {
 })
 
 describe('computePathway', () => {
-  it('Affordable University, bachelor, IELTS 5.0, $250/wk', () => {
+  it('university (average) card, bachelor, IELTS 5.0, $250/wk', () => {
     const pkg = calcEnglishPackage(5.0, 'he', 250) // 30 wks, $7,500
-    const c = computePathway(tier('he-aff'), pkg, 'offshore', 24, 20_000)
-    // annual = (28,000 + 32,000)/2 = 30,000; deposit 50% = 15,000
+    const c = computePathway(tier('he-avg'), pkg, 'offshore', 24, 20_000)
+    // annual = mean of former tier midpoints (30,000 + 40,000 + 55,000)/3 → 41,667
+    // deposit 50% = 20,833.50
     // visa months = 1 + 7.5 + 2 + 36 + 2 = 48.5; OSHC = 700 × 48.5/12 = 2,829.17
-    // upfront = 7,500 + 15,000 + 2,000 + 2,829.17 = 27,329.17
-    expect(c.annual).toBe(30_000)
-    expect(c.deposit).toBe(15_000)
+    // upfront = 7,500 + 20,833.50 + 2,000 + 2,829.17 = 33,162.67
+    expect(c.annual).toBe(41_667)
+    expect(c.deposit).toBe(20_833.5)
     expect(c.visaMonths).toBe(48.5)
     expect(c.oshc).toBeCloseTo(2_829.17, 2)
-    expect(c.upfront).toBeCloseTo(27_329.17, 2)
-    expect(c.totalCourseValue).toBe(90_000)
-    expect(c.remainingTuition).toBe(75_000)
-    expect(c.coverage).toBeCloseTo((20_000 / 27_329.17) * 100, 4)
+    expect(c.upfront).toBeCloseTo(33_162.67, 2)
+    expect(c.totalCourseValue).toBe(125_001)
+    expect(c.remainingTuition).toBe(104_167.5)
+    expect(c.coverage).toBeCloseTo((20_000 / 33_162.67) * 100, 4)
+  })
+
+  it('offers a single university card', () => {
+    expect(tiers.filter((t) => t.sector === 'he').map((t) => t.id)).toEqual(['he-avg'])
+  })
+
+  it('tiers without an explicit annual figure still use the low/high midpoint', () => {
+    expect(computePathway(tier('vet-std'), calcEnglishPackage(6.0, 'vet'), 'offshore', 24, 0).annual).toBe(10_000)
   })
 
   it('VET budget diploma with straight entry has no English cost', () => {
