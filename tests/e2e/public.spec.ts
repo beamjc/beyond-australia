@@ -199,26 +199,37 @@ test.describe('Savings share links', () => {
   })
 })
 
-test.describe('Visa Strength', () => {
-  test('slider endpoints move the score in the expected direction', async ({ page }) => {
+test.describe('Visa Readiness Check', () => {
+  test('questions step → result step; endpoints map to readiness 100 / 0; answers survive Edit', async ({ page }) => {
     await mockSupabase(page)
     await page.goto('/#study')
     await page.locator('#study-tab-strength').click()
     const panel = page.locator('#study-panel-strength')
     const sliders = panel.getByRole('slider')
     await expect(sliders).toHaveCount(8)
-    await expect(panel.getByText('/100 risk')).toBeVisible()
-    await expect(panel.locator('text=/^50$/').first()).toBeVisible()
-    // All risk factors to the safe end: normal factors Home (0), inverted End (100)
-    const names = ['Age', 'Study Gap', 'Qualification Level Change', 'Change of Study Field', 'Immigration History', 'Time Already Spent in Australia']
-    for (const n of names) { await panel.getByRole('slider', { name: n }).focus(); await page.keyboard.press('Home') }
-    for (const n of ['Quality of Supporting Evidence', 'Post-Study Plans']) { await panel.getByRole('slider', { name: n }).focus(); await page.keyboard.press('End') }
-    await expect(panel.locator('text=/^0$/').first()).toBeVisible()
-    await expect(panel.getByText('Strong Application')).toBeVisible()
-    for (const n of names) { await panel.getByRole('slider', { name: n }).focus(); await page.keyboard.press('End') }
-    for (const n of ['Quality of Supporting Evidence', 'Post-Study Plans']) { await panel.getByRole('slider', { name: n }).focus(); await page.keyboard.press('Home') }
-    await expect(panel.locator('text=/^100$/').first()).toBeVisible()
-    await expect(panel.getByRole('heading', { name: 'High Risk' })).toBeVisible()
+    // Scoring is unchanged: normal factors are safest at Home (0), inverted ones at End (100).
+    const normal = [/Age/, /Study gap/, /Level of the new course/, /Relevance of your chosen field/, /Visa and travel history/, /Time already spent in Australia/]
+    const inverted = [/Supporting documents/, /Post-study plans/]
+    const press = async (names: RegExp[], key: string) => {
+      for (const n of names) { await panel.getByRole('slider', { name: n }).focus(); await page.keyboard.press(key) }
+    }
+    await press(normal, 'Home'); await press(inverted, 'End')
+    await panel.getByRole('button', { name: 'See my readiness' }).click()
+    await expect(sliders).toHaveCount(0) // no sliders on the result
+    await expect(panel.getByText('100', { exact: true })).toBeVisible()
+    await expect(panel.getByRole('heading', { name: 'You look well prepared overall' })).toBeVisible()
+    await panel.getByRole('button', { name: 'Edit answers' }).click()
+    await expect(panel.getByRole('slider', { name: /Age/ })).toHaveAttribute('aria-valuenow', '0')
+    await press(normal, 'End'); await press(inverted, 'Home')
+    await panel.getByRole('button', { name: 'See my readiness' }).click()
+    await expect(panel.getByText('0', { exact: true }).first()).toBeVisible()
+    await expect(panel.getByRole('heading', { name: 'Get professional advice before you apply' })).toBeVisible()
+    // High group is open by default; each factor row expands.
+    const rows = panel.locator('[aria-controls^="vra-detail-"]')
+    await expect(rows).toHaveCount(8)
+    await rows.first().click()
+    await expect(rows.first()).toHaveAttribute('aria-expanded', 'true')
+    await expect(panel.getByText('What to prepare').first()).toBeVisible()
   })
 })
 

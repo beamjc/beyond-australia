@@ -68,8 +68,10 @@ Results: NOT RUN · PASS · FAIL · BLOCKED · NOT APPLICABLE. "(M)" = mocked co
 | SAV-01 | LINE/Facebook share URLs encode Thai + page URL (not sent) | TH | D/T/M | CLAUDE.md | PASS | e2e | — |
 | SAV-02 | Tax / wage assumptions current | — | — | FC-12…15 | BLOCKED | — | ISS-027 |
 | SAV-03 | Negative savings / boundary inputs | EN | — | — | NOT RUN | — | — |
-| VSA-01 | 8 sliders named; endpoints → score 0 "Strong Application" / 100 "High Risk" | EN | D/T/M | code (weights unchanged) | PASS | e2e | ISS-021 |
-| VSA-02 | Uncertainty presentation | EN | — | CLAUDE.md | PASS (disclaimer present) — wording review pending | code | — |
+| VSA-01 | 8 sliders named; safe/risky ends → readiness 100 "You look well prepared overall" / 0 "Get professional advice…"; no sliders on the result; Edit keeps answers; rows expand | EN | e2e (updated) | code (weights unchanged, `tests/unit/visaReadiness.test.ts`) | NOT RUN (e2e rewritten 2026-09-25; run pending) | — | ISS-021 |
+| VSA-02 | Uncertainty presentation: owner disclaimer + "score is not a chance of approval" note; status terms describe preparation priority | TH | M/D (viewport emulation) | owner brief 2026-09-25 | PASS (screenshots) — Thai drafts await editor | `screenshots/visa-readiness/` | — |
+| VSA-03 | Scoring formula, weights, per-factor thresholds and verdict bands identical to the original | — | unit | original component (main @ 646194a) | PASS | `tests/unit/visaReadiness.test.ts` | — |
+| VSA-04 | Thai result: no horizontal overflow, no page errors, no leftover English except names (Beyond Study Center, Department of Home Affairs, Transcript, LINE) | TH | 390 / 1440 | owner brief | PASS | screenshot script | ISS-030 |
 
 ## Visa Pathway
 

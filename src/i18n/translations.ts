@@ -50,7 +50,7 @@ export const translations = {
         options: "Study Options",
         calculator: "Financial Calculator",
         savings: "Savings Calculator",
-        strength: "Visa Strength Test",
+        strength: "Visa Readiness Check",
       },
     },
     visa: {
@@ -201,7 +201,7 @@ export const translations = {
         options: "ทางเลือกการเรียน",
         calculator: "คำนวณค่าเรียน",
         savings: "คำนวณเงินออม",
-        strength: "ประเมินความแข็งของวีซ่า",
+        strength: "เช็กความพร้อมก่อนยื่นวีซ่า",
       },
     },
     visa: {

@@ -71,3 +71,19 @@ Branch: `qa/study-tools-redesign` (from `main` @ 646194a). Nothing merged or dep
 - `src/components/study/BudgetStudyPlanner.tsx`: the university card spans the full result width, the title reuses the existing ปริญญาตรี / ปริญญาโท labels, and it shows the owner's note verbatim (BSP-130). A polished version and an optional "average per year" line are in `thai-review-budget-planner.md` (BSP-130, BSP-131) for the editor.
 - Example (bachelor, offshore, IELTS 5.0, $250/wk): before, first payment $27,329 / $32,329 / $39,829 across three cards; after, one card at **$33,163** (English $7,500 + 50% deposit $20,833.50 + visa $2,000 + OSHC $2,829.17).
 - Tests: `tests/unit/calculationEngine.test.ts` now checks the `he-avg` figures (derived above), that only one university tier exists, and that VET tiers still use the midpoint.
+
+## Visa Readiness Check (replaces the Visa Strength Assessment layout)
+
+- Owner brief: turn the "risk calculator" into an "application readiness assistant"; do not change the assessment logic.
+- **Logic unchanged**: 8 factors, weights (1, 1.2, 1.3, 1, 1.5, 1, 0.8 inverted, 1.1 inverted), weighted risk formula, per-factor thresholds (≤33 / ≤66) and verdict bands (≤20 / ≤40 / ≤55 / ≤75) moved as-is into `src/lib/visaReadiness.ts`, with unit tests. The only presentation change: the headline shows **readiness = 100 − risk score**.
+- **Flow**: the sliders were both the input and the "result". Now: step 1 = 8 compact slider questions → "ดูผลความพร้อม"; step 2 = result with no sliders (summary + 3 counts, top-3 priority card, grouped accordions — high open by default, empty groups hidden — and a final plan + consultation CTA). "แก้ไขคำตอบ" returns to step 1 with answers kept. Focus moves to the result heading; scrolling honours reduced motion.
+- **Content is data**: all copy (EN + TH), factor results per level, explanations, checklists and actions live in `src/data/visaReadiness.ts`; components only render. Components: `AssessmentQuestions`, `AssessmentSummary`, `AssessmentPriorityActions`, `AssessmentGroup`, `AssessmentFactorRow`, `AssessmentFactorDetail`, `AssessmentActionPlan` (`src/components/study/readiness/`).
+- **Bilingual**: the tool now follows the EN/TH switch (was English-only, ISS-001). Tab label: "เช็กความพร้อมก่อนยื่นวีซ่า" / "Visa Readiness Check".
+- **Thai**: owner-supplied text applied verbatim; 92 draft strings listed in `thai-review-visa-readiness.md` for the editor (review gate).
+- Consultation links unchanged (`SITE_URL`, `LINE_URL`, now exported from `BSCConsultationCTA`).
+
+| Before | After |
+|---|---|
+| "Higher Risk" red card, score "61 /100 risk" | "คะแนนความพร้อม 39 / 100", "มีหลายจุดที่ควรเตรียมเพิ่มเติม" (neutral card; colour only on dots/badges) |
+| "Low / Medium / High risk" chips | ไม่มีข้อกังวลเด่นชัด / ควรเตรียมข้อมูลเพิ่มเติม / ควรตรวจสอบเป็นพิเศษ |
+| English disclaimer | Owner's Thai disclaimer, small and neutral |
