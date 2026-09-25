@@ -150,35 +150,69 @@ test.describe('Financial calculator', () => {
   })
 })
 
-test.describe('Study Options', () => {
-  test('age must be 15–70; answers survive Back; nothing is sent over the network', async ({ page }) => {
+test.describe('Planning hub — Study Pathway Finder', () => {
+  test('age 15–70; answers survive Back; profile C keeps VET with the level note; nothing is sent', async ({ page }) => {
     const external: string[] = []
     page.on('request', (r) => { const u = new URL(r.url()); if (!['127.0.0.1', 'localhost'].includes(u.hostname)) external.push(r.url()) })
     await mockSupabase(page)
-    await page.goto('/#study')
-    await page.locator('#study-tab-options').click()
+    await page.goto('/#plan')
     const panel = page.locator('#study-panel-options')
-    const age = panel.getByLabel('How old are you?')
-    const next = panel.getByRole('button', { name: /Next/ })
-    for (const bad of ['-5', '0', '200', '14']) { await age.fill(bad); await expect(next).toBeDisabled() }
-    await age.fill('25'); await expect(next).toBeEnabled(); await next.click()
-    await panel.getByRole('button', { name: 'IELTS 5.0–5.5' }).click()
-    await next.click()
-    await panel.getByRole('button', { name: /Back/ }).click()
-    await panel.getByRole('button', { name: /Back/ }).click()
-    await expect(age).toHaveValue('25')
+    await expect(panel).toBeVisible()
     const before = external.length
-    // walk to the end
-    await next.click(); await next.click()
-    await panel.getByRole('button', { name: 'Improve my English skills' }).click(); await next.click()
-    await panel.getByRole('button', { name: 'Sydney' }).click(); await next.click()
-    await panel.getByRole('button', { name: '10,000 AUD or lower' }).click(); await next.click()
-    await panel.getByRole('button', { name: 'Not sure yet' }).click(); await next.click()
-    await panel.getByRole('button', { name: 'Bachelor\'s degree' }).click(); await next.click()
-    await panel.getByRole('button', { name: 'Not sure' }).click()
-    await panel.getByRole('button', { name: /See Results/ }).click()
-    await expect(panel.getByText(/ELICOS|English/).first()).toBeVisible()
+    await panel.getByRole('button', { name: /Start planning your study/ }).click()
+    const age = panel.getByLabel('How old are you?')
+    const next = panel.getByRole('button', { name: 'Next' })
+    for (const bad of ['-5', '0', '200', '14']) { await age.fill(bad); await expect(next).toBeDisabled() }
+    await age.fill('25'); await next.click()
+    const radio = (name: string | RegExp) => panel.getByRole('radio', { name }).locator('visible=true').first()
+    await radio('IELTS 6.0–6.5').click()                                   // auto-advances
+    await panel.getByRole('checkbox', { name: 'Change career / improve career options' }).click()
+    await next.click()
+    await panel.getByRole('button', { name: 'Back' }).click()
+    await expect(panel.getByRole('checkbox', { name: 'Change career / improve career options' })).toHaveAttribute('aria-checked', 'true')
+    await next.click()
+    await radio('Sydney').click()
+    await radio('A$10,000–20,000').click()
+    await radio(/Vocational \(VET\)/).click()
+    await radio("Bachelor's degree").click()
+    await next.click()
+    await radio('Within 6 months').click()
+    await panel.getByRole('button', { name: 'See suggestions' }).click()
+    await expect(panel.getByRole('heading', { name: 'Vocational education (VET)' })).toBeVisible()
+    await expect(panel.getByText("If you're considering a course below your current qualification level")).toBeVisible()
     expect(external.slice(before)).toEqual([])
+  })
+})
+
+test.describe('Planning hub — Visa Options Explorer', () => {
+  test('#visa-pathway opens the explorer; every branch ends in a result or comparison with an official source', async ({ page }) => {
+    test.setTimeout(240_000)
+    await mockSupabase(page)
+    await page.goto('/#visa-pathway')
+    const panel = page.locator('#study-panel-options')
+    await expect(panel.getByRole('heading', { name: 'Explore visa options' }).locator('visible=true')).toBeVisible()
+    const radios = () => panel.locator('[role=radiogroup]:visible [role=radio]')
+    const outcomes = new Set<string>()
+    // DFS over option indexes, replaying each path from "Start over"/Back.
+    const stack: number[][] = [[]]
+    let guard = 0
+    while (stack.length && guard++ < 80) {
+      const path = stack.pop()!
+      await page.goto(`/?p=${guard}#visa-pathway`)
+      // Many reloads under parallel load: allow for slower hydration.
+      await expect(panel.locator('h4:visible').first()).toBeVisible({ timeout: 15_000 })
+      for (const i of path) { await radios().nth(i).click(); await page.waitForTimeout(300) }
+      const count = await radios().count()
+      if (count) { for (let i = 0; i < count; i++) stack.push([...path, i]); continue }
+      const heading = await panel.locator('h4:visible').first().innerText()
+      outcomes.add(heading)
+      await expect(panel.locator('a[href^="https://immi.homeaffairs.gov.au/"]:visible').first()).toBeVisible()
+      await expect(panel).not.toContainText(/competitive|Fastest|guarantee/i)
+    }
+    expect(outcomes.size).toBeGreaterThanOrEqual(12)
+    // Back and Start over
+    await panel.getByRole('button', { name: 'Back' }).click()
+    await expect(radios().first()).toBeVisible()
   })
 })
 
@@ -263,55 +297,6 @@ test.describe('Visa Readiness Check', () => {
   })
 })
 
-test.describe('Visa Pathway', () => {
-  test('every branch reaches an outcome; Back and Start over work', async ({ page }) => {
-    test.setTimeout(240_000) // DFS reloads the page once per path
-    await mockSupabase(page)
-    await page.goto('/#visa-pathway')
-    const section = page.locator('#visa-pathway')
-    const outcomes = new Set<string>()
-    const card = section.locator('div.rounded-2xl.border-2.p-8')
-    const heading = () => card.locator('h3').innerText()
-    const optionLabels = () => card.locator('.flex.flex-col.gap-3 > button').allInnerTexts()
-    // DFS over option labels, replaying each path from a fresh load.
-    const stack: string[][] = [[]]
-    let guard = 0
-    while (stack.length && guard++ < 60) {
-      const path = stack.pop()!
-      // Unique query forces a real load; a same-URL hash goto keeps React state.
-      await page.goto(`/?path=${guard}#visa-pathway`)
-      for (const label of path) {
-        await card.getByRole('button', { name: label, exact: true }).click()
-        await page.waitForTimeout(400) // AnimatePresence swap
-      }
-      const opts = (await optionLabels()).map((o) => o.trim()).filter(Boolean)
-      if (opts.length === 0) {
-        outcomes.add(await heading())
-        await expect(card.getByRole('button', { name: 'Start Over' })).toBeVisible()
-        continue
-      }
-      for (const o of opts) stack.push([...path, o])
-    }
-    expect(outcomes.size).toBe(11)
-    // Back returns to the previous question; Start over returns to the first.
-    await page.goto('/?path=final#visa-pathway')
-    const first = await heading()
-    await section.getByRole('button', { name: 'No / Not yet', exact: true }).click()
-    await page.waitForTimeout(400)
-    await section.getByRole('button', { name: 'Student visa', exact: true }).click()
-    await page.waitForTimeout(400)
-    await section.getByRole('button', { name: /Back/ }).click()
-    await page.waitForTimeout(400)
-    await expect(card.locator('h3')).toHaveText('What would you like to explore?')
-    await section.getByRole('button', { name: 'Student visa', exact: true }).click()
-    await page.waitForTimeout(400)
-    await section.getByRole('button', { name: /concerned about costs/ }).click()
-    await page.waitForTimeout(400)
-    await section.getByRole('button', { name: 'Start Over' }).click()
-    await expect(card.locator('h3')).toHaveText(first)
-  })
-})
-
 test.describe('Articles & events (MOCKED content)', () => {
   test('home events preview requests only upcoming/ongoing and hides past events', async ({ page }) => {
     const reqs = await mockSupabase(page)
@@ -381,7 +366,7 @@ test.describe('reduced motion & readability', () => {
       const p = await ctx.newPage()
       await mockSupabase(p)
       await p.goto('/')
-      for (const sel of ['#whm', '#study', '#visa-pathway']) {
+      for (const sel of ['#whm', '#study']) { // #visa-pathway section merged into #study (planning hub)
         const { top, h } = await p.evaluate((s) => { const el = document.querySelector(s)!; return { top: el.getBoundingClientRect().top + scrollY, h: (el as HTMLElement).offsetHeight } }, sel)
         const vh = page.viewportSize()!.height
         for (const off of [0, Math.max(0, h - vh)]) {

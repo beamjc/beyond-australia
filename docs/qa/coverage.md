@@ -68,9 +68,9 @@ Results: NOT RUN · PASS · FAIL · BLOCKED · NOT APPLICABLE. "(M)" = mocked co
 | SAV-01 | LINE/Facebook share URLs encode Thai + page URL (not sent) | TH | D/T/M | CLAUDE.md | PASS | e2e | — |
 | SAV-02 | Tax / wage assumptions current | — | — | FC-12…15 | BLOCKED | — | ISS-027 |
 | SAV-03 | Negative savings / boundary inputs | EN | — | — | NOT RUN | — | — |
-| SAV-04 | One calculator: visa switch changes tax only; defaults match hand-derived figures; 3 years reaches goal; THB↔AUD round-trip | TH | e2e (new) + 390/1440 script | owner brief; `tests/unit/savings.test.ts` | PASS (script, dev server); e2e run pending | `screenshots/savings/` | ISS-032 |
+| SAV-04 | One calculator: visa switch changes tax only; defaults match hand-derived figures; 3 years reaches goal; THB↔AUD round-trip | TH | e2e (new) + 390/1440 script | owner brief; `tests/unit/savings.test.ts` | PASS (script + e2e 2026-09-25, D/T/M) | `screenshots/savings/` | ISS-032 |
 | SAV-05 | Income needed to reach goal | — | unit | derived: WHM (67,478.26 − 6,750)/0.7 = 86,754.66 | PASS | unit | — |
-| VSA-01 | 8 sliders named; safe/risky ends → readiness 100 "You look well prepared overall" / 0 "Get professional advice…"; no sliders on the result; Edit keeps answers; rows expand | EN | e2e (updated) | code (weights unchanged, `tests/unit/visaReadiness.test.ts`) | NOT RUN (e2e rewritten 2026-09-25; run pending) | — | ISS-021 |
+| VSA-01 | 8 sliders named; safe/risky ends → readiness 100 "You look well prepared overall" / 0 "Get professional advice…"; no sliders on the result; Edit keeps answers; rows expand | EN | e2e (updated) | code (weights unchanged, `tests/unit/visaReadiness.test.ts`) | PASS (e2e 2026-09-25, D/T/M) | e2e | ISS-021 |
 | VSA-02 | Uncertainty presentation: owner disclaimer + "score is not a chance of approval" note; status terms describe preparation priority | TH | M/D (viewport emulation) | owner brief 2026-09-25 | PASS (screenshots) — Thai drafts await editor | `screenshots/visa-readiness/` | — |
 | VSA-03 | Scoring formula, weights, per-factor thresholds and verdict bands identical to the original | — | unit | original component (main @ 646194a) | PASS | `tests/unit/visaReadiness.test.ts` | — |
 | VSA-04 | Thai result: no horizontal overflow, no page errors, no leftover English except names (Beyond Study Center, Department of Home Affairs, Transcript, LINE) | TH | 390 / 1440 | owner brief | PASS | screenshot script | ISS-030 |
@@ -113,3 +113,19 @@ Results: NOT RUN · PASS · FAIL · BLOCKED · NOT APPLICABLE. "(M)" = mocked co
 | BLD-07 | `opennextjs-cloudflare build` | PASS | "OpenNext build complete" |
 | BLD-08 | Local Workers preview (`wrangler dev` on the OpenNext output) smoke | PASS | `/`, `/articles`, `/events` 200; `/nope` 404; planner HTML present |
 | BLD-09 | Deploy | NOT APPLICABLE (not permitted) | — |
+
+
+## Planning hub (2026-09-25)
+
+| ID | Scenario | Lang | Viewport | Expected / source | Result | Evidence | Issue |
+|---|---|---|---|---|---|---|---|
+| PLN-01 | Journeys A–F (study unsure → finder; student + English → ELICOS; employer checks; skilled 65+ no "competitive"; not listed → other options; not sure → comparison) | TH | 390 / 1440 | owner brief §31 | PASS (script on dev server) | `screenshots/planning-hub/` | — |
+| PLN-02 | G: mobile — no hero per step, no breadcrumbs, start question + options fit one viewport (326 px of 844) | TH | 390 | owner brief §22 | PASS | `plan-mobile-9-visa-start.png` | ISS-030 (floating buttons) |
+| PLN-03 | Study Finder profiles A–E, ties, age/city no effect, reasons traceable | — | unit | owner brief §26 | PASS | `tests/unit/studyFinder.test.ts` | — |
+| PLN-04 | Explorer tree integrity, sources, banned phrases, facts from config | — | unit | owner brief §24–27 | PASS | `tests/unit/visaExplorer.test.ts` | — |
+| PLN-05 | Age 15–70 validation, answers kept on Back, nothing sent over the network; DFS over every explorer branch | EN | e2e D/T/M | — | PASS (2026-09-25) | `tests/e2e/public.spec.ts` | ISS-034 |
+
+### e2e run 2026-09-25 (production build, mocked Supabase, run from a copy outside iCloud — ISS-031)
+
+- First full run (default workers): 78 passed / 9 failed — 3 readability checks still targeted the removed `#visa-pathway` section (test updated); 2 home-tab checks exposed ISS-034 (fixed); explorer DFS (×3) and WHM checklist (mobile ×1) timed out under load but passed when run alone.
+- After the fixes, full run with `--workers=3`: **87 passed / 0 failed** (desktop 1440, tablet 768, mobile 390). The DFS reload wait was raised to 15 s. Viewport emulation only — not real devices.

@@ -3,7 +3,6 @@ import HeroSection from '@/components/shared/HeroSection'
 import ServicesSection from '@/components/shared/ServicesSection'
 import WHMSection from '@/components/whm/WHMSection'
 import StudySection from '@/components/study/StudySection'
-import VisaPathwaySection from '@/components/visa/VisaPathwaySection'
 import EventsSection from '@/components/shared/EventsSection'
 import LatestArticlesSection from '@/components/articles/LatestArticlesSection'
 import ProofStatsSection from '@/components/shared/ProofStatsSection'
@@ -19,7 +18,6 @@ export default function HomePage() {
       <RevealOnScroll><ServicesSection /></RevealOnScroll>
       <RevealOnScroll><WHMSection /></RevealOnScroll>
       <RevealOnScroll><StudySection /></RevealOnScroll>
-      <RevealOnScroll><VisaPathwaySection /></RevealOnScroll>
       <RevealOnScroll><EventsSection /></RevealOnScroll>
       <RevealOnScroll><LatestArticlesSection /></RevealOnScroll>
       <RevealOnScroll><ProofStatsSection /></RevealOnScroll>

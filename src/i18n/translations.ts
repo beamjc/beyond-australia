@@ -5,7 +5,7 @@ export const translations = {
     nav: {
       whm: "WHM",
       study: "Study",
-      visaPathways: "Visa Pathways",
+      visaPathways: "Plan your pathway",
       services: "Services",
       events: "Events",
       toggleMenu: "Toggle menu",
@@ -40,14 +40,14 @@ export const translations = {
       },
     },
     study: {
-      eyebrow: "Education Pathways",
+      eyebrow: "Plan your pathway to Australia",
       title: "Study in Australia",
       subtitle:
         "Find the right course and understand your financial requirements for a Student Visa.",
       tabs: {
         courses: "Study & Budget Planner",
         universities: "Top Universities",
-        options: "Study Options",
+        options: "Plan your pathway",
         calculator: "Financial Calculator",
         savings: "Savings Calculator",
         strength: "Visa Readiness Check",
@@ -157,7 +157,7 @@ export const translations = {
     nav: {
       whm: "วีซ่าทำงาน",
       study: "เรียนต่อ",
-      visaPathways: "เส้นทางวีซ่า",
+      visaPathways: "วางแผนเส้นทาง",
       services: "บริการ",
       events: "กิจกรรม",
       toggleMenu: "เปิด/ปิดเมนู",
@@ -192,13 +192,13 @@ export const translations = {
       },
     },
     study: {
-      eyebrow: "เส้นทางการศึกษา",
+      eyebrow: "วางแผนเส้นทางไปออสเตรเลีย",
       title: "เรียนต่อออสเตรเลีย",
       subtitle: "ค้นหาคอร์สที่ใช่และเข้าใจเงื่อนไขทางการเงินสำหรับวีซ่านักเรียน",
       tabs: {
         courses: "วางแผนเรียน & งบประมาณ",
         universities: "มหาวิทยาลัยชั้นนำ",
-        options: "ทางเลือกการเรียน",
+        options: "วางแผนเส้นทาง",
         calculator: "คำนวณค่าเรียน",
         savings: "คำนวณเงินออม",
         strength: "เช็กความพร้อมก่อนยื่นวีซ่า",

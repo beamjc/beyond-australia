@@ -11,7 +11,7 @@ import type { Language, TranslationKey } from '@/i18n/translations'
 export const sectionLinks: { key: TranslationKey; href: string }[] = [
   { key: 'nav.whm', href: '#whm' },
   { key: 'nav.study', href: '#study' },
-  { key: 'nav.visaPathways', href: '#visa-pathway' },
+  { key: 'nav.visaPathways', href: '#plan' },
   { key: 'nav.services', href: '#services' },
 ]
 

@@ -39,7 +39,7 @@ const heroSlides: HeroSlide[] = [
     ctaPrimaryKey: "hero.ctaPrimary",
     ctaPrimaryHref: "#whm",
     ctaSecondaryKey: "hero.ctaSecondary",
-    ctaSecondaryHref: "#visa-pathway",
+    ctaSecondaryHref: "#plan",
   },
 ];
 

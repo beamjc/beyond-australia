@@ -52,3 +52,18 @@ Live content needs real `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_
 - **Google Places API (Place Details, `reviews` field):** official; returns at most 5 reviews chosen by Google (not selectable), needs a Google Cloud API key with billing, must show Google attribution and the reviewer's name/photo/link, must not edit review text, and caching is restricted. Call it from the server (Cloudflare Worker route) so the key isn't exposed; needs a Place ID and network access to `places.googleapis.com`.
 - **Manual copy** into `src/data/reviews.ts` (current design): free, you choose the reviews, but it doesn't update itself. Show source + link for each review.
 - **Third-party widgets:** add an external script/tracking, which CLAUDE.md asks us to avoid.
+
+## Session 2026-09-25 — owner-requested redesigns (branch `qa/study-tools-redesign`)
+
+Done (each with unit tests, Thai review file, screenshots):
+1. Budget Planner: one averaged university card (`he-avg`, A$41,667/yr) + owner note. `thai-review-budget-planner.md` BSP-130/131.
+2. Visa Readiness Check (was Visa Strength): questions → result, grouped factors; scoring unchanged. `thai-review-visa-readiness.md`.
+3. Savings planner: one calculator, visa type as input; fixed ISS-032/033. `thai-review-savings.md`.
+4. Planning hub: Study Pathway Finder (scored, explainable) + Visa Options Explorer (data tree, official links); old Study Options and Visa Pathway section removed. `thai-review-planning-hub.md`.
+
+Environment: the repo's `node_modules` is partly evicted by iCloud (ISS-031); `next dev`, `next build`, lint and e2e were run from a copy outside iCloud (`npm ci`). Vitest runs fine in place.
+
+Next steps:
+- External Thai editor: review DRAFT rows in the four review files before merging.
+- Owner decisions: see "Decisions needed" in the session report (FX 23 vs 23.48; UNVERIFIED visa facts FC-16…23; "ดูหลักสูตรที่เหมาะกับฉัน" destination; floating buttons on mobile ISS-030; "ผ่าน" wording in skilled result).
+- OpenNext Cloudflare build/preview smoke check not run this session.
