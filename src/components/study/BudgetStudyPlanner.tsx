@@ -1,14 +1,15 @@
 'use client'
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin, Wallet, User, Languages, Target,
   ShieldCheck, AlertTriangle,
   Sparkles, ArrowRight,
-  ChevronDown, Info, Plane, Briefcase, GraduationCap, Lightbulb,
+  ChevronDown, Info, Plane, Briefcase, GraduationCap, Lightbulb, CheckCircle2, Clock,
 } from "lucide-react";
-import BSCConsultationCTA from "../shared/BSCConsultationCTA";
+import BSCConsultationCTA, { type CTAIllustration } from "../shared/BSCConsultationCTA";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +40,32 @@ const englishOptions: { id: EnglishLevel; label: string; numeric: number }[] = [
   { id: "6.0",   label: "6.0",   numeric: 6.0 },
   { id: "6.5+",  label: "6.5+",  numeric: 6.5 },
 ];
+
+// Illustrations are pre-trimmed WebP copies of the owner-supplied PNGs in
+// public/icons (resized for display; transparent backgrounds kept).
+const ART_DIR = "/images/budget-planner";
+const ART = {
+  header: `${ART_DIR}/graduation_flight_to_sydney.webp`,
+  wallet: `${ART_DIR}/secure_wallet_with_coins_and_shield.webp`,
+  english: `${ART_DIR}/global_learning_book_icon.webp`,
+  vet: `${ART_DIR}/briefcase_and_wrench_toolkit_icon.webp`,
+  degree: `${ART_DIR}/graduation_cap_book_and_diploma.webp`,
+  short: `${ART_DIR}/quick_study_clock_and_book.webp`,
+  consult: { src: `${ART_DIR}/friendly_student_advising_session.webp`, width: 720, height: 548 } satisfies CTAIllustration,
+};
+
+// Shared visual tokens so every control group in the planner looks alike.
+const sectionLabel = "flex items-center gap-2 mb-3 text-sm font-semibold text-foreground";
+const segmentGroup = "grid grid-cols-2 gap-1 rounded-xl bg-muted p-1";
+const segmentButton = (active: boolean) =>
+  `rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+    active
+      ? "bg-background text-foreground font-semibold shadow-sm ring-1 ring-border"
+      : "text-muted-foreground hover:text-foreground"
+  }`;
+const valueChip = "rounded-full bg-primary/10 px-2.5 py-0.5 text-sm font-semibold text-primary tabular-nums";
+// The line art uses dark outlines, so it sits on a light tile in dark mode.
+const artTile = "shrink-0 rounded-lg bg-sky-50 dark:bg-white/90";
 
 const BudgetStudyPlanner = () => {
   const [location, setLocation] = useState<Location>("offshore");
@@ -126,88 +153,62 @@ const BudgetStudyPlanner = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="text-center mb-8">
-        <Badge variant="secondary" className="mb-3 gap-1">
-          <Sparkles className="w-3 h-3" /> อ้างอิงข้อมูลจากเดือนกันยายน 2569
-        </Badge>
-        <h3 className="text-2xl md:text-3xl font-bold text-foreground">วางแผนงบเรียนต่อออสเตรเลียเบื้องต้น</h3>
-        <p className="text-muted-foreground text-sm mt-2">
-          ประเมินเงินที่ต้องเตรียมในช่วงเริ่มต้น พร้อมดูรายการค่าใช้จ่ายแบบคร่าวๆ
-        </p>
-      </div>
+      <PlannerHeader />
 
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Inputs */}
-        <Card className="lg:col-span-2 border-border/60 bg-gradient-to-br from-background to-muted/30 backdrop-blur">
-          <CardContent className="p-6 space-y-6">
+        <Card className="lg:col-span-2 self-start rounded-2xl border-border/60 bg-gradient-to-br from-background to-muted/40 shadow-sm">
+          <CardContent className="p-5 sm:p-6 space-y-7">
             <div>
-              <Label className="flex items-center gap-2 mb-3 text-foreground">
-                <Target className="w-4 h-4 text-primary" /> เป้าหมายการเรียน
+              <Label className={sectionLabel}>
+                <Target className="w-4 h-4 text-primary" aria-hidden /> เป้าหมายการเรียน
               </Label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  aria-pressed={goal === "english"}
+              <div className="grid grid-cols-2 gap-2.5">
+                <GoalOption
+                  selected={goal === "english"}
                   onClick={() => setGoal("english")}
-                  className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
-                    goal === "english" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                  }`}
-                >
-                  <div className="text-sm font-semibold text-foreground">เรียนภาษาอังกฤษ</div>
-                  <div className="text-xs text-muted-foreground">หลักสูตร ELICOS</div>
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={goal === "vet"}
+                  icon={ART.english}
+                  title="เรียนภาษาอังกฤษ"
+                  sub="หลักสูตร ELICOS"
+                />
+                <GoalOption
+                  selected={goal === "vet"}
                   onClick={() => setGoal("vet")}
-                  className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
-                    goal === "vet" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                  }`}
-                >
-                  <div className="text-sm font-semibold text-foreground">เรียนสายอาชีพ</div>
-                  <div className="text-xs text-muted-foreground">IELTS ขั้นต่ำ 6.0</div>
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={goal === "he" && degreeLevel === "bachelor"}
+                  icon={ART.vet}
+                  title="เรียนสายอาชีพ"
+                  sub="IELTS ขั้นต่ำ 6.0"
+                />
+                <GoalOption
+                  selected={goal === "he" && degreeLevel === "bachelor"}
                   onClick={() => { setGoal("he"); setDegreeLevel("bachelor"); }}
-                  className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
-                    goal === "he" && degreeLevel === "bachelor" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                  }`}
-                >
-                  <div className="text-sm font-semibold text-foreground">ปริญญาตรี</div>
-                  <div className="text-xs text-muted-foreground">ควรจะมี IELTS อย่างน้อย 6.5 ใช้เวลาเรียนประมาณ 3 ปี</div>
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={goal === "he" && degreeLevel === "master"}
+                  icon={ART.degree}
+                  title="ปริญญาตรี"
+                  sub="ควรจะมี IELTS อย่างน้อย 6.5 ใช้เวลาเรียนประมาณ 3 ปี"
+                />
+                <GoalOption
+                  selected={goal === "he" && degreeLevel === "master"}
                   onClick={() => { setGoal("he"); setDegreeLevel("master"); }}
-                  className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
-                    goal === "he" && degreeLevel === "master" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                  }`}
-                >
-                  <div className="text-sm font-semibold text-foreground">ปริญญาโท</div>
-                  <div className="text-xs text-muted-foreground">ควรจะมี IELTS อย่างน้อย 6.5 ใช้เวลาเรียนประมาณ 2 ปี</div>
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={goal === "short"}
+                  icon={ART.degree}
+                  title="ปริญญาโท"
+                  sub="ควรจะมี IELTS อย่างน้อย 6.5 ใช้เวลาเรียนประมาณ 2 ปี"
+                />
+                <GoalOption
+                  selected={goal === "short"}
                   onClick={() => setGoal("short")}
-                  className={`col-span-2 px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
-                    goal === "short" ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                  }`}
-                >
-                  <div className="text-sm font-semibold text-foreground">คอร์สระยะสั้น / เพิ่มทักษะ</div>
-                  <div className="text-xs text-muted-foreground">เหมาะสำหรับผู้ที่ถือวีซ่า WHM หรือต้องการเรียนคอร์ส Fast Track</div>
-                </button>
+                  icon={ART.short}
+                  title="คอร์สระยะสั้น / เพิ่มทักษะ"
+                  sub="เหมาะสำหรับผู้ที่ถือวีซ่า WHM หรือต้องการเรียนคอร์ส Fast Track"
+                  className="col-span-2"
+                />
               </div>
               {suggestShort && (
                 <button
+                  type="button"
                   onClick={() => setGoal("short")}
-                  className="mt-3 w-full text-left rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 hover:bg-amber-500/15 transition-all"
+                  className="mt-3 w-full text-left rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 hover:bg-amber-500/15 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <div className="flex items-start gap-2">
-                    <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" aria-hidden />
                     <div>
                       <p className="text-xs font-semibold text-amber-700">
                         งบต่ำกว่า ฿180,000? ลองเส้นทาง WHM หรือเรียนด้วยวีซ่าท่องเที่ยวก่อน
@@ -222,21 +223,17 @@ const BudgetStudyPlanner = () => {
             </div>
 
             <div>
-              <Label className="flex items-center gap-2 mb-3 text-foreground">
-                <MapPin className="w-4 h-4 text-primary" /> ยื่นวีซ่าจากที่ไหน
+              <Label className={sectionLabel}>
+                <MapPin className="w-4 h-4 text-primary" aria-hidden /> ยื่นวีซ่าจากที่ไหน
               </Label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className={segmentGroup}>
                 {(["offshore", "onshore"] as Location[]).map((loc) => (
                   <button
                     key={loc}
                     type="button"
                     aria-pressed={location === loc}
                     onClick={() => setLocation(loc)}
-                    className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
-                      location === loc
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border text-muted-foreground hover:border-primary/40"
-                    }`}
+                    className={`min-h-11 ${segmentButton(location === loc)}`}
                   >
                     {loc === "offshore" ? "ประเทศไทย" : "ออสเตรเลีย"}
                   </button>
@@ -245,18 +242,18 @@ const BudgetStudyPlanner = () => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <Label htmlFor="bsp-budget" id="bsp-budget-label" className="flex items-center gap-2 text-foreground">
-                  <Wallet className="w-4 h-4 text-primary" /> งบที่เตรียมไว้
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <Label htmlFor="bsp-budget" id="bsp-budget-label" className={`${sectionLabel} mb-0`}>
+                  <Wallet className="w-4 h-4 text-primary" aria-hidden /> งบที่เตรียมไว้
                 </Label>
-                <div className="flex rounded-md border border-border overflow-hidden text-xs">
+                <div className="flex rounded-lg bg-muted p-0.5 text-xs">
                   {(["THB", "AUD"] as const).map((c) => (
                     <button
                       key={c}
                       type="button"
                       aria-pressed={currency === c}
                       onClick={() => setCurrency(c)}
-                      className={`px-2.5 py-1 ${currency === c ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground"}`}
+                      className={`h-8 px-3 ${segmentButton(currency === c)}`}
                     >
                       {c}
                     </button>
@@ -272,7 +269,7 @@ const BudgetStudyPlanner = () => {
                   const n = parseInt(e.target.value.replace(/[^\d]/g, ""), 10);
                   setBudget(isNaN(n) ? 0 : n);
                 }}
-                className="text-lg font-semibold"
+                className="h-12 rounded-xl text-lg font-semibold tabular-nums"
               />
               <Slider
                 value={[budget]}
@@ -281,19 +278,19 @@ const BudgetStudyPlanner = () => {
                 step={currency === "AUD" ? 500 : 10_000}
                 onValueChange={([v]) => setBudget(v)}
                 aria-labelledby="bsp-budget-label"
-                className="mt-4"
+                className="mt-5"
               />
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-muted-foreground mt-2.5 tabular-nums">
                 ≈ {currency === "AUD" ? fmtTHB(budgetTHB) : fmtAUD(budgetAUD)}
               </p>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <Label id="bsp-age-label" className="flex items-center gap-2 text-foreground">
-                  <User className="w-4 h-4 text-primary" /> อายุผู้สมัคร
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <Label id="bsp-age-label" className={`${sectionLabel} mb-0`}>
+                  <User className="w-4 h-4 text-primary" aria-hidden /> อายุผู้สมัคร
                 </Label>
-                <span className="text-sm font-semibold text-foreground">{age} ปี</span>
+                <span className={valueChip}>{age} ปี</span>
               </div>
               <Slider value={[age]} min={15} max={50} step={1} onValueChange={([v]) => setAge(v)} aria-labelledby="bsp-age-label" />
             </div>
@@ -301,20 +298,20 @@ const BudgetStudyPlanner = () => {
             {goal !== "english" && (
               <>
                 <div>
-                  <Label className="flex items-center gap-2 mb-3 text-foreground">
-                    <Languages className="w-4 h-4 text-primary" /> ตอนนี้คะแนน IELTS คุณอยู่ที่ประมาณเท่าไหร่
+                  <Label className={sectionLabel}>
+                    <Languages className="w-4 h-4 text-primary" aria-hidden /> ตอนนี้คะแนน IELTS คุณอยู่ที่ประมาณเท่าไหร่
                   </Label>
-                  <div className="grid grid-cols-6 gap-1.5">
+                  <div className="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-3 gap-2">
                     {englishOptions.map((o) => (
                       <button
                         key={o.id}
                         type="button"
                         aria-pressed={english === o.id}
                         onClick={() => setEnglish(o.id)}
-                        className={`px-1 py-2 rounded-md border text-xs font-medium transition-all ${
+                        className={`min-h-10 px-1.5 py-2 rounded-lg border text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                           english === o.id
-                            ? "border-primary bg-primary/10 text-foreground"
-                            : "border-border text-muted-foreground hover:border-primary/40"
+                            ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                            : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
                         }`}
                       >
                         {o.label}
@@ -322,20 +319,20 @@ const BudgetStudyPlanner = () => {
                     ))}
                   </div>
                   {englishPkg.needsLevel1 && (
-                    <div className="mt-3 flex items-start gap-2 rounded-md bg-amber-500/10 border border-amber-500/30 p-2.5">
-                      <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div className="mt-3 flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/30 p-2.5">
+                      <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" aria-hidden />
                       <p className="text-xs text-amber-700">
                         ถ้า IELTS ต่ำกว่า 5.0 แนะนำให้เรียนกับโรงเรียน <strong>Level 1</strong>
                       </p>
                     </div>
                   )}
                   {englishPkg.straightEntry && (
-                    <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3" /> ระดับภาษาอังกฤษคุณโอเคแล้ว! ไม่จำเป็นต้องเรียนภาษา
+                    <p className="text-xs text-emerald-600 mt-3 flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3" aria-hidden /> ระดับภาษาอังกฤษคุณโอเคแล้ว! ไม่จำเป็นต้องเรียนภาษา
                     </p>
                   )}
                   {englishPkg.weeks > 0 && (
-                    <p className="text-xs text-muted-foreground mt-2">
+                    <p className="text-xs text-muted-foreground mt-3">
                       แนะนำให้เรียนภาษาเป็นระยะเวลา <strong className="text-foreground">{englishPkg.weeks} สัปดาห์</strong> ราคาประมาณ ${elicosWeekly}/สัปดาห์
                     </p>
                   )}
@@ -343,11 +340,11 @@ const BudgetStudyPlanner = () => {
 
                 {/* Global English tuition slider — affects every pathway card */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <Label id="bsp-elicos-label" className="flex items-center gap-2 text-foreground">
-                      <GraduationCap className="w-4 h-4 text-primary" /> ค่าเรียนภาษา
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <Label id="bsp-elicos-label" className={`${sectionLabel} mb-0`}>
+                      <GraduationCap className="w-4 h-4 text-primary" aria-hidden /> ค่าเรียนภาษา
                     </Label>
-                    <span className="text-sm font-semibold text-foreground">${elicosWeekly}/สัปดาห์</span>
+                    <span className={valueChip}>${elicosWeekly}/สัปดาห์</span>
                   </div>
                   <Slider
                     value={[elicosWeekly]}
@@ -357,7 +354,7 @@ const BudgetStudyPlanner = () => {
                     onValueChange={([v]) => setElicosWeekly(v)}
                     aria-labelledby="bsp-elicos-label"
                   />
-                  <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                  <div className="flex justify-between text-[11px] text-muted-foreground mt-2">
                     <span>${ELICOS_WEEKLY_MIN}/สัปดาห์</span>
                     <span>${ELICOS_WEEKLY_MAX}/สัปดาห์</span>
                   </div>
@@ -365,42 +362,41 @@ const BudgetStudyPlanner = () => {
               </>
             )}
 
-            <p className="text-[11px] text-muted-foreground pt-2 border-t border-border">
-              ราคาที่แสดงเป็นแค่การประมาณเท่านั้น
+            <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground pt-4 border-t border-border">
+              <Info className="w-3.5 h-3.5 shrink-0" aria-hidden /> ราคาที่แสดงเป็นแค่การประมาณเท่านั้น
             </p>
           </CardContent>
         </Card>
 
         {/* Results */}
         <div className="lg:col-span-3 space-y-6">
-          <Card className="border-border/60 bg-gradient-to-br from-primary/5 via-background to-background">
-            <CardContent className="p-6 flex flex-col md:flex-row items-center gap-6">
-              <Gauge pct={headlineCoverage} />
-              <div className="flex-1 text-center md:text-left">
-                <p className="text-sm text-muted-foreground mb-1">จำนวนเงินคร่าวๆที่ต้องใช้</p>
-                <p className="text-3xl font-bold text-foreground">
-                  {fmtMoney(headlineUpfront)}
-                  {headlineUpfrontHigh !== headlineUpfront && (
-                    <span className="text-xl font-semibold text-muted-foreground"> – {fmtMoney(headlineUpfrontHigh)}</span>
-                  )}
-                </p>
-                <p className="text-xs text-muted-foreground mt-2">
-                  {goal === "short"
-                    ? `รวมค่าวีซ่า WHM และค่าเรียนภาษาเป็นเวลา ${shortWeeks} สัปดาห์`
-                    : <>รวมค่ามัดจำ ค่าวีซ่านักเรียน ค่าประกัน OSHC{englishPkg.weeks > 0 && ` และค่าเรียนภาษา ${englishPkg.weeks} สัปดาห์`}</>}
-                </p>
-                {headlineCoverage >= 100 ? (
-                  <Badge className="mt-3 bg-emerald-500/15 text-emerald-700 border-emerald-500/30">
-                    <ShieldCheck className="w-3 h-3 mr-1" /> คุณมีเงินเพียงพอแล้วที่จะสมัครเรียนได้
-                  </Badge>
-                ) : headlineUpfrontHigh > 0 ? (
-                  <Badge variant="outline" className="mt-3 border-amber-500/40 text-amber-700">
-                    <AlertTriangle className="w-3 h-3 mr-1" /> ยังขาดอยู่: {fmtMoney(Math.max(0, headlineUpfrontHigh - budgetAUD))}
-                  </Badge>
-                ) : null}
-              </div>
-            </CardContent>
-          </Card>
+          <SummaryCard
+            coverage={headlineCoverage}
+            amount={
+              <>
+                {fmtMoney(headlineUpfront)}
+                {headlineUpfrontHigh !== headlineUpfront && (
+                  <span className="text-xl font-semibold text-muted-foreground"> – {fmtMoney(headlineUpfrontHigh)}</span>
+                )}
+              </>
+            }
+            note={
+              goal === "short"
+                ? `รวมค่าวีซ่า WHM และค่าเรียนภาษาเป็นเวลา ${shortWeeks} สัปดาห์`
+                : <>รวมค่ามัดจำ ค่าวีซ่านักเรียน ค่าประกัน OSHC{englishPkg.weeks > 0 && ` และค่าเรียนภาษา ${englishPkg.weeks} สัปดาห์`}</>
+            }
+            status={
+              headlineCoverage >= 100 ? (
+                <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/15">
+                  <ShieldCheck className="w-3 h-3 mr-1" aria-hidden /> คุณมีเงินเพียงพอแล้วที่จะสมัครเรียนได้
+                </Badge>
+              ) : headlineUpfrontHigh > 0 ? (
+                <Badge variant="outline" className="border-amber-500/40 bg-amber-500/10 text-amber-700">
+                  <AlertTriangle className="w-3 h-3 mr-1" aria-hidden /> ยังขาดอยู่: {fmtMoney(Math.max(0, headlineUpfrontHigh - budgetAUD))}
+                </Badge>
+              ) : null
+            }
+          />
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -446,12 +442,103 @@ const BudgetStudyPlanner = () => {
             </motion.div>
           </AnimatePresence>
 
-          <BSCConsultationCTA />
+          <BSCConsultationCTA illustration={ART.consult} />
         </div>
       </div>
     </div>
   );
 };
+
+const PlannerHeader = () => (
+  <div className="relative mb-8 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-sky-50 via-background to-background px-5 py-6 sm:px-8 sm:py-8 dark:from-primary/10">
+    <div className="flex flex-col items-center gap-4 md:flex-row md:items-center md:gap-8">
+      <div className="flex-1 text-center md:text-left">
+        <Badge variant="secondary" className="mb-3 gap-1">
+          <Sparkles className="w-3 h-3" aria-hidden /> อ้างอิงข้อมูลจากเดือนกันยายน 2569
+        </Badge>
+        <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">วางแผนงบเรียนต่อออสเตรเลียเบื้องต้น</h3>
+        <p className="text-muted-foreground text-sm md:text-base mt-2 max-w-xl md:max-w-none">
+          ประเมินเงินที่ต้องเตรียมในช่วงเริ่มต้น พร้อมดูรายการค่าใช้จ่ายแบบคร่าวๆ
+        </p>
+      </div>
+      <Image
+        src={ART.header}
+        alt=""
+        aria-hidden="true"
+        width={720}
+        height={394}
+        sizes="(max-width: 768px) 200px, (max-width: 1024px) 240px, 300px"
+        className="h-auto w-[200px] shrink-0 opacity-90 md:w-[240px] lg:w-[300px] dark:rounded-xl dark:bg-white/90 dark:p-2"
+      />
+    </div>
+  </div>
+);
+
+const GoalOption = ({
+  selected, onClick, icon, title, sub, className = "",
+}: {
+  selected: boolean;
+  onClick: () => void;
+  icon: string;
+  title: string;
+  sub: string;
+  className?: string;
+}) => (
+  <button
+    type="button"
+    aria-pressed={selected}
+    onClick={onClick}
+    className={`relative flex flex-col gap-1.5 rounded-xl border-2 p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+      selected
+        ? "border-primary bg-primary/[0.06] shadow-sm"
+        : "border-border bg-background hover:border-primary/40 hover:bg-muted/40"
+    } ${className}`}
+  >
+    {selected && <CheckCircle2 className="absolute right-2 top-2 w-4 h-4 text-primary" aria-hidden />}
+    {/* Icon stacks above the title on narrow phones so Thai titles don't break mid-word. */}
+    <span className="flex flex-col items-start gap-1.5 pr-5 min-[440px]:flex-row min-[440px]:items-center min-[440px]:gap-2">
+      <Image src={icon} alt="" aria-hidden="true" width={160} height={160} sizes="32px" className={`${artTile} h-8 w-8 p-0.5`} />
+      <span className="text-sm font-semibold leading-snug text-foreground">{title}</span>
+    </span>
+    <span className="text-xs leading-snug text-muted-foreground">{sub}</span>
+  </button>
+);
+
+const SummaryCard = ({
+  coverage, amount, note, status,
+}: {
+  coverage: number;
+  amount: ReactNode;
+  note: ReactNode;
+  status: ReactNode;
+}) => (
+  <Card className="rounded-2xl border-border/60 bg-gradient-to-br from-sky-50/80 via-background to-background shadow-sm dark:from-primary/10">
+    <CardContent className="p-5 sm:p-6 flex flex-col md:flex-row items-center gap-6 md:gap-8">
+      <Gauge pct={coverage} />
+      <div className="flex-1 min-w-0 text-center md:text-left">
+        <div className="mb-2 flex items-center justify-center gap-2 md:justify-start">
+          <Image src={ART.wallet} alt="" aria-hidden="true" width={160} height={160} sizes="32px" className={`${artTile} h-8 w-8 p-0.5`} />
+          <p className="text-sm font-medium text-muted-foreground">จำนวนเงินคร่าวๆที่ต้องใช้</p>
+        </div>
+        <p className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground tabular-nums">{amount}</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">{note}</p>
+        {status && <div className="mt-4">{status}</div>}
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const DetailsToggle = ({ open, onToggle }: { open: boolean; onToggle: () => void }) => (
+  <button
+    type="button"
+    aria-expanded={open}
+    onClick={onToggle}
+    className="w-full min-h-10 flex items-center justify-between rounded-lg px-1 text-sm font-medium text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+  >
+    <span>รายละเอียดค่าใช้จ่าย</span>
+    <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
+  </button>
+);
 
 const Gauge = ({ pct }: { pct: number }) => {
   const clamped = Math.max(0, Math.min(100, pct));
@@ -497,94 +584,110 @@ const PathwayCard = ({
   const isDegree = tier.sector === "he";
 
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }} className={isDegree ? "sm:col-span-2" : undefined}>
-      <Card className={`h-full border-2 ring-1 ${risk.ring}`}>
-        <CardContent className="p-5">
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                {isDegree ? "เรียนระดับปริญญาตรีขึ้นไป" : "เรียนวิชาชีพ"}
-              </p>
-              <h4 className="font-bold text-foreground leading-tight">
-                {isDegree ? (degreeLevel === "master" ? "ปริญญาโท" : "ปริญญาตรี") : tier.tier}
-              </h4>
+    <div className={isDegree ? "sm:col-span-2" : undefined}>
+      <Card className={`h-full rounded-2xl border-2 ring-1 shadow-sm ${risk.ring}`}>
+        <CardContent className="p-5 sm:p-6">
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <Image
+                src={isDegree ? ART.degree : ART.vet}
+                alt=""
+                aria-hidden="true"
+                width={160}
+                height={160}
+                sizes="40px"
+                className={`${artTile} h-10 w-10 p-1`}
+              />
+              <div className="min-w-0">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {isDegree ? "เรียนระดับปริญญาตรีขึ้นไป" : "เรียนวิชาชีพ"}
+                </p>
+                <h4 className="text-lg font-bold text-foreground leading-tight">
+                  {isDegree ? (degreeLevel === "master" ? "ปริญญาโท" : "ปริญญาตรี") : tier.tier}
+                </h4>
+              </div>
             </div>
-            {tier.badge && <Badge variant="outline" className="text-[10px]">{tier.badge}</Badge>}
+            {tier.badge && <Badge variant="outline" className="text-[10px] shrink-0">{tier.badge}</Badge>}
           </div>
 
           <div className="mb-4">
-            <p className="text-2xl font-bold text-foreground">{fmtMoney(calc.upfront)}</p>
             <p className="text-xs text-muted-foreground">จำนวนเงินคร่าวๆที่ต้องใช้</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              ค่าเรียนทั้งหมด: {fmtMoney(calc.totalCourseValue)} ({tier.durationYears} ปี · วีซ่า ~{calc.visaMonths} เดือน)
-            </p>
+            <p className="text-3xl font-bold tracking-tight text-foreground tabular-nums">{fmtMoney(calc.upfront)}</p>
+          </div>
+
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2 mb-4">
+            <div className="rounded-xl bg-muted/50 px-3 py-2.5">
+              <p className="text-xs text-muted-foreground">ค่าเรียนทั้งหมด</p>
+              <p className="text-base font-semibold text-foreground tabular-nums">{fmtMoney(calc.totalCourseValue)}</p>
+            </div>
+            <div className="rounded-xl bg-muted/50 px-3 py-2.5 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-primary shrink-0" aria-hidden />
+              <p className="text-sm font-semibold text-foreground">
+                {tier.durationYears} ปี · วีซ่า ~{calc.visaMonths} เดือน
+              </p>
+            </div>
           </div>
 
           {isDegree && (
-            <div className="mb-4 flex items-start gap-2 rounded-md bg-amber-500/10 border border-amber-500/30 p-2.5">
-              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <p className="text-xs text-amber-700">
+            <div className="mb-4 flex items-start gap-2 rounded-xl bg-amber-500/10 border border-amber-500/30 p-3">
+              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" aria-hidden />
+              <p className="text-xs leading-relaxed text-amber-700">
                 ราคาค่าเรียนเป็นการประมาณเท่านั้น ค่าเรียนจะขึ้นอยู่คณะและมหาลัยที่นักเรียนเลือกเรียน
               </p>
             </div>
           )}
 
-          {/* Expandable budget breakdown */}
-          <button
-            type="button"
-            aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
-            className="w-full flex items-center justify-between text-xs font-medium text-primary hover:text-primary/80 mb-2"
-          >
-            <span>รายละเอียดค่าใช้จ่าย</span>
-            <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
-          </button>
-          <AnimatePresence initial={false}>
-            {open && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="overflow-hidden"
-              >
-                <div className="space-y-1.5 text-xs bg-muted/40 rounded-lg p-3 mb-3">
-                  <Row
-                    label="ค่าเรียนภาษา"
-                    sub={calc.englishWeeks > 0 ? `${calc.englishWeeks} สัปดาห์ @ $${elicosWeekly}` : undefined}
-                    value={fmtMoney(calc.englishCost)}
-                  />
-                  <Row
-                    label="ค่าเรียนเทอมแรก"
-                    sub={`${Math.round(tier.depositPct * 100)}% ของ ${fmtMoney(calc.annual)}`}
-                    value={fmtMoney(calc.deposit)}
-                  />
-                  <Row label="ค่าวีซ่านักเรียน" value={fmtMoney(calc.visaFee)} />
-                  <Row label="ค่าประกัน OSHC" sub={`${calc.visaMonths} เดือน`} value={fmtMoney(calc.oshc)} />
-                  <div className="border-t border-border pt-1.5 mt-1.5">
-                    <Row label="ค่าใช้จ่ายที่ต้องจ่ายวันที่สมัครเรียน" value={fmtMoney(calc.upfront)} bold />
-                    <Row label="ค่าเทอมที่เหลือ" value={fmtMoney(calc.remainingTuition)} muted />
-                    <Row label="ค่าเรียนทั้งหมด" value={fmtMoney(calc.totalCourseValue)} muted />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className={`rounded-lg p-3 ${risk.bg}`}>
-            <div className="flex items-center justify-between mb-1">
+          <div className={`rounded-xl p-3 mb-3 ${risk.bg}`}>
+            <div className="flex items-center justify-between gap-2 mb-1">
               <span className="text-xs text-muted-foreground">เปอร์เซนต์ที่วีซ่าจะผ่าน</span>
               <Badge variant="outline" className={`text-[10px] ${risk.text} border-current`}>{risk.label}</Badge>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className={`text-2xl font-bold ${risk.text}`}>{calc.adjusted.toFixed(1)}%</span>
-            </div>
+            <span className={`text-2xl font-bold tabular-nums ${risk.text}`}>{calc.adjusted.toFixed(1)}%</span>
+          </div>
+
+          {/* Expandable budget breakdown */}
+          <div className="border-t border-border pt-2">
+            <DetailsToggle open={open} onToggle={() => setOpen((o) => !o)} />
+            <AnimatePresence initial={false}>
+              {open && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="overflow-hidden"
+                >
+                  <div className={breakdownBox}>
+                    <Row
+                      label="ค่าเรียนภาษา"
+                      sub={calc.englishWeeks > 0 ? `${calc.englishWeeks} สัปดาห์ @ $${elicosWeekly}` : undefined}
+                      value={fmtMoney(calc.englishCost)}
+                    />
+                    <Row
+                      label="ค่าเรียนเทอมแรก"
+                      sub={`${Math.round(tier.depositPct * 100)}% ของ ${fmtMoney(calc.annual)}`}
+                      value={fmtMoney(calc.deposit)}
+                    />
+                    <Row label="ค่าวีซ่านักเรียน" value={fmtMoney(calc.visaFee)} />
+                    <Row label="ค่าประกัน OSHC" sub={`${calc.visaMonths} เดือน`} value={fmtMoney(calc.oshc)} />
+                    <div className={breakdownTotals}>
+                      <Row label="ค่าใช้จ่ายที่ต้องจ่ายวันที่สมัครเรียน" value={fmtMoney(calc.upfront)} bold />
+                      <Row label="ค่าเทอมที่เหลือ" value={fmtMoney(calc.remainingTuition)} muted />
+                      <Row label="ค่าเรียนทั้งหมด" value={fmtMoney(calc.totalCourseValue)} muted />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 };
+
+const breakdownBox = "space-y-2 text-xs rounded-xl border border-border/60 bg-muted/30 p-3 mt-1 mb-1";
+const breakdownTotals = "border-t border-border pt-2 mt-2 space-y-1.5";
 
 const Row = ({ label, sub, value, bold, muted }: { label: string; sub?: string; value: string; bold?: boolean; muted?: boolean }) => (
   <div className="flex items-center justify-between gap-3">
@@ -607,8 +710,8 @@ const ElicosCard = ({
   const risk = riskBadge(calc.adjusted);
   const partPay = calc.paidPct < 1;
   return (
-    <Card className={`border-2 ring-1 ${risk.ring} ${selected ? "border-primary" : ""}`}>
-      <CardContent className="p-5">
+    <Card className={`h-full rounded-2xl border-2 ring-1 shadow-sm ${risk.ring} ${selected ? "border-primary" : ""}`}>
+      <CardContent className="p-5 sm:p-6">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">ELICOS</p>
@@ -619,32 +722,26 @@ const ElicosCard = ({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mt-4">
+        <div className="mt-4">
+          <p className="text-xs text-muted-foreground">ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก</p>
+          <p className="text-2xl font-bold tracking-tight text-foreground tabular-nums">{fmtMoney(calc.upfront)}</p>
+        </div>
+        <div className="mt-3 rounded-xl bg-muted/50 px-3 py-2.5 flex items-start gap-2">
+          <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden />
           <div>
             <p className="text-xs text-muted-foreground">ระยะเวลาของวีซ่าที่คาดว่าจะได้</p>
-            <p className="text-base font-bold text-foreground">~{calc.visaMonths} เดือน</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก</p>
-            <p className="text-base font-bold text-foreground">{fmtMoney(calc.upfront)}</p>
+            <p className="text-sm font-semibold text-foreground">~{calc.visaMonths} เดือน</p>
           </div>
         </div>
 
         {partPay && (
-          <p className="text-[11px] text-amber-700 bg-amber-500/10 border border-amber-500/30 rounded-md px-2 py-1.5 mt-3">
+          <p className="text-xs text-amber-700 bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2 mt-3">
             ค่าเรียนที่เหลือ <strong>{fmtMoney(calc.remainingTuition)}</strong>
           </p>
         )}
 
-        <button
-          type="button"
-            aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
-          className="mt-3 flex items-center justify-between w-full text-xs font-medium text-primary hover:text-primary/80"
-        >
-          <span>รายละเอียดค่าใช้จ่าย</span>
-          <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
-        </button>
+        <div className="mt-3 border-t border-border pt-2">
+        <DetailsToggle open={open} onToggle={() => setOpen((o) => !o)} />
         <AnimatePresence initial={false}>
           {open && (
             <motion.div
@@ -654,7 +751,7 @@ const ElicosCard = ({
               transition={{ duration: 0.25 }}
               className="overflow-hidden"
             >
-              <div className="space-y-1.5 text-xs bg-muted/40 rounded-lg p-3 mt-2">
+              <div className={breakdownBox}>
                 <Row
                   label={partPay ? "ค่าเรียนภาษา (จ่าย 50%)" : "ค่าเรียนภาษา"}
                   sub={`${calc.weeks} สัปดาห์ @ $${calc.weeklyCost}`}
@@ -662,7 +759,7 @@ const ElicosCard = ({
                 />
                 <Row label="ค่าวีซ่านักเรียน" value={fmtMoney(calc.visaFee)} />
                 <Row label="ค่าประกัน OSHC" sub={`${calc.visaMonths} เดือน`} value={fmtMoney(calc.oshc)} />
-                <div className="border-t border-border pt-1.5 mt-1.5">
+                <div className={breakdownTotals}>
                   <Row label="ค่าใช้จ่ายที่ต้องจ่ายวันที่สมัครเรียน" value={fmtMoney(calc.upfront)} bold />
                   {partPay && (
                     <>
@@ -675,6 +772,7 @@ const ElicosCard = ({
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </CardContent>
     </Card>
   );
@@ -691,10 +789,10 @@ const StandaloneEnglishSection = ({
 }) => {
   return (
     <div className="sm:col-span-2 space-y-4">
-      <Card className="border-border/60">
-        <CardContent className="p-5 space-y-3">
+      <Card className="rounded-2xl border-border/60 shadow-sm">
+        <CardContent className="p-5 sm:p-6 space-y-4">
           <div className="flex items-start gap-3">
-            <Languages className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+            <Image src={ART.english} alt="" aria-hidden="true" width={160} height={160} sizes="40px" className={`${artTile} h-10 w-10 p-1`} />
             <div>
               <h4 className="font-bold text-foreground">เรียนภาษาอย่างเดียว</h4>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -703,16 +801,14 @@ const StandaloneEnglishSection = ({
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className={segmentGroup}>
             {([24, 40] as const).map((w) => (
               <button
                 key={w}
                 type="button"
                 aria-pressed={selected === w}
                 onClick={() => onSelect(w)}
-                className={`px-3 py-2.5 rounded-lg border-2 text-left transition-all ${
-                  selected === w ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
-                }`}
+                className={`px-3 py-2.5 text-left ${segmentButton(selected === w)}`}
               >
                 <div className="text-sm font-semibold text-foreground">{w} สัปดาห์</div>
                 <div className="text-[11px] text-muted-foreground">
@@ -758,10 +854,10 @@ const ShortPathwaySection = ({
   return (
     <div className="sm:col-span-2 space-y-4">
       {/* Shared controls */}
-      <Card className="border-border/60">
-        <CardContent className="p-5 space-y-5">
+      <Card className="rounded-2xl border-border/60 shadow-sm">
+        <CardContent className="p-5 sm:p-6 space-y-6">
           <div className="flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+            <Image src={ART.short} alt="" aria-hidden="true" width={160} height={160} sizes="40px" className={`${artTile} h-10 w-10 p-1`} />
             <div>
               <h4 className="font-bold text-foreground">คอร์สระยะสั้น / เพิ่มทักษะ</h4>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -771,9 +867,9 @@ const ShortPathwaySection = ({
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <Label id="bsp-short-weeks-label" className="text-foreground text-sm">ระยะเวลาที่ต้องเรียนภาษาเพิ่ม</Label>
-              <span className="text-sm font-semibold text-foreground">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <Label id="bsp-short-weeks-label" className="text-foreground text-sm font-semibold">ระยะเวลาที่ต้องเรียนภาษาเพิ่ม</Label>
+              <span className={valueChip}>
                 {shortWeeks} สัปดาห์
               </span>
             </div>
@@ -785,13 +881,13 @@ const ShortPathwaySection = ({
               onValueChange={([v]) => setShortWeeks(Math.min(WHM_MAX_STUDY_WEEKS, v))}
               aria-labelledby="bsp-short-weeks-label"
             />
-            <p className="text-[11px] text-muted-foreground mt-1">
+            <p className="text-[11px] text-muted-foreground mt-2">
               สำหรับวีซ่า WHM จะเรียนได้มากสุด 17 สัปดาห์
             </p>
           </div>
 
           <div>
-            <Label className="text-foreground text-sm mb-2 block">เรียนคอร์สวิชาชีพระยะสั้นที่อยากเรียน</Label>
+            <Label className="text-foreground text-sm font-semibold mb-3 block">เรียนคอร์สวิชาชีพระยะสั้นที่อยากเรียน</Label>
             <div className="grid grid-cols-3 gap-2">
               {([
                 { id: "none",      label: "ภาษาอย่างเดียว", sub: "—" },
@@ -803,8 +899,8 @@ const ShortPathwaySection = ({
                   type="button"
                   aria-pressed={shortSkill === s.id}
                   onClick={() => setShortSkill(s.id)}
-                  className={`px-2 py-2 rounded-lg border-2 text-left transition-all ${
-                    shortSkill === s.id ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
+                  className={`min-h-11 px-2.5 py-2 rounded-xl border-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    shortSkill === s.id ? "border-primary bg-primary/[0.06] shadow-sm" : "border-border bg-background hover:border-primary/40"
                   }`}
                 >
                   <div className="text-xs font-semibold text-foreground">{s.label}</div>
@@ -831,7 +927,7 @@ const ShortPathwaySection = ({
             budgetAUD={budgetAUD}
           />
         ) : (
-          <Card className="h-full border-2 border-dashed border-border bg-muted/30">
+          <Card className="h-full rounded-2xl border-2 border-dashed border-border bg-muted/30">
             <CardContent className="p-5 flex flex-col gap-2">
               <div className="flex items-start gap-2">
                 <Briefcase className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
@@ -886,9 +982,9 @@ const ShortCard = ({
     : `${fmtMoney(SKILL_BOOSTERS[shortSkill].low)} – ${fmtMoney(SKILL_BOOSTERS[shortSkill].high)}`;
   const covers = budgetAUD >= calc.upfrontHigh;
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
-      <Card className="h-full border-2 border-border">
-        <CardContent className="p-5">
+    <div>
+      <Card className="h-full rounded-2xl border-2 border-border shadow-sm">
+        <CardContent className="p-5 sm:p-6">
           <div className="flex items-start gap-2 mb-3">
             {icon}
             <div className="min-w-0">
@@ -899,7 +995,7 @@ const ShortCard = ({
 
           <div className="mb-3">
             <p className="text-xs text-muted-foreground">จำนวนเงินคร่าวๆที่ต้องใช้</p>
-            <p className="text-2xl font-bold text-foreground">
+            <p className="text-2xl font-bold tracking-tight text-foreground tabular-nums">
               {fmtMoney(calc.upfrontLow)}
               {calc.upfrontHigh !== calc.upfrontLow && (
                 <span className="text-base font-semibold text-muted-foreground"> – {fmtMoney(calc.upfrontHigh)}</span>
@@ -907,15 +1003,8 @@ const ShortCard = ({
             </p>
           </div>
 
-          <button
-            type="button"
-            aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
-            className="w-full flex items-center justify-between text-xs font-medium text-primary hover:text-primary/80 mb-2"
-          >
-            <span>รายละเอียดค่าใช้จ่าย</span>
-            <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
-          </button>
+          <div className="border-t border-border pt-2 mb-3">
+          <DetailsToggle open={open} onToggle={() => setOpen((o) => !o)} />
           <AnimatePresence initial={false}>
             {open && (
               <motion.div
@@ -925,7 +1014,7 @@ const ShortCard = ({
                 transition={{ duration: 0.25 }}
                 className="overflow-hidden"
               >
-                <div className="space-y-1.5 text-xs bg-muted/40 rounded-lg p-3 mb-3">
+                <div className={breakdownBox}>
                   <Row
                     label="ค่าเรียนภาษา"
                     sub={calc.englishWeeks > 0 ? `${calc.englishWeeks} สัปดาห์ @ $${elicosWeekly} (สูงสุด ${WHM_MAX_STUDY_WEEKS} สัปดาห์)` : undefined}
@@ -940,7 +1029,7 @@ const ShortCard = ({
                   )}
                   <Row label={visaLabel} value={fmtMoney(calc.visaFee)} />
                   <Row label="ค่าประกัน OSHC" value={fmtMoney(0)} muted />
-                  <div className="border-t border-border pt-1.5 mt-1.5">
+                  <div className={breakdownTotals}>
                     <Row
                       label="ค่าใช้จ่ายที่ต้องจ่ายวันที่สมัครเรียน"
                       value={skillRange ? `${fmtMoney(calc.upfrontLow)} – ${fmtMoney(calc.upfrontHigh)}` : fmtMoney(calc.upfrontLow)}
@@ -951,10 +1040,11 @@ const ShortCard = ({
               </motion.div>
             )}
           </AnimatePresence>
+          </div>
 
           <Badge
             variant="outline"
-            className={covers ? "border-emerald-500/40 text-emerald-700" : "border-amber-500/40 text-amber-700"}
+            className={covers ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700" : "border-amber-500/40 bg-amber-500/10 text-amber-700"}
           >
             {covers ? <ShieldCheck className="w-3 h-3 mr-1" /> : <AlertTriangle className="w-3 h-3 mr-1" />}
             {covers ? "คุณมีเงินเพียงพอแล้วที่จะสมัครเรียนได้" : `ยังขาดอยู่ ${fmtMoney(Math.max(0, calc.upfrontHigh - budgetAUD))}`}
@@ -965,14 +1055,14 @@ const ShortCard = ({
               href="https://line.me/R/ti/p/@beyondstudy"
               target="_blank"
               rel="noreferrer"
-              className="mt-3 flex items-center justify-between rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-xs text-primary hover:bg-primary/10"
+              className="mt-4 flex min-h-11 items-center justify-between gap-2 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span>อยากปรึกษาเพิ่มเติม? ติดต่อทีมงานของเราได้เลย</span>
-              <ArrowRight className="w-3 h-3" />
+              <ArrowRight className="w-3 h-3 shrink-0" aria-hidden />
             </a>
           )}
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 };
