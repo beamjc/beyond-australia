@@ -125,7 +125,7 @@ const timeline2026: TimelineStep[] = [
       th: "ลงทะเบียนเพื่อรับ Username และ Password ผ่านเว็บไซต์ของ DCY โดยเปิดรับวันละไม่เกิน 500 คน เป็นเวลา 6 วัน รวมทั้งหมด 3,000 สิทธิ์ เรียกได้ว่าต้องแย่งกันเหมือนกดบัตรคอนเสิร์ตเลยทีเดียว!",
     },
     icon: Users,
-    status: "action",
+    status: "complete",
     alert: STEP_TEXT.registrationAlert,
   },
   {
@@ -136,7 +136,7 @@ const timeline2026: TimelineStep[] = [
       th: "ผลภาษา IELTS Overall 4.5 ขึ้นไป (หรือผล PTE ที่เทียบเท่า), หนังสือรับรองยอดเงินในบัญชี, เอกสารการศึกษา และเอกสารอื่น ๆ ต้องเตรียมให้พร้อม **ก่อนวันกดโควตา** โดยควรมีเอกสารทุกอย่างครบไม่เกินวันที่ 7 เมษายน 2026",
     },
     icon: FileCheck,
-    status: "action",
+    status: "complete",
     alert: STEP_TEXT.prepareAlert,
   },
   {
@@ -147,7 +147,7 @@ const timeline2026: TimelineStep[] = [
       th: "จากผู้ที่ลงทะเบียนไว้ 3,000 คน จะได้รับสิทธิ์ประมาณ 2,000 คน และมีรายชื่อสำรองอีก 500 คน ถือเป็นโอกาสสำคัญเพียงครั้งเดียวของรอบนี้",
     },
     icon: Award,
-    status: "upcoming",
+    status: "complete",
   },
   {
     ...STEP_TEXT.approval,

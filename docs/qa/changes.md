@@ -137,3 +137,4 @@ Thai wording below was supplied directly by the owner (owner-directed), so it wa
   - Screenshots: `screenshots/tl-th-desktop.png`, `screenshots/tl-th-mobile.png`.
 - **WAH → WHM** (owner request): 9 visible strings in `BudgetStudyPlanner.tsx` (e.g. "ค่าวีซ่า WAH" → "ค่าวีซ่า WHM", "Working Holiday (WAH)" → "Working Holiday (WHM)") and 2 in `FAQ2026.tsx` ("Timeline & ภาพรวม WAH 2026" → "… WHM 2026"). Brand name "ThaiWAHClub" left unchanged.
 - Not changed (open): FY 2026 dates are all past as of 2026-10-01 — cards 2–3 are still highlighted as current and the countdown picker disables every date. Needs the FY 2027 schedule from DCY.
+- **Follow-up (owner request):** removed the "current step" highlight from FY 2026 — Username/Password Registration and Prepare Everything changed from `action` to `complete` (Quota Selection Day, also past, set to `complete`). No card is highlighted now; the dates and text are unchanged.
