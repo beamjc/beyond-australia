@@ -38,6 +38,22 @@ export const translations = {
         postcode: "2nd/3rd WHM",
         faq2026: "FAQ 2026",
       },
+      timeline: {
+        eyebrow: "FY {year} Schedule",
+        title: "WHM Timeline",
+        subtitle: "Follow each step carefully. Timelines change yearly — stay updated with us.",
+        yearLabel: "FY {year}",
+        countdownTitle: "Preparation Countdown",
+        countdownDescription:
+          "When do you plan to start preparing? We'll tell you how many days you have until the deadline (7 April 2026).",
+        pickDate: "Pick your start date",
+        daysLeftPrefix: "",
+        daysLeftSuffixOne: "day to get everything ready",
+        daysLeftSuffixMany: "days to get everything ready",
+        deadlineToday: "Today is the deadline!",
+        deadlinePassed: "This date is past the deadline.",
+        swipeHint: "← Swipe to see the full timeline →",
+      },
     },
     study: {
       eyebrow: "Plan your pathway to Australia",
@@ -184,6 +200,23 @@ export const translations = {
         checklist: "เช็กลิสต์",
         postcode: "WHM ปีที่ 2/3",
         faq2026: "คำถามพบบ่อย 2026",
+      },
+      timeline: {
+        eyebrow: "กำหนดการปี {year}",
+        title: "ไทม์ไลน์ WHM",
+        subtitle:
+          "เช็กแต่ละขั้นตอนให้ครบและเตรียมตัวให้พร้อม เพราะกำหนดการอาจเปลี่ยนแปลงทุกปี — ติดตามอัปเดตล่าสุดกับเรา",
+        yearLabel: "ปี {year}",
+        countdownTitle: "นับถอยหลังเตรียมตัว",
+        countdownDescription:
+          "วางแผนว่าจะเริ่มเตรียมตัววันไหน? เราจะช่วยคำนวณให้ว่าเหลือเวลาอีกกี่วันก่อนถึงวันสุดท้าย 7 เมษายน 2026",
+        pickDate: "เลือกวันที่เริ่มเตรียมตัว",
+        daysLeftPrefix: "เหลือเวลาเตรียมตัวอีก",
+        daysLeftSuffixOne: "วัน",
+        daysLeftSuffixMany: "วัน",
+        deadlineToday: "วันนี้คือวันสุดท้ายแล้ว!",
+        deadlinePassed: "วันที่เลือกเลยกำหนดไปแล้ว",
+        swipeHint: "← ปัดเพื่อดูไทม์ไลน์ทั้งหมด →",
       },
     },
     study: {

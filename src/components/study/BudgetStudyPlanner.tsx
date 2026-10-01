@@ -198,7 +198,7 @@ const BudgetStudyPlanner = () => {
                   }`}
                 >
                   <div className="text-sm font-semibold text-foreground">คอร์สระยะสั้น / เพิ่มทักษะ</div>
-                  <div className="text-xs text-muted-foreground">เหมาะสำหรับผู้ที่ถือวีซ่า WAH หรือต้องการเรียนคอร์ส Fast Track</div>
+                  <div className="text-xs text-muted-foreground">เหมาะสำหรับผู้ที่ถือวีซ่า WHM หรือต้องการเรียนคอร์ส Fast Track</div>
                 </button>
               </div>
               {suggestShort && (
@@ -210,7 +210,7 @@ const BudgetStudyPlanner = () => {
                     <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
                       <p className="text-xs font-semibold text-amber-700">
-                        งบต่ำกว่า ฿180,000? ลองเส้นทาง WAH หรือเรียนด้วยวีซ่าท่องเที่ยวก่อน
+                        งบต่ำกว่า ฿180,000? ลองเส้นทาง WHM หรือเรียนด้วยวีซ่าท่องเที่ยวก่อน
                       </p>
                       <p className="text-[11px] text-amber-700/80 mt-0.5">
                         หารายได้ เรียนรู้ และสัมผัสประสบการณ์ที่ออสเตรเลีย ก่อนตัดสินใจเรียนต่อแบบเต็มรูปแบบ
@@ -386,7 +386,7 @@ const BudgetStudyPlanner = () => {
                 </p>
                 <p className="text-xs text-muted-foreground mt-2">
                   {goal === "short"
-                    ? `รวมค่าวีซ่า WAH และค่าเรียนภาษาเป็นเวลา ${shortWeeks} สัปดาห์`
+                    ? `รวมค่าวีซ่า WHM และค่าเรียนภาษาเป็นเวลา ${shortWeeks} สัปดาห์`
                     : <>รวมค่ามัดจำ ค่าวีซ่านักเรียน ค่าประกัน OSHC{englishPkg.weeks > 0 && ` และค่าเรียนภาษา ${englishPkg.weeks} สัปดาห์`}</>}
                 </p>
                 {headlineCoverage >= 100 ? (
@@ -786,7 +786,7 @@ const ShortPathwaySection = ({
               aria-labelledby="bsp-short-weeks-label"
             />
             <p className="text-[11px] text-muted-foreground mt-1">
-              สำหรับวีซ่า WAH จะเรียนได้มากสุด 17 สัปดาห์
+              สำหรับวีซ่า WHM จะเรียนได้มากสุด 17 สัปดาห์
             </p>
           </div>
 
@@ -822,7 +822,7 @@ const ShortPathwaySection = ({
         {whmEligible ? (
           <ShortCard
             icon={<Briefcase className="w-5 h-5 text-primary" />}
-            title="Working Holiday (WAH)"
+            title="Working Holiday (WHM)"
             tagline="เรียน ทำงาน และ หาประสบการณ์ใหม่ด้วยงบไม่เกิน 100,000 บาท"
             calc={whm}
             elicosWeekly={elicosWeekly}
@@ -836,14 +836,14 @@ const ShortPathwaySection = ({
               <div className="flex items-start gap-2">
                 <Briefcase className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-foreground leading-tight">Working Holiday (WAH)</h4>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">ข้อกำหนดของวีซ่า WAH</p>
+                  <h4 className="font-bold text-foreground leading-tight">Working Holiday (WHM)</h4>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">ข้อกำหนดของวีซ่า WHM</p>
                 </div>
               </div>
               <div className="flex items-start gap-2 rounded-md bg-amber-500/10 border border-amber-500/30 p-2.5 mt-1">
                 <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <p className="text-xs text-amber-700">
-                  สำหรับคนไทยที่มีอายุ 31 ปีขึ้นไปจะไม่สามารถสมัครวีซ่า WAH ได้ แต่จะสามารถสมัครวีซ่านักเรียนได้ ทั้งนี้โอกาสที่วีซ่าจะผ่านนั้นขึ้นอยู่กับประวัติและจุดประสงค์ในการเรียนของแต่ละคน
+                  สำหรับคนไทยที่มีอายุ 31 ปีขึ้นไปจะไม่สามารถสมัครวีซ่า WHM ได้ แต่จะสามารถสมัครวีซ่านักเรียนได้ ทั้งนี้โอกาสที่วีซ่าจะผ่านนั้นขึ้นอยู่กับประวัติและจุดประสงค์ในการเรียนของแต่ละคน
                 </p>
               </div>
             </CardContent>
@@ -880,7 +880,7 @@ const ShortCard = ({
   tourCta?: boolean;
 }) => {
   const [open, setOpen] = useState(true);
-  const visaLabel = calc.visaType === "whm" ? "ค่าวีซ่า WAH" : calc.visaType === "tourist" ? "ค่าวีซ่าท่องเที่ยว" : "ค่าวีซ่านักเรียน";
+  const visaLabel = calc.visaType === "whm" ? "ค่าวีซ่า WHM" : calc.visaType === "tourist" ? "ค่าวีซ่าท่องเที่ยว" : "ค่าวีซ่านักเรียน";
   const skillRange = shortSkill === "none"
     ? null
     : `${fmtMoney(SKILL_BOOSTERS[shortSkill].low)} – ${fmtMoney(SKILL_BOOSTERS[shortSkill].high)}`;

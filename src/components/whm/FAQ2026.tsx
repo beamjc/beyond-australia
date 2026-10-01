@@ -53,7 +53,7 @@ const alertStyles: Record<string, string> = {
 
 const categoryData: Record<FaqCategory, CategoryContent> = {
   overview: {
-    title: "Timeline & ภาพรวม WAH 2026",
+    title: "Timeline & ภาพรวม WHM 2026",
     subtitle: "ทุกรอบตั้งแต่ต้นจนจบ — สำหรับคนที่เพิ่งเริ่มศึกษา",
     alerts: [
       { type: "warn", text: "Deadline หลัก: เอกสารทุกอย่างต้องออกและพร้อมก่อนวันที่ 7 เมษายน 2026 (วันที่ 8 เมษายนคือวันกดโควต้า)" },
@@ -146,7 +146,7 @@ const categoryData: Record<FaqCategory, CategoryContent> = {
       },
       {
         question: "ผลสอบภาษาอังกฤษ — ต้องได้คะแนนอะไรบ้าง?",
-        answer: `ผลภาษาอะไรใช้สำหรับ WAH 2026 ได้บ้าง?
+        answer: `ผลภาษาอะไรใช้สำหรับ WHM 2026 ได้บ้าง?
 
 [อัพเดท 13 มีนาคม 2026 — ดย. ประกาศปรับเกณฑ์ตามรัฐบาลออสเตรเลีย]
 

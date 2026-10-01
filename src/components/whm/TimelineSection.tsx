@@ -3,64 +3,108 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Users, FileCheck, Award, AlertTriangle, Clock, CalendarIcon } from "lucide-react";
-import { format, differenceInDays, parse } from "date-fns";
+import { format, differenceInDays } from "date-fns";
+import { th as thLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import SectionHeader from "../shared/SectionHeader";
+import { useLanguage } from "@/i18n/LanguageProvider";
+
+type Bilingual = { en: string; th: string };
 
 type TimelineStep = {
-  date: string;
-  title: string;
-  description: string;
+  date: Bilingual;
+  title: Bilingual;
+  // `**text**` marks emphasis (rendered bold).
+  description: Bilingual;
   icon: typeof Calendar;
   status: "complete" | "action" | "upcoming";
-  alert?: string;
+  alert?: Bilingual;
 };
+
+const STEP_TEXT = {
+  announcement: {
+    title: { en: "DCY Announcement", th: "DCY ประกาศกำหนดการ" },
+    description: {
+      en: "The Department of Children and Youth announces the full WHM schedule for the fiscal year.",
+      th: "กรมกิจการเด็กและเยาวชน (DCY) ประกาศกำหนดการ Working Holiday อย่างเป็นทางการประจำปี",
+    },
+  },
+  registrationTitle: { en: "Username/Password Registration", th: "สมัคร Username / Password" },
+  registrationAlert: {
+    en: "Very competitive — be ready at the exact opening time.",
+    th: "การแข่งขันสูงมาก — เตรียมตัวให้พร้อมและเข้าเว็บไซต์ทันทีที่ระบบเปิด",
+  },
+  prepareTitle: { en: "Prepare Everything", th: "เตรียมเอกสารให้ครบ" },
+  prepareAlert: {
+    en: "No second chances — have all documents prepared in advance.",
+    th: "ไม่มีรอบแก้ตัว — ควรเตรียมเอกสารทุกอย่างให้พร้อมล่วงหน้า",
+  },
+  quotaTitle: { en: "Quota Selection Day", th: "วันกดโควตา" },
+  approval: {
+    date: { en: "After Selection", th: "หลังได้รับสิทธิ์" },
+    title: { en: "Document Submission & DCY Approval", th: "ยื่นเอกสารและรอ DCY อนุมัติ" },
+    description: {
+      en: "Submit your prepared documents to the DCY. If approved, you receive the Government Support Letter needed for the visa.",
+      th: "นำเอกสารที่เตรียมไว้ยื่นกับ DCY เมื่อผ่านการตรวจสอบและได้รับอนุมัติ คุณจะได้รับ **หนังสือรับรองจากรัฐบาล (Government Support Letter)** ซึ่งจำเป็นสำหรับการยื่นวีซ่า",
+    },
+  },
+  visaTitle: { en: "Visa Application", th: "ยื่นวีซ่าออสเตรเลีย" },
+} satisfies Record<string, Bilingual | Record<string, Bilingual>>;
 
 const timeline2025: TimelineStep[] = [
   {
-    date: "25 Feb 2025",
-    title: "DCY Announcement",
-    description: "The Department of Children and Youth announces the full WHM schedule for the fiscal year.",
+    date: { en: "25 Feb 2025", th: "25 ก.พ. 2025" },
+    ...STEP_TEXT.announcement,
     icon: Calendar,
     status: "complete",
   },
   {
-    date: "7–14 Mar 2025",
-    title: "Username/Password Registration",
-    description: "Secure your login credentials via the DCY website. Max 500/day for 8 days = 4,000 total spots. Think of it like a limited concert ticket!",
+    date: { en: "7–14 Mar 2025", th: "7–14 มี.ค. 2025" },
+    title: STEP_TEXT.registrationTitle,
+    description: {
+      en: "Secure your login credentials via the DCY website. Max 500/day for 8 days = 4,000 total spots. Think of it like a limited concert ticket!",
+      th: "ลงทะเบียนเพื่อรับ Username และ Password ผ่านเว็บไซต์ของ DCY โดยเปิดรับวันละไม่เกิน 500 คน เป็นเวลา 8 วัน รวมทั้งหมด 4,000 สิทธิ์ เรียกได้ว่าต้องแย่งกันเหมือนกดบัตรคอนเสิร์ตเลยทีเดียว!",
+    },
     icon: Users,
     status: "complete",
-    alert: "Very competitive — be ready at the exact opening time.",
+    alert: STEP_TEXT.registrationAlert,
   },
   {
-    date: "Before 27 Mar 2025",
-    title: "Prepare Everything",
-    description: "IELTS 4.5+ overall (or PTE equivalent), bank certificate, qualifications — all must be ready BEFORE quota day.",
+    date: { en: "Before 27 Mar 2025", th: "ก่อน 27 มี.ค. 2025" },
+    title: STEP_TEXT.prepareTitle,
+    description: {
+      en: "IELTS 4.5+ overall (or PTE equivalent), bank certificate, qualifications — all must be ready BEFORE quota day.",
+      th: "ผลภาษา IELTS Overall 4.5 ขึ้นไป (หรือผล PTE ที่เทียบเท่า), หนังสือรับรองยอดเงินในบัญชี, เอกสารการศึกษา และเอกสารอื่น ๆ ต้องเตรียมให้พร้อม **ก่อนวันกดโควตา**",
+    },
     icon: FileCheck,
     status: "complete",
-    alert: "No second chances — have all documents prepared in advance.",
+    alert: STEP_TEXT.prepareAlert,
   },
   {
-    date: "27 Mar 2025",
-    title: "Quota Selection Day",
-    description: "Out of 4,000 registered, ~2,000 are selected + 300–500 substitutes. This is your one-off chance.",
+    date: { en: "27 Mar 2025", th: "27 มี.ค. 2025" },
+    title: STEP_TEXT.quotaTitle,
+    description: {
+      en: "Out of 4,000 registered, ~2,000 are selected + 300–500 substitutes. This is your one-off chance.",
+      th: "จากผู้ที่ลงทะเบียนไว้ 4,000 คน จะได้รับสิทธิ์ประมาณ 2,000 คน และมีรายชื่อสำรองอีกราว 300–500 คน ถือเป็นโอกาสสำคัญเพียงครั้งเดียวของรอบนี้",
+    },
     icon: Award,
     status: "complete",
   },
   {
-    date: "After Selection",
-    title: "Document Submission & DCY Approval",
-    description: "Submit your prepared documents to the DCY. If approved, you receive the Government Support Letter needed for the visa.",
+    ...STEP_TEXT.approval,
     icon: FileCheck,
     status: "complete",
   },
   {
-    date: "Before 1 Jul 2025",
-    title: "Visa Application",
-    description: "Apply for the Working Holiday (subclass 462) visa before the new Australian financial year begins.",
+    date: { en: "Before 1 Jul 2025", th: "ก่อน 1 ก.ค. 2025" },
+    title: STEP_TEXT.visaTitle,
+    description: {
+      en: "Apply for the Working Holiday (subclass 462) visa before the new Australian financial year begins.",
+      th: "ยื่นวีซ่า Working Holiday (Subclass 462) ให้เรียบร้อยก่อนวันที่ 1 กรกฎาคม 2025 ซึ่งเป็นวันเริ่มต้นปีงบประมาณใหม่ของออสเตรเลีย",
+    },
     icon: Award,
     status: "complete",
   },
@@ -68,54 +112,71 @@ const timeline2025: TimelineStep[] = [
 
 const timeline2026: TimelineStep[] = [
   {
-    date: "9 Mar 2026",
-    title: "DCY Announcement",
-    description: "The Department of Children and Youth announces the full WHM schedule for the fiscal year.",
+    date: { en: "9 Mar 2026", th: "9 มี.ค. 2026" },
+    ...STEP_TEXT.announcement,
     icon: Calendar,
     status: "complete",
   },
   {
-    date: "23–28 Mar 2026",
-    title: "Username/Password Registration",
-    description: "Secure your login credentials via the DCY website. Max 500/day for 6 days = 3,000 total spots. Think of it like a limited concert ticket!",
+    date: { en: "23–28 Mar 2026", th: "23–28 มี.ค. 2026" },
+    title: STEP_TEXT.registrationTitle,
+    description: {
+      en: "Secure your login credentials via the DCY website. Max 500/day for 6 days = 3,000 total spots. Think of it like a limited concert ticket!",
+      th: "ลงทะเบียนเพื่อรับ Username และ Password ผ่านเว็บไซต์ของ DCY โดยเปิดรับวันละไม่เกิน 500 คน เป็นเวลา 6 วัน รวมทั้งหมด 3,000 สิทธิ์ เรียกได้ว่าต้องแย่งกันเหมือนกดบัตรคอนเสิร์ตเลยทีเดียว!",
+    },
     icon: Users,
     status: "action",
-    alert: "Very competitive — be ready at the exact opening time.",
+    alert: STEP_TEXT.registrationAlert,
   },
   {
-    date: "Before 8 Apr 2026",
-    title: "Prepare Everything",
-    description: "IELTS 4.5+ overall (or PTE equivalent), bank certificate, qualifications — all must be ready BEFORE quota day. You must obtain everything by 7 April 2026 at the latest.",
+    date: { en: "Before 8 Apr 2026", th: "ก่อน 8 เม.ย. 2026" },
+    title: STEP_TEXT.prepareTitle,
+    description: {
+      en: "IELTS 4.5+ overall (or PTE equivalent), bank certificate, qualifications — all must be ready BEFORE quota day. You must obtain everything by 7 April 2026 at the latest.",
+      th: "ผลภาษา IELTS Overall 4.5 ขึ้นไป (หรือผล PTE ที่เทียบเท่า), หนังสือรับรองยอดเงินในบัญชี, เอกสารการศึกษา และเอกสารอื่น ๆ ต้องเตรียมให้พร้อม **ก่อนวันกดโควตา** โดยควรมีเอกสารทุกอย่างครบไม่เกินวันที่ 7 เมษายน 2026",
+    },
     icon: FileCheck,
     status: "action",
-    alert: "No second chances — have all documents prepared in advance.",
+    alert: STEP_TEXT.prepareAlert,
   },
   {
-    date: "8 Apr 2026",
-    title: "Quota Selection Day",
-    description: "Out of 3,000 registered, 2,000 are selected + 500 substitutes. This is your one-off chance.",
+    date: { en: "8 Apr 2026", th: "8 เม.ย. 2026" },
+    title: STEP_TEXT.quotaTitle,
+    description: {
+      en: "Out of 3,000 registered, 2,000 are selected + 500 substitutes. This is your one-off chance.",
+      th: "จากผู้ที่ลงทะเบียนไว้ 3,000 คน จะได้รับสิทธิ์ประมาณ 2,000 คน และมีรายชื่อสำรองอีก 500 คน ถือเป็นโอกาสสำคัญเพียงครั้งเดียวของรอบนี้",
+    },
     icon: Award,
     status: "upcoming",
   },
   {
-    date: "After Selection",
-    title: "Document Submission & DCY Approval",
-    description: "Submit your prepared documents to the DCY. If approved, you receive the Government Support Letter needed for the visa.",
+    ...STEP_TEXT.approval,
     icon: FileCheck,
     status: "upcoming",
   },
   {
-    date: "1 Jul 2026 onwards",
-    title: "Visa Application",
-    description: "You can apply for the Working Holiday (subclass 462) visa right when the new Australian financial year begins and after you receive the Government Support Letter from the DCY.",
+    date: { en: "1 Jul 2026 onwards", th: "ตั้งแต่ 1 ก.ค. 2026" },
+    title: STEP_TEXT.visaTitle,
+    description: {
+      en: "You can apply for the Working Holiday (subclass 462) visa right when the new Australian financial year begins and after you receive the Government Support Letter from the DCY.",
+      th: "หลังได้รับ Government Support Letter จาก DCY แล้ว สามารถยื่นวีซ่า Working Holiday (Subclass 462) ได้ตั้งแต่วันที่ 1 กรกฎาคม 2026 ซึ่งเป็นช่วงเริ่มต้นปีงบประมาณใหม่ของออสเตรเลีย",
+    },
     icon: Award,
     status: "upcoming",
   },
 ];
 
+// Renders `**text**` segments as bold; everything else as plain text.
+const withEmphasis = (text: string) =>
+  text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
+    i % 2 === 1 ? <strong key={i} className="font-semibold text-foreground">{part}</strong> : part
+  );
+
 const QUOTA_DEADLINE = new Date(2026, 3, 7); // 7 April 2026 (last day to have everything ready)
 
 const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
+  const { language, t } = useLanguage();
+  const dateLocale = language === "th" ? thLocale : undefined;
   const [selectedYear, setSelectedYear] = useState<2025 | 2026>(2026);
   const [prepDate, setPrepDate] = useState<Date | undefined>(undefined);
 
@@ -171,9 +232,9 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
   const content = (
     <>
       <SectionHeader
-        eyebrow={`FY ${selectedYear} Schedule`}
-        title="WHM Timeline"
-        subtitle="Follow each step carefully. Timelines change yearly — stay updated with us."
+        eyebrow={t("whm.timeline.eyebrow", { year: selectedYear })}
+        title={t("whm.timeline.title")}
+        subtitle={t("whm.timeline.subtitle")}
       />
 
       {/* Year toggle */}
@@ -190,7 +251,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              FY {year}
+              {t("whm.timeline.yearLabel", { year })}
             </button>
           ))}
         </div>
@@ -205,10 +266,10 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
         >
           <div className="flex items-center gap-2 mb-3">
             <Clock className="w-5 h-5 text-primary" />
-            <h3 className="font-bold text-foreground">Preparation Countdown</h3>
+            <h3 className="font-bold text-foreground">{t("whm.timeline.countdownTitle")}</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            When do you plan to start preparing? We'll tell you how many days you have until the deadline (7 April 2026).
+            {t("whm.timeline.countdownDescription")}
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Popover>
@@ -221,7 +282,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {prepDate ? format(prepDate, "PPP") : "Pick your start date"}
+                  {prepDate ? format(prepDate, "PPP", { locale: dateLocale }) : t("whm.timeline.pickDate")}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -230,6 +291,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                   selected={prepDate}
                   onSelect={setPrepDate}
                   initialFocus
+                  locale={dateLocale}
                   className={cn("p-3 pointer-events-auto")}
                   disabled={(date) => date > new Date(2026, 3, 7) || date < new Date()}
                 />
@@ -247,13 +309,16 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
               )}>
                 {daysRemaining > 0 ? (
                   <>
+                    {language === "th" && <span>{t("whm.timeline.daysLeftPrefix")}</span>}
                     <span className="text-2xl font-bold">{daysRemaining}</span>
-                    <span>day{daysRemaining !== 1 ? "s" : ""} to get everything ready</span>
+                    <span>
+                      {t(daysRemaining === 1 ? "whm.timeline.daysLeftSuffixOne" : "whm.timeline.daysLeftSuffixMany")}
+                    </span>
                   </>
                 ) : (
                   <>
                     <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                    <span>{daysRemaining === 0 ? "Today is the deadline!" : "This date is past the deadline."}</span>
+                    <span>{t(daysRemaining === 0 ? "whm.timeline.deadlineToday" : "whm.timeline.deadlinePassed")}</span>
                   </>
                 )}
               </div>
@@ -282,7 +347,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
               const isActive = step.status === "action";
               return (
                 <motion.div
-                  key={`${selectedYear}-${step.title}`}
+                  key={`${selectedYear}-${index}`}
                   initial={{ opacity: 0, y: 16, x: 0 }}
                   animate={{
                     opacity: 1,
@@ -303,7 +368,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                       isActive ? "text-foreground" : "text-muted-foreground"
                     )}
                   >
-                    {step.date}
+                    {step.date[language]}
                   </span>
 
                   {/* Node */}
@@ -334,13 +399,13 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                     >
                       <step.icon className={cn("w-4 h-4 flex-shrink-0", isActive ? "text-primary-foreground" : "text-primary")} />
                       <h3
-                        title={step.title}
+                        title={step.title[language]}
                         className={cn(
                           "text-sm sm:text-base font-bold leading-tight line-clamp-2",
                           isActive ? "text-primary-foreground" : "text-foreground"
                         )}
                       >
-                        {step.title}
+                        {step.title[language]}
                       </h3>
                     </div>
 
@@ -349,14 +414,14 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
                       style={{ background: isActive ? "#FFF9F0" : "rgba(186, 214, 235, 0.25)" }}
                     >
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        {step.description}
+                        {withEmphasis(step.description[language])}
                       </p>
                       {step.alert && (
                         <>
                           <div className="border-t border-dashed my-3" style={{ borderColor: "#BAD6EB" }} />
                           <div className="flex items-start gap-2 text-xs">
                             <AlertTriangle className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                            <span className="text-foreground/80">{step.alert}</span>
+                            <span className="font-semibold text-foreground/80">{step.alert[language]}</span>
                           </div>
                         </>
                       )}
@@ -370,7 +435,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
 
         {/* Mobile scroll hint */}
         <p className="text-center text-xs text-muted-foreground mt-1 md:hidden">
-          ← Swipe to see the full timeline →
+          {t("whm.timeline.swipeHint")}
         </p>
       </div>
     </>

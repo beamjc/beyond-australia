@@ -125,3 +125,15 @@ Thai and English wording below was given directly by the owner (owner-directed, 
 - **Section backgrounds:** home sections now alternate white (`--card`) and tinted (`--muted`) via `data-band` attributes and rules in `src/app/globals.css`. Events and Articles render nothing when empty, so the bands after Study are resolved with `:has()` to keep the alternation unbroken. Checked in the browser with both present: services white → WHM tint → study white → events tint → articles white → proof tint → CTA (blue).
 - **Proof section** (`ProofStatsSection.tsx`): removed eyebrow "ได้รับความไว้วางใจทั่วประเทศ", title "ตัวเลขจริง ความน่าเชื่อถือจริง" and subtitle "สนับสนุนโดย Beyond Study Center พาร์ทเนอร์ด้านการศึกษาที่ได้รับใบอนุญาต" → title **"ต้องการคำปรึกษาเพิ่มเติม ติดต่อเรา"**, subtitle **"Beyond Study Center"** (EN "Need more advice? Contact us"). The three highlights are now cards styled like the Services cards (alternating light/dark fills). The icons (`experience/founder/offices.png`) had a fake checkerboard baked into the pixels; it was removed (real transparency) and the images were trimmed to 512 px.
 - **CTA banner** (`CTABanner.tsx`): removed "ถึงเวลาเริ่มต้นเส้นทางสู่ออสเตรเลียของคุณ", the QEAC subtitle and both trust lines (QEAC licence numbers, "ช่วยคนไทยมากว่า 15 ปี") → **"ต้องการปรึกษาเพิ่มเติม ติดต่อเราได้เลย"** (EN "Need more advice? Get in touch"), with the `planning_with_beyond.png` artwork on the left (above the heading on mobile). Button and destination unchanged.
+
+## WHM Timeline in Thai + WAH → WHM — 2026-10-01
+
+Thai wording below was supplied directly by the owner (owner-directed), so it was applied as given without the external editor batch.
+
+- **Timeline** (`TimelineSection.tsx`): all visible text was hard-coded English, so Thai visitors saw English. UI strings moved to `whm.timeline.*` in `src/i18n/translations.ts`; step data (dates, titles, descriptions, alerts) is now `{ en, th }` in the component. English wording unchanged.
+  - Before (TH mode): "WHM Timeline" / "Preparation Countdown" / "Quota Selection Day" → after: "ไทม์ไลน์ WHM" / "นับถอยหลังเตรียมตัว" / "วันกดโควตา".
+  - Owner's bold emphasis kept ("ก่อนวันกดโควตา", "หนังสือรับรองจากรัฐบาล (Government Support Letter)") via `**…**` markers; alert lines are now semi-bold in both languages.
+  - Date picker and chosen date use the Thai date-fns locale in TH mode (Gregorian year, matching the owner's copy).
+  - Screenshots: `screenshots/tl-th-desktop.png`, `screenshots/tl-th-mobile.png`.
+- **WAH → WHM** (owner request): 9 visible strings in `BudgetStudyPlanner.tsx` (e.g. "ค่าวีซ่า WAH" → "ค่าวีซ่า WHM", "Working Holiday (WAH)" → "Working Holiday (WHM)") and 2 in `FAQ2026.tsx` ("Timeline & ภาพรวม WAH 2026" → "… WHM 2026"). Brand name "ThaiWAHClub" left unchanged.
+- Not changed (open): FY 2026 dates are all past as of 2026-10-01 — cards 2–3 are still highlighted as current and the countdown picker disables every date. Needs the FY 2027 schedule from DCY.
