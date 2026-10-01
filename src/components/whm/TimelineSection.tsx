@@ -173,6 +173,8 @@ const withEmphasis = (text: string) =>
   );
 
 const QUOTA_DEADLINE = new Date(2026, 3, 7); // 7 April 2026 (last day to have everything ready)
+// Hidden while every FY 2026 date is past; set to true again with the next schedule.
+const SHOW_COUNTDOWN = false;
 
 const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
   const { language, t } = useLanguage();
@@ -258,7 +260,7 @@ const TimelineSection = ({ embedded = false }: { embedded?: boolean }) => {
       </div>
 
       {/* Preparation countdown — only for 2026 */}
-      {selectedYear === 2026 && (
+      {SHOW_COUNTDOWN && selectedYear === 2026 && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
