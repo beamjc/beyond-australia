@@ -1,5 +1,6 @@
 'use client'
 
+import Image from "next/image";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import SectionHeader from "./SectionHeader";
 import ReviewsCarousel from "./ReviewsCarousel";
@@ -14,23 +15,47 @@ const ProofStatsSection = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="py-20 bg-card">
+    <section data-band="proof" className="py-20">
       <div className="container">
         <SectionHeader
-          eyebrow={t("proof.eyebrow")}
           title={t("proof.title")}
           subtitle={t("proof.subtitle")}
         />
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8">
-          {highlights.map(({ key, icon }) => (
-            <div key={key} className="text-left">
-              <img src={icon} alt="" className="w-14 h-14 mb-4" aria-hidden />
-              <p className="text-sm sm:text-base font-medium text-foreground leading-relaxed">
-                {t(`proof.highlights.${key}` as const)}
-              </p>
-            </div>
-          ))}
+        {/* Same card treatment as ServicesSection: alternating light/dark
+            brand fills, text left, artwork right. */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {highlights.map(({ key, icon }, index) => {
+            const isDark = index % 2 === 1;
+            return (
+              <div
+                key={key}
+                className={
+                  isDark
+                    ? "relative flex min-h-48 items-center gap-4 overflow-hidden rounded-2xl border border-[#7096D1] bg-[#7096D1] p-6 transition-all hover:shadow-warm"
+                    : "relative flex min-h-48 items-center gap-4 overflow-hidden rounded-2xl border border-[#7096D1]/40 bg-[#D0E3FF] p-6 transition-all hover:border-[#334eac]/60 hover:shadow-warm"
+                }
+              >
+                <p
+                  className={
+                    isDark
+                      ? "flex-1 text-sm sm:text-base font-medium leading-relaxed text-[#081F5C]"
+                      : "flex-1 text-sm sm:text-base font-medium leading-relaxed text-[#334eac]"
+                  }
+                >
+                  {t(`proof.highlights.${key}` as const)}
+                </p>
+                <Image
+                  src={icon}
+                  alt=""
+                  aria-hidden="true"
+                  width={112}
+                  height={112}
+                  className="h-24 w-24 shrink-0 object-contain sm:h-28 sm:w-28"
+                />
+              </div>
+            );
+          })}
         </div>
 
         <div className="max-w-4xl mx-auto mt-14">

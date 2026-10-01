@@ -67,7 +67,7 @@ const StudySection = () => {
 
   return (
     <PlanNavContext.Provider value={nav}>
-    <section id="study" className="py-20 bg-card">
+    <section id="study" data-band="study" className="py-20">
       <div className="container">
         <SectionHeader
           eyebrow={t("study.eyebrow")}

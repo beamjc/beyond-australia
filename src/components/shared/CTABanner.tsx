@@ -1,6 +1,7 @@
 'use client'
 
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 const SITE_URL = "https://www.beyondstudycenter.com/inquiry-form/";
@@ -9,22 +10,18 @@ const CTABanner = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="py-16 sm:py-20 bg-secondary text-secondary-foreground">
-      <div className="container flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-        <div className="max-w-xl">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("ctaBanner.title")}</h2>
-          <p className="text-secondary-foreground/70 leading-relaxed">{t("ctaBanner.subtitle")}</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-sm text-secondary-foreground/80">
-            <span className="inline-flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
-              {t("ctaBanner.trust1")}
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
-              {t("ctaBanner.trust2")}
-            </span>
-          </div>
-        </div>
+    <section className="py-12 sm:py-16 bg-secondary text-secondary-foreground">
+      <div className="container flex flex-col items-center gap-8 text-center lg:flex-row lg:text-left">
+        <Image
+          src="/icons/planning_with_beyond.png"
+          alt=""
+          aria-hidden="true"
+          width={1536}
+          height={1024}
+          sizes="(max-width: 1024px) 80vw, 360px"
+          className="w-full max-w-xs shrink-0 lg:w-[360px] lg:max-w-none"
+        />
+        <h2 className="flex-1 text-3xl md:text-4xl font-bold">{t("ctaBanner.title")}</h2>
         <a
           href={SITE_URL}
           target="_blank"

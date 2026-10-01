@@ -17,7 +17,7 @@ const serviceItems = [
 const ServicesSection = () => {
   const { t } = useLanguage();
   return (
-    <section id="services" className="py-20 bg-background">
+    <section id="services" data-band="services" className="py-20">
       <div className="container">
         <SectionHeader
           eyebrow={t("services.eyebrow")}

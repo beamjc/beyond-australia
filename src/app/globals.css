@@ -170,3 +170,27 @@
     border-radius: 9999px;
   }
 }
+
+/* Home page section bands: alternate white (card) and tinted (muted) so each
+   section is visually separated. Events and Articles render nothing when they
+   have no published content, so the bands after Study are resolved with :has()
+   to keep the alternation unbroken whichever of them is present. */
+@layer components {
+  [data-band="services"],
+  [data-band="study"] {
+    background-color: hsl(var(--card));
+  }
+
+  [data-band="whm"],
+  [data-band="events"],
+  [data-band="articles"],
+  [data-band="proof"] {
+    background-color: hsl(var(--muted));
+  }
+
+  main:has([data-band="events"]) [data-band="articles"],
+  main:has([data-band="events"]):not(:has([data-band="articles"])) [data-band="proof"],
+  main:has([data-band="articles"]):not(:has([data-band="events"])) [data-band="proof"] {
+    background-color: hsl(var(--card));
+  }
+}

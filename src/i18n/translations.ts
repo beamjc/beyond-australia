@@ -131,9 +131,8 @@ export const translations = {
       },
     },
     proof: {
-      eyebrow: "Trusted Nationwide",
-      title: "Real numbers, real trust",
-      subtitle: "Backed by Beyond Study Center — our licensed education partner.",
+      title: "Need more advice? Contact us",
+      subtitle: "Beyond Study Center",
       highlights: {
         experience: "15+ years of experience",
         founder: "Personally guided by ThaiWAHClub's founder, ready to share firsthand experience and support you at every step.",
@@ -141,12 +140,8 @@ export const translations = {
       },
     },
     ctaBanner: {
-      title: "It's time to start your Australia journey",
-      subtitle:
-        "Get free, personalized guidance from our licensed QEAC agents — WHM, student visa, or migration pathway.",
+      title: "Need more advice? Get in touch",
       cta: "Free Consultation",
-      trust1: "Licensed QEAC Agent (#1855, #2588, #4069)",
-      trust2: "15+ Years Helping Thai Travelers",
     },
     footer: {
       tagline:
@@ -283,9 +278,8 @@ export const translations = {
       },
     },
     proof: {
-      eyebrow: "ได้รับความไว้วางใจทั่วประเทศ",
-      title: "ตัวเลขจริง ความน่าเชื่อถือจริง",
-      subtitle: "สนับสนุนโดย Beyond Study Center พาร์ทเนอร์ด้านการศึกษาที่ได้รับใบอนุญาต",
+      title: "ต้องการคำปรึกษาเพิ่มเติม ติดต่อเรา",
+      subtitle: "Beyond Study Center",
       highlights: {
         experience: "ประสบการณ์มากกว่า 15 ปี",
         founder: "ดูแลโดยผู้ก่อตั้ง ThaiWAHClub ที่พร้อมแบ่งปันประสบการณ์และให้คำปรึกษาคุณในทุกขั้นตอน",
@@ -293,12 +287,8 @@ export const translations = {
       },
     },
     ctaBanner: {
-      title: "ถึงเวลาเริ่มต้นเส้นทางสู่ออสเตรเลียของคุณ",
-      subtitle:
-        "รับคำแนะนำฟรีจากตัวแทน QEAC ที่ได้รับใบอนุญาต ไม่ว่าจะเป็น WHM วีซ่านักเรียน หรือเส้นทางย้ายถิ่นฐาน",
+      title: "ต้องการปรึกษาเพิ่มเติม ติดต่อเราได้เลย",
       cta: "ปรึกษาฟรี",
-      trust1: "ตัวแทน QEAC ที่ได้รับใบอนุญาต (#1855, #2588, #4069)",
-      trust2: "ช่วยคนไทยมากว่า 15 ปี",
     },
     footer: {
       tagline:

@@ -40,7 +40,7 @@ const EventsSection = () => {
   if (!loading && events.length === 0) return null;
 
   return (
-    <section id="events" className="py-20 bg-card">
+    <section id="events" data-band="events" className="py-20">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

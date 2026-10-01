@@ -30,7 +30,7 @@ export default function LatestArticlesSection() {
   if (!loading && articles.length === 0) return null
 
   return (
-    <section id="articles" className="py-20 bg-muted/30">
+    <section id="articles" data-band="articles" className="py-20">
       <div className="container">
         <div className="max-w-2xl mx-auto mb-10 text-center">
           <h2 className="font-display font-bold text-3xl md:text-4xl mb-2">

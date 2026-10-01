@@ -117,3 +117,11 @@ Branch: `qa/study-tools-redesign` (from `main` @ 646194a). Nothing merged or dep
 - **Study Finder CTA:** "ดูหลักสูตรที่เหมาะกับฉัน" → **"ติดต่อปรึกษาเราได้เลย"**, linking to the Beyond Study Center inquiry page. The consultation card below keeps LINE only (no duplicate website button).
 - **Skilled result title:** "คุณสมบัติครบตามเกณฑ์คะแนนขั้นต่ำของ Points Test" (owner's "คุณสมบัติครบ", limited to the points minimum; the summary still says an invitation depends on other factors).
 - **Visa facts:** WHM 462 age 18–30 and the 65-point pass mark are now marked VERIFIED; student work hours verified (no code change).
+
+## Home page sections and owner copy — 2026-10-01
+
+Thai and English wording below was given directly by the owner (owner-directed, not a Claude suggestion), so it was applied without the external editor batch.
+
+- **Section backgrounds:** home sections now alternate white (`--card`) and tinted (`--muted`) via `data-band` attributes and rules in `src/app/globals.css`. Events and Articles render nothing when empty, so the bands after Study are resolved with `:has()` to keep the alternation unbroken. Checked in the browser with both present: services white → WHM tint → study white → events tint → articles white → proof tint → CTA (blue).
+- **Proof section** (`ProofStatsSection.tsx`): removed eyebrow "ได้รับความไว้วางใจทั่วประเทศ", title "ตัวเลขจริง ความน่าเชื่อถือจริง" and subtitle "สนับสนุนโดย Beyond Study Center พาร์ทเนอร์ด้านการศึกษาที่ได้รับใบอนุญาต" → title **"ต้องการคำปรึกษาเพิ่มเติม ติดต่อเรา"**, subtitle **"Beyond Study Center"** (EN "Need more advice? Contact us"). The three highlights are now cards styled like the Services cards (alternating light/dark fills). The icons (`experience/founder/offices.png`) had a fake checkerboard baked into the pixels; it was removed (real transparency) and the images were trimmed to 512 px.
+- **CTA banner** (`CTABanner.tsx`): removed "ถึงเวลาเริ่มต้นเส้นทางสู่ออสเตรเลียของคุณ", the QEAC subtitle and both trust lines (QEAC licence numbers, "ช่วยคนไทยมากว่า 15 ปี") → **"ต้องการปรึกษาเพิ่มเติม ติดต่อเราได้เลย"** (EN "Need more advice? Get in touch"), with the `planning_with_beyond.png` artwork on the left (above the heading on mobile). Button and destination unchanged.
