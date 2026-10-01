@@ -139,3 +139,17 @@ Thai wording below was supplied directly by the owner (owner-directed), so it wa
 - Not changed (open): FY 2026 dates are all past as of 2026-10-01 — cards 2–3 are still highlighted as current and the countdown picker disables every date. Needs the FY 2027 schedule from DCY.
 - **Follow-up (owner request):** removed the "current step" highlight from FY 2026 — Username/Password Registration and Prepare Everything changed from `action` to `complete` (Quota Selection Day, also past, set to `complete`). No card is highlighted now; the dates and text are unchanged.
 - **Follow-up (owner request):** Preparation Countdown box (นับถอยหลังเตรียมตัว) hidden via `SHOW_COUNTDOWN = false` in `TimelineSection.tsx`; code and translations kept so it can be turned back on with the FY 2027 dates.
+
+## Budget Study Planner visual refresh — 2026-10-02 (branch `qa/budget-planner-visual`)
+
+Owner-requested UI polish with the supplied illustrations. Layout/styling only: no calculation, state or copy changes, and no new visible Thai text (all artwork is decorative with `alt=""`).
+
+- **Assets:** the 7 PNGs in `public/icons/` (0.4–1 MB each) were trimmed of transparent padding, resized and saved as WebP with alpha in `public/images/budget-planner/` (≈180 KB total). The originals were left untouched and are not referenced.
+- **Header:** tinted panel with `graduation_flight_to_sydney` on the right (md+) or below the text (mobile, 200px wide).
+- **Inputs:** goal cards get small category icons (English → book/globe, vocational → briefcase, bachelor/master → cap/diploma, short course → clock/book) and a check mark when selected; the icon stacks above the title below 440px so Thai titles don't wrap mid-word. Location and currency are now segmented controls; IELTS buttons use a 3-column grid (6 on tablet) with 40px+ targets; value chips for age and ELICOS price; more spacing between sections.
+- **Summary card:** gauge kept as the focus; wallet icon beside "จำนวนเงินคร่าวๆที่ต้องใช้"; larger amount; subtle sky tint.
+- **Result cards:** the upfront amount comes first, then total tuition and duration as two tiles. The old "ค่าเรียนทั้งหมด: X (3 ปี · วีซ่า ~N เดือน)" line was split into the tiles: same words, without the colon/brackets. The tuition note, the risk block and then the breakdown toggle follow. The toggle is now a full-width 40px row; the breakdown box has a border. Hover-lift animation removed from non-clickable cards.
+- **CTA:** `BSCConsultationCTA` gained an optional `illustration` prop (used only by the planner): warm tint, text and buttons on the left, `friendly_student_advising_session` on the right (below on mobile), 44px buttons. Other callers are unchanged.
+- **Shared slider** (`ui/slider.tsx`, affects all tools): the track was mid-blue under a navy range (low contrast); it is now `primary/15`. The thumb has a shadow and a slight hover scale (motion-safe only).
+- Dark mode: line art sits on a light tile/plate so the dark outlines stay visible.
+- Checks: `tsc` clean; 62/62 Vitest; lint with no new warnings; `next build` OK; Budget Planner e2e 15/15 (desktop/tablet/mobile); no horizontal overflow at 1440/768/390 for the English, degree and short-course goals. Screenshots are in `screenshots/budget-planner-visual/`.
