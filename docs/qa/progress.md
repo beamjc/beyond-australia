@@ -1,5 +1,12 @@
 # QA progress & resume notes
 
+## 2026-10-05 — onshore Student visa checker (branch `qa/onshore-student-visa-checker`, not merged/deployed)
+
+- Done: the alert card and the onshore checker in the Budget Planner (owner copy); the configurable freshness label; the owner removals (readiness banner, savings CTA/share) and the hidden calculator tab. See `changes.md`.
+- Owner decisions open: ISS-038 (more visa options), ISS-040 (freshness label scope), ISS-041 (CTA destination). The copy suggestion ISS-039 needs the Thai editor.
+- To show the calculator again, remove `"calculator"` from `HIDDEN_STUDY_TABS` and un-skip its e2e tests.
+- Run dev/build/e2e from a copy outside iCloud (ISS-031).
+
 Last updated: 2026-09-23 · Branch `claude/tender-tesla-7g4bgt` · Not merged, not deployed.
 
 ## Done (pass 1)

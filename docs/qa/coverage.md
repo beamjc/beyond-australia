@@ -129,3 +129,21 @@ Results: NOT RUN · PASS · FAIL · BLOCKED · NOT APPLICABLE. "(M)" = mocked co
 
 - First full run (default workers): 78 passed / 9 failed — 3 readability checks still targeted the removed `#visa-pathway` section (test updated); 2 home-tab checks exposed ISS-034 (fixed); explorer DFS (×3) and WHM checklist (mobile ×1) timed out under load but passed when run alone.
 - After the fixes, full run with `--workers=3`: **87 passed / 0 failed** (desktop 1440, tablet 768, mobile 390). The DFS reload wait was raised to 15 s. Viewport emulation only — not real devices.
+
+### Onshore Student visa checker — 2026-10-05 (production build, mocked Supabase, emulated D/T/M)
+
+| ID | Feature | Lang | Viewport | Expected (source) | Result | Evidence | Issue |
+|---|---|---|---|---|---|---|---|
+| OSV-01 | Thailand → no checker; Australia → panel; only the first question visible | TH | D/T/M | owner spec §2, §9 | PASS | e2e "Thailand shows no checker…" | — |
+| OSV-02 | 462 → "must apply offshore" (amber), focus on status, disclaimer, no overflow | TH | D/T/M | FC-28 | PASS | same | — |
+| OSV-03 | 500 → study-plan question; same level → "generally offshore" + example | TH | D/T/M | FC-29 | PASS | e2e "Student 500 asks…" | ISS-039 |
+| OSV-04 | Language switch keeps answers; EN copy and EN freshness label | TH→EN | D/T/M | owner spec §9 | PASS | same | ISS-037 |
+| OSV-05 | Change answer keeps highlighted choices; PhD → "may be eligible" | EN | D/T/M | FC-29 | PASS | same | — |
+| OSV-06 | Alert CTA selects Australia and focuses the panel; Other visa → LINE CTA (not opened); HA source link; Thai note expands | TH | D/T/M | owner spec §1, §4D, §7 | PASS | e2e "alert CTA…" | ISS-038, ISS-041 |
+| OSV-07 | Keyboard: Tab through options, Enter selects, focus moves to result | TH | D/T/M | CLAUDE.md a11y | PASS | e2e "options are keyboard operable" | — |
+| OSV-08 | All outcome mappings and date formatting | — | unit | FC-28–FC-31 | PASS | `tests/unit/onshoreStudentVisa.test.ts` | — |
+| OSV-09 | Calculator tab hidden; other Study tabs still work | EN, TH | D/T/M | owner 2026-10-05 | PASS | e2e "home (en/th)" | — |
+| OSV-10 | Savings: no consultation card, no share links | TH | D/T/M | owner 2026-10-05 | PASS | e2e "Savings planner — removed blocks" | — |
+| OSV-11 | Visa Readiness: no consultation banner | EN | D/T/M | owner 2026-10-05 | PASS | e2e "Visa Readiness Check" | — |
+| OSV-12 | Financial Calculator scenarios | — | — | — | NOT APPLICABLE (tab hidden; tests skipped) | — | — |
+| OSV-13 | Real-device and screen-reader check of the checker | TH, EN | — | — | NOT RUN | — | — |

@@ -15,6 +15,13 @@ export { useT };
 /** Study tabs other tools can open (provided by StudySection). */
 export type StudyTabId = "courses" | "universities" | "options" | "calculator" | "savings" | "strength";
 
+/**
+ * Study tabs hidden for now (owner request 2026-10-05: hide the cost
+ * calculator). The code stays in place; remove an id here to show it again.
+ * Links from other tools to a hidden tab are hidden too.
+ */
+export const HIDDEN_STUDY_TABS: ReadonlySet<StudyTabId> = new Set<StudyTabId>(["calculator"]);
+
 export interface PlanNav {
   openTab: (tab: StudyTabId) => void;
   /** Open a hub tool; `visaPath` preloads explorer answers (e.g. from the study result). */
@@ -35,6 +42,12 @@ const toolIcon: Record<ToolId, typeof Plane> = {
 
 const toolTab: Partial<Record<ToolId, StudyTabId>> = {
   planner: "courses", calculator: "calculator", savings: "savings", strength: "strength", universities: "universities",
+};
+
+/** False for tools whose Study tab is hidden. */
+export const isToolAvailable = (tool: ToolId) => {
+  const tab = toolTab[tool];
+  return !tab || !HIDDEN_STUDY_TABS.has(tab);
 };
 
 /** Run an action from data (open a tool/tab, go to a node, go back, or follow a link). */
@@ -58,6 +71,7 @@ export const ActionButton = ({ action, primary, onNode, onBack }: { action: Acti
   const { t } = useT();
   const run = useRunAction(onNode, onBack);
   const cls = primary ? btnPrimary : btnSecondary;
+  if (action.kind === "tool" && !isToolAvailable(action.tool)) return null;
   if (action.kind === "link") {
     return (
       <a
@@ -181,6 +195,7 @@ export const Sequence = ({ steps }: { steps: string[] }) => (
 export const RelatedTools = ({ tools }: { tools: ToolId[] }) => {
   const { t } = useT();
   const run = useRunAction();
+  tools = tools.filter(isToolAvailable);
   if (!tools.length) return null;
   return (
     <div>

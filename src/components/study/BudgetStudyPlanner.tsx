@@ -1,8 +1,8 @@
 'use client'
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   MapPin, Wallet, User, Languages, Target,
   ShieldCheck, AlertTriangle,
@@ -10,6 +10,13 @@ import {
   ChevronDown, Info, Plane, Briefcase, GraduationCap, Lightbulb, CheckCircle2, Clock,
 } from "lucide-react";
 import BSCConsultationCTA, { type CTAIllustration } from "../shared/BSCConsultationCTA";
+import {
+  VisaRuleAlert, OnshoreEligibilityPanel, initialOnshoreCheck, ONSHORE_PANEL_HEADING_ID,
+  type OnshoreCheckState,
+} from "./OnshoreStudentVisaCheck";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { PLANNER_DATA_UPDATED } from "@/data/studyVisaRules";
+import { formatMonthYear } from "@/lib/plannerDates";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -88,6 +95,20 @@ const BudgetStudyPlanner = () => {
   const [standaloneWeeks, setStandaloneWeeks] = useState<24 | 40>(24);
   // Higher Education degree level — affects course duration only
   const [degreeLevel, setDegreeLevel] = useState<DegreeLevel>("bachelor");
+  // Onshore Student visa checker (shown when applying from Australia). Kept
+  // here so answers survive language switches and Thailand/Australia toggles.
+  const [onshoreCheck, setOnshoreCheck] = useState<OnshoreCheckState>(initialOnshoreCheck);
+  const [jumpToOnshore, setJumpToOnshore] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  // Alert CTA: bring the location selector into view and focus the checker
+  // once it has rendered.
+  useEffect(() => {
+    if (!jumpToOnshore) return;
+    setJumpToOnshore(false);
+    document.getElementById("bsp-location")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    document.getElementById(ONSHORE_PANEL_HEADING_ID)?.focus({ preventScroll: true });
+  }, [jumpToOnshore, reduceMotion]);
 
   const englishNumeric = englishOptions.find((o) => o.id === english)?.numeric ?? 0;
 
@@ -154,6 +175,7 @@ const BudgetStudyPlanner = () => {
   return (
     <div className="max-w-6xl mx-auto">
       <PlannerHeader />
+      <VisaRuleAlert onCheck={() => { setLocation("onshore"); setJumpToOnshore(true); }} />
 
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Inputs */}
@@ -222,7 +244,7 @@ const BudgetStudyPlanner = () => {
               )}
             </div>
 
-            <div>
+            <div id="bsp-location" className="scroll-mt-24">
               <Label className={sectionLabel}>
                 <MapPin className="w-4 h-4 text-primary" aria-hidden /> ยื่นวีซ่าจากที่ไหน
               </Label>
@@ -239,6 +261,20 @@ const BudgetStudyPlanner = () => {
                   </button>
                 ))}
               </div>
+              <AnimatePresence initial={false}>
+                {location === "onshore" && (
+                  <motion.div
+                    key="onshore-check"
+                    initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={reduceMotion ? { opacity: 0, transition: { duration: 0 } } : { height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="overflow-hidden"
+                  >
+                    <OnshoreEligibilityPanel state={onshoreCheck} onChange={setOnshoreCheck} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <div>
@@ -449,30 +485,34 @@ const BudgetStudyPlanner = () => {
   );
 };
 
-const PlannerHeader = () => (
-  <div className="relative mb-8 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-sky-50 via-background to-background px-5 py-6 sm:px-8 sm:py-8 dark:from-primary/10">
-    <div className="flex flex-col items-center gap-4 md:flex-row md:items-center md:gap-8">
-      <div className="flex-1 text-center md:text-left">
-        <Badge variant="secondary" className="mb-3 gap-1">
-          <Sparkles className="w-3 h-3" aria-hidden /> อ้างอิงข้อมูลจากเดือนกันยายน 2569
-        </Badge>
-        <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">วางแผนงบเรียนต่อออสเตรเลียเบื้องต้น</h3>
-        <p className="text-muted-foreground text-sm md:text-base mt-2 max-w-xl md:max-w-none">
-          ประเมินเงินที่ต้องเตรียมในช่วงเริ่มต้น พร้อมดูรายการค่าใช้จ่ายแบบคร่าวๆ
-        </p>
+const PlannerHeader = () => {
+  const { language } = useLanguage();
+  const updated = formatMonthYear(language, PLANNER_DATA_UPDATED);
+  return (
+    <div className="relative mb-4 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-sky-50 via-background to-background px-5 py-6 sm:px-8 sm:py-8 dark:from-primary/10">
+      <div className="flex flex-col items-center gap-4 md:flex-row md:items-center md:gap-8">
+        <div className="flex-1 text-center md:text-left">
+          <Badge variant="secondary" className="mb-3 gap-1">
+            <Sparkles className="w-3 h-3" aria-hidden /> {language === "th" ? `อัปเดตข้อมูลล่าสุด ${updated}` : `Last updated ${updated}`}
+          </Badge>
+          <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">วางแผนงบเรียนต่อออสเตรเลียเบื้องต้น</h3>
+          <p className="text-muted-foreground text-sm md:text-base mt-2 max-w-xl md:max-w-none">
+            ประเมินเงินที่ต้องเตรียมในช่วงเริ่มต้น พร้อมดูรายการค่าใช้จ่ายแบบคร่าวๆ
+          </p>
+        </div>
+        <Image
+          src={ART.header}
+          alt=""
+          aria-hidden="true"
+          width={720}
+          height={394}
+          sizes="(max-width: 768px) 200px, (max-width: 1024px) 240px, 300px"
+          className="h-auto w-[200px] shrink-0 opacity-90 md:w-[240px] lg:w-[300px] dark:rounded-xl dark:bg-white/90 dark:p-2"
+        />
       </div>
-      <Image
-        src={ART.header}
-        alt=""
-        aria-hidden="true"
-        width={720}
-        height={394}
-        sizes="(max-width: 768px) 200px, (max-width: 1024px) 240px, 300px"
-        className="h-auto w-[200px] shrink-0 opacity-90 md:w-[240px] lg:w-[300px] dark:rounded-xl dark:bg-white/90 dark:p-2"
-      />
     </div>
-  </div>
-);
+  );
+};
 
 const GoalOption = ({
   selected, onClick, icon, title, sub, className = "",
