@@ -1,6 +1,7 @@
 import { test, expect, mockSupabase, noHorizontalOverflow } from './fixtures'
 
-const STUDY_TABS = ['courses', 'universities', 'options', 'calculator', 'savings', 'strength']
+// 'calculator' is hidden for now (HIDDEN_STUDY_TABS in src/components/plan/shared.tsx).
+const STUDY_TABS = ['courses', 'universities', 'options', 'savings', 'strength']
 const WHM_TABS = ['timeline', 'checklist', 'postcode', 'faq2026']
 
 for (const lang of ['en', 'th'] as const) {
@@ -23,6 +24,7 @@ for (const lang of ['en', 'th'] as const) {
           await noHorizontalOverflow(page)
         }
       }
+      await expect(page.locator('#study-tab-calculator')).toHaveCount(0)
       expect(errors).toEqual([])
     })
   })
@@ -99,6 +101,99 @@ test.describe('Budget Study Planner', () => {
   })
 })
 
+test.describe('Budget Planner — onshore Student visa checker', () => {
+  test.use({ lang: 'th' })
+
+  test('Thailand shows no checker; Australia reveals it with progressive questions', async ({ page, errors }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    const panel = page.locator('#study-panel-courses')
+    await expect(panel.getByText('อัปเดตข้อมูลล่าสุด ตุลาคม 2569')).toBeVisible()
+    await expect(panel.getByText('อัปเดตกฎวีซ่า • 2 ต.ค. 2569')).toBeVisible()
+    await expect(panel.locator('#onshore-check-heading')).toHaveCount(0)
+
+    await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
+    await expect(panel.locator('#onshore-check-heading')).toBeVisible()
+    // Only the first question is shown.
+    await expect(panel.getByText('ตอนนี้คุณถือวีซ่าอะไรอยู่?')).toBeVisible()
+    await expect(panel.getByText('คุณกำลังวางแผนเรียนต่อแบบไหน?')).toHaveCount(0)
+
+    await panel.getByRole('button', { name: 'Work and Holiday Visa (Subclass 462)' }).click()
+    await expect(panel.getByText('ต้องยื่นจากนอกออสเตรเลีย', { exact: true })).toBeFocused()
+    await expect(panel.getByText(/ไม่ใช่คำแนะนำด้านกฎหมาย/)).toBeVisible()
+    await noHorizontalOverflow(page)
+
+    await panel.getByRole('button', { name: 'ประเทศไทย', exact: true }).click()
+    await expect(panel.locator('#onshore-check-heading')).toHaveCount(0)
+    expect(errors).toEqual([])
+  })
+
+  test('Student 500 asks the study plan; Change answer keeps choices; answers survive language switch', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    const panel = page.locator('#study-panel-courses')
+    await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
+    await panel.getByRole('button', { name: 'Student Visa (Subclass 500)' }).click()
+    await expect(panel.getByText('คุณกำลังวางแผนเรียนต่อแบบไหน?')).toBeFocused()
+    await panel.getByRole('button', { name: 'เรียนหลักสูตรใหม่ในระดับเดียวกัน' }).click()
+    await expect(panel.getByText('โดยทั่วไปต้องยื่นจากนอกออสเตรเลีย')).toBeVisible()
+    await expect(panel.getByText('ตัวอย่าง: Master → Master')).toBeVisible()
+
+    // Switch to English via the navbar toggle: same answers, English copy.
+    if (page.viewportSize()!.width < 768) await page.locator('nav button.md\\:hidden').click()
+    await page.locator('nav').getByRole('button', { name: 'en', exact: true }).locator('visible=true').click()
+    await expect(panel.getByText('You will generally need to apply offshore')).toBeVisible()
+    await expect(panel.getByText('Last updated October 2026')).toBeVisible()
+    if (page.viewportSize()!.width < 768) await page.locator('nav button.md\\:hidden').click()
+
+    await panel.getByRole('button', { name: 'Change answer' }).click()
+    await expect(panel.getByText('What visa do you currently hold?')).toBeFocused()
+    await expect(panel.getByRole('button', { name: 'Student Visa (Subclass 500)' })).toHaveAttribute('aria-pressed', 'true')
+    await panel.getByRole('button', { name: 'Student Visa (Subclass 500)' }).click()
+    await expect(panel.getByRole('button', { name: 'Start another course at the same qualification level' })).toHaveAttribute('aria-pressed', 'true')
+    await panel.getByRole('button', { name: 'Start a PhD' }).click()
+    await expect(panel.getByText('You may be eligible to apply onshore')).toBeVisible()
+  })
+
+  test('alert CTA selects Australia and focuses the checker; adviser CTA links to LINE (not opened)', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    const panel = page.locator('#study-panel-courses')
+    await panel.getByRole('button', { name: 'เช็กว่าฉันยื่น Onshore ได้ไหม' }).click()
+    await expect(panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await expect(panel.locator('#onshore-check-heading')).toBeFocused()
+
+    await panel.getByRole('button', { name: 'วีซ่าอื่น ๆ' }).click()
+    await expect(panel.getByText('ต้องตรวจสอบเพิ่มเติม', { exact: true })).toBeVisible()
+    const cta = panel.getByRole('link', { name: /ตรวจสอบกับที่ปรึกษา/ })
+    await expect(cta).toHaveAttribute('href', 'https://line.me/ti/p/@beyondstudy')
+    await expect(cta).toHaveAttribute('target', '_blank')
+
+    const source = panel.getByRole('link', { name: /Department of Home Affairs/ })
+    await expect(source).toHaveAttribute('href', /immi\.homeaffairs\.gov\.au\/.+applying-in-australia/)
+
+    const note = panel.getByRole('button', { name: 'ข้อมูลเพิ่มเติมสำหรับผู้สมัครสัญชาติไทย' })
+    await expect(note).toHaveAttribute('aria-expanded', 'false')
+    await note.click()
+    await expect(panel.getByText(/ASEAN/)).toBeVisible()
+  })
+
+  test('options are keyboard operable', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    const panel = page.locator('#study-panel-courses')
+    await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
+    const first = panel.getByRole('button', { name: 'Student Visa (Subclass 500)' })
+    await first.focus()
+    await page.keyboard.press('Tab')
+    await expect(panel.getByRole('button', { name: 'Work and Holiday Visa (Subclass 462)' })).toBeFocused()
+    await page.keyboard.press('Tab'); await page.keyboard.press('Tab')
+    await expect(panel.getByRole('button', { name: 'Visitor Visa (Subclass 600)' })).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect(panel.getByText('ต้องยื่นจากนอกออสเตรเลีย', { exact: true })).toBeFocused()
+  })
+})
+
 test.describe('Postcode checker', () => {
   test('keeps leading zeros, strips non-digits, gates length', async ({ page }) => {
     await mockSupabase(page)
@@ -121,7 +216,9 @@ test.describe('Postcode checker', () => {
   })
 })
 
-test.describe('Financial calculator', () => {
+// Skipped while the calculator tab is hidden (owner request 2026-10-05). Re-enable
+// together with the tab; the component and these checks are unchanged.
+test.describe.skip('Financial calculator', () => {
   test('negative dependants and fees cannot reduce the total', async ({ page }) => {
     await mockSupabase(page)
     await page.goto('/#study')
@@ -246,20 +343,17 @@ test.describe('Savings planner', () => {
   })
 })
 
-test.describe('Savings share links', () => {
+test.describe('Savings planner — removed blocks', () => {
   test.use({ lang: 'th' })
-  test('LINE/Facebook share URLs encode Thai text and page URL (not opened)', async ({ page }) => {
+  test('no consultation card or share links (owner request 2026-10-05)', async ({ page }) => {
     await mockSupabase(page)
     await page.goto('/#study')
     await page.locator('#study-tab-savings').click()
-    const line = page.locator('#study-panel-savings a[href^="https://line.me/R/msg/text/"]')
-    const href = await line.getAttribute('href')
-    expect(href).toMatch(/^https:\/\/line\.me\/R\/msg\/text\/\?/)
-    const msg = decodeURIComponent(href!.split('?')[1])
-    expect(msg).toContain('คำนวณเงินออมออสเตรเลียแล้ว')
-    expect(msg).toContain('http://127.0.0.1:3100/')
-    const fb = await page.locator('#study-panel-savings a[href^="https://www.facebook.com/sharer/"]').getAttribute('href')
-    expect(new URL(fb!).searchParams.get('u')).toContain('http://127.0.0.1:3100/')
+    const panel = page.locator('#study-panel-savings')
+    await expect(panel.getByRole('heading', { name: /วางแผน/ }).first()).toBeVisible()
+    await expect(panel.getByText('ไม่แน่ใจว่าควรวางแผนงบเท่าไหร่?')).toHaveCount(0)
+    await expect(panel.getByText('แชร์ผลคำนวณ')).toHaveCount(0)
+    await expect(panel.locator('a[href^="https://line.me/R/msg/text/"], a[href^="https://www.facebook.com/sharer/"]')).toHaveCount(0)
   })
 })
 
@@ -271,6 +365,8 @@ test.describe('Visa Readiness Check', () => {
     const panel = page.locator('#study-panel-strength')
     const sliders = panel.getByRole('slider')
     await expect(sliders).toHaveCount(8)
+    // Consultation banner removed (owner request 2026-10-05).
+    await expect(panel.getByText(/Want to talk about studying in Australia|อยากปรึกษาเรื่องเรียนต่อออสเตรเลีย/)).toHaveCount(0)
     // Scoring is unchanged: normal factors are safest at Home (0), inverted ones at End (100).
     const normal = [/Age/, /Study gap/, /Level of the new course/, /Relevance of your chosen field/, /Visa and travel history/, /Time already spent in Australia/]
     const inverted = [/Supporting documents/, /Post-study plans/]

@@ -1,11 +1,10 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Info, Pencil } from "lucide-react";
+import { Info, Pencil } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { pick, readinessCopy, readinessFactors, type ReadinessLevel } from "@/data/visaReadiness";
 import { computeRiskScore, rankFactors, readinessScore, type SliderValues } from "@/lib/visaReadiness";
-import { SITE_URL } from "../shared/BSCConsultationCTA";
 import AssessmentQuestions from "./readiness/AssessmentQuestions";
 import AssessmentSummary from "./readiness/AssessmentSummary";
 import AssessmentPriorityActions from "./readiness/AssessmentPriorityActions";
@@ -47,22 +46,6 @@ const VisaStrengthAssessment = () => {
         <h3 className="text-2xl md:text-3xl font-bold text-foreground">{t(readinessCopy.title)}</h3>
         <p className="text-muted-foreground text-sm md:text-base mt-2">{t(readinessCopy.subtitle)}</p>
       </header>
-
-      <a
-        href={SITE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex min-h-[44px] items-center justify-between gap-4 rounded-2xl border border-border bg-card px-4 py-3 sm:px-5 transition-colors hover:bg-muted/40"
-      >
-        <span>
-          <span className="block text-sm font-semibold text-foreground">{t(readinessCopy.bannerTitle)}</span>
-          <span className="block text-xs text-muted-foreground">Beyond Study Center</span>
-        </span>
-        <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary">
-          {t(readinessCopy.bannerCta)}
-          <ArrowRight className="w-4 h-4" />
-        </span>
-      </a>
 
       <p className="flex items-start gap-2 px-1 text-xs text-muted-foreground leading-relaxed">
         <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />

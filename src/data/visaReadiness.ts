@@ -358,8 +358,6 @@ export const readinessCopy = {
     th: "ดูว่ามีจุดไหนที่ควรเตรียมเพิ่มเติม พร้อมคำแนะนำเบื้องต้นก่อนยื่นวีซ่า",
     en: "See which points to prepare further, with basic guidance before you apply for a visa.",
   },
-  bannerTitle: { th: "อยากปรึกษาเรื่องเรียนต่อออสเตรเลีย?", en: "Want to talk about studying in Australia?" },
-  bannerCta: { th: "ปรึกษาฟรี", en: "Free consultation" },
   disclaimer: {
     th: "ผลการประเมินนี้เป็นเพียงข้อมูลเบื้องต้น เพื่อช่วยให้คุณเห็นประเด็นที่ควรเตรียมเพิ่มเติม ไม่ใช่คำแนะนำด้านกฎหมายหรือการย้ายถิ่นฐาน และไม่สามารถใช้คาดการณ์ผลการพิจารณาวีซ่าได้ เนื่องจากแต่ละเคสจะได้รับการพิจารณาเป็นรายบุคคลโดย Department of Home Affairs",
     en: "This is a general self-check to help you see what to prepare. It is not legal or migration advice and cannot predict a visa decision, because every case is assessed individually by the Department of Home Affairs.",

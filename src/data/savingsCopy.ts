@@ -131,15 +131,6 @@ export const savingsCopy = {
 
   footTax: { th: "คำนวณภาษีจากอัตรา ATO ปี {year}", en: "Tax based on ATO {year} rates" },
   footFx: { th: "อัตราแลกเปลี่ยนที่ใช้วางแผน 1 AUD = {rate} บาท", en: "Planning exchange rate 1 AUD = {rate} THB" },
-
-  ctaTitle: { th: "ไม่แน่ใจว่าควรวางแผนงบเท่าไหร่?", en: "Not sure how much to budget?" },
-  ctaSub: {
-    th: "ทีม Beyond Study Center ช่วยวางแผนค่าเรียน ค่าครองชีพ และงบประมาณเบื้องต้นให้คุณได้",
-    en: "The Beyond Study Center team can help you plan tuition, living costs and an overall budget.",
-  },
-  ctaPrimary: { th: "ปรึกษาฟรีทาง LINE", en: "Free chat on LINE" },
-  ctaSecondary: { th: "ดูบริการของเรา", en: "See our services" },
-  shareTitle: { th: "แชร์ผลคำนวณ", en: "Share your result" },
 } satisfies Record<string, Bi>;
 
 export const fill = (s: string, vars: Record<string, string | number>) =>

@@ -5,15 +5,13 @@ import { savingsCopy as c } from "@/data/savingsCopy";
 import {
   DEFAULT_SAVINGS_FX_THB_PER_AUD, computeSavingsPlan, requiredGrossIncome, type SavingsVisaType,
 } from "@/lib/savings";
-import SavingsShareButtons from "./SavingsShareButtons";
 import SavingsGoalInput, { goalInCurrency, type Currency, type GoalState } from "./savings/SavingsGoalInput";
 import DurationSelector from "./savings/DurationSelector";
 import VisaTypeSelector from "./savings/VisaTypeSelector";
 import IncomeSelector from "./savings/IncomeSelector";
 import ExpenseSelector from "./savings/ExpenseSelector";
 import SavingsResult, { type Adjust } from "./savings/SavingsResult";
-import SavingsConsultationCTA from "./savings/SavingsConsultationCTA";
-import { fmtA, useT } from "./savings/shared";
+import { useT } from "./savings/shared";
 
 /**
  * One savings planner. Visa type is just another input: it selects the tax
@@ -78,7 +76,7 @@ const SavingsCalculator = () => {
         </div>
 
         {/* 6–7: result + adjustments (sticky beside the inputs on tall desktop screens only) */}
-        <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:[@media(min-height:1000px)]:sticky lg:top-24">
+        <aside className="lg:col-start-2 lg:row-start-1 lg:[@media(min-height:1000px)]:sticky lg:top-24">
           <SavingsResult
             plan={plan}
             visaType={visaType}
@@ -91,17 +89,6 @@ const SavingsCalculator = () => {
             onAdjust={onAdjust}
           />
         </aside>
-
-        {/* 8–9: consultation + share */}
-        <div className="lg:col-start-1 lg:row-start-2">
-          <SavingsConsultationCTA />
-          <SavingsShareButtons
-            netIncome={fmtA(plan.netIncome)}
-            annualSavings={fmtA(plan.yearlySavings)}
-            bufferLabel={t(plan.isAchievable ? c.surplus : c.shortfall)}
-            bufferAmount={fmtA(Math.abs(plan.buffer))}
-          />
-        </div>
       </div>
     </div>
   );

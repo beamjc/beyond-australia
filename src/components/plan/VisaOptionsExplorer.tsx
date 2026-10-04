@@ -6,7 +6,7 @@ import { explorerCopy, START_NODE, type CompareNode, type ResultNode } from "@/d
 import { fill } from "@/data/savingsCopy";
 import { getNode, progressFor, reasonsFor, type PathStep } from "@/lib/visaExplorer";
 import {
-  ActionButton, AUTO_ADVANCE_MS, Card, CheckList, ConsultBlock, OfficialSourceLink, PathwayOption,
+  ActionButton, AUTO_ADVANCE_MS, isToolAvailable, Card, CheckList, ConsultBlock, OfficialSourceLink, PathwayOption,
   RelatedTools, Sequence, ToolHeader, iconFor, useKeepTopInView, useT,
 } from "./shared";
 
@@ -135,7 +135,7 @@ const ExplorerResult = ({ node, path, onNode, onBack }: { node: ResultNode; path
 
         {node.actions.length > 0 && (
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            {node.actions.map((a, i) => (
+            {node.actions.filter((a) => a.kind !== "tool" || isToolAvailable(a.tool)).map((a, i) => (
               <ActionButton key={i} action={a} primary={i === 0} onNode={onNode} onBack={onBack} />
             ))}
           </div>

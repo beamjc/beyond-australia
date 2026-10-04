@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Calculator, Shield, Search, Trophy, PiggyBank } from "lucide-react";
 import PlanningPathwayHub, { type HubRequest } from "../plan/PlanningPathwayHub";
-import { PlanNavContext } from "../plan/shared";
+import { HIDDEN_STUDY_TABS, PlanNavContext } from "../plan/shared";
 import FinancialCalculator from "./FinancialCalculator";
 import VisaStrengthAssessment from "./VisaStrengthAssessment";
 import BudgetStudyPlanner from "./BudgetStudyPlanner";
@@ -84,7 +84,7 @@ const StudySection = () => {
         {/* No justify-center here: it would push the first tabs off-screen (unscrollable) when the bar is wider than the viewport; the inner mx-auto still centres it when it fits. */}
         <div className="mb-12 -mx-4 px-4 overflow-x-auto [-webkit-overflow-scrolling:touch] flex">
           <div role="tablist" className="inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
-            {subTabs.map((tab) => (
+            {subTabs.filter((tab) => !HIDDEN_STUDY_TABS.has(tab.id)).map((tab) => (
               <button
                 key={tab.id}
                 id={`study-tab-${tab.id}`}
