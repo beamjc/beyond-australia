@@ -50,3 +50,19 @@ Scope: phones (390 × 844) and tablets (768 × 1024), Thai UI. **Desktop (≥ 10
 - Desktop: unchanged (all inputs beside the results) — pixel comparison identical.
 - Also: the top menu now uses the phone (hamburger) menu up to 1023 px; at 768 px the desktop menu labels were wrapping ("วีซ่า/ทำงาน", "ติดต่อ/เรา").
 - Tests: new stepped-flow tests in `tests/e2e/mobile.spec.ts`; the existing planner tests walk the steps on phones/tablets via `plannerShow` / `plannerResults` helpers.
+
+## Follow-up 2: which other tools get the step-by-step mode? (owner: "I will let you decide")
+
+Shared implementation: `src/components/shared/StepFlow.tsx` (progress, back/next, answer list, scroll handling), used by the Budget Planner and Savings. Desktop unchanged in both (pixel comparison identical).
+
+| Tool | Phone length | Shape | Decision | Why |
+|---|---|---|---|---|
+| Budget Planner | 3.9 screens | 5 input groups → result | **Stepped** (done) | Form with one result; inputs and result far apart |
+| **Savings calculator** | 3.0 screens | 5 input cards → result | **Stepped** | Same shape as the planner. Result's "เพิ่มรายได้ / ลดค่าใช้จ่าย / เพิ่มระยะเวลา" reopen the matching step with the field focused |
+| Visa Readiness Check | 2.0 screens | 8 quick sliders → "ดูผลความพร้อม" → result screen | Not stepped | Already a two-step flow (questions, then result). One screen per slider would add 8 taps to save ~1 screen of scrolling, and seeing all factors together helps visitors calibrate |
+| Planning hub tools | ≤ 1.4 screens per step | Already one question per screen | Already stepped | — |
+| Checklist / FAQ | 2.7–2.9 screens | Reading content in accordions | Not stepped | Content to read and scan, not a form |
+| Top Universities | 3.4 screens | Browsing a list of cards | Not stepped | A list; the subject row change already shortened it |
+| Postcode checker / Timeline | ≤ 0.9 screens | Short | — | — |
+
+Savings phone length while stepping: one card + navigation per screen; result screen 1.8 screens (was 3.0 for everything).

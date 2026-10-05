@@ -1,4 +1,4 @@
-import { test, expect, mockSupabase, noHorizontalOverflow, plannerShow, plannerResults } from './fixtures'
+import { test, expect, mockSupabase, noHorizontalOverflow, plannerShow, plannerResults, stepShow } from './fixtures'
 
 // 'calculator' is hidden for now (HIDDEN_STUDY_TABS in src/components/plan/shared.tsx).
 const STUDY_TABS = ['courses', 'universities', 'options', 'savings', 'strength']
@@ -406,17 +406,21 @@ test.describe('Savings planner', () => {
     await expect(result).toContainText('A$24,750')     // 48,750 − 24,000
     await expect(result).toContainText('A$17,803')     // 42,553.19 − 24,750
     await expect(result).toContainText('A$85,434')     // gross needed: (66,553.19 − 6,750) / 0.7
+    await stepShow(page, '#study-panel-savings', panel.getByRole('radio', { name: /Student Visa/ }))
     await panel.getByRole('radio', { name: /Student Visa/ }).click()
     await expect(result).toContainText('− A$8,520')    // 2026–27 resident: 15% × 26,800 + 30% × 15,000
     await expect(result).toContainText('A$27,480')
     await expect(panel.locator('#sav-goal')).toHaveValue('1,000,000')
+    await stepShow(page, '#study-panel-savings', panel.getByRole('button', { name: 'ประหยัด' }))
     await expect(panel.getByRole('button', { name: 'ประหยัด' })).toHaveAttribute('aria-pressed', 'true')
+    await stepShow(page, '#study-panel-savings', panel.locator('#sav-goal'))
     const aud = panel.getByRole('button', { name: 'AUD', exact: true })
     const thb = panel.getByRole('button', { name: 'THB', exact: true })
     for (let i = 0; i < 3; i++) { await aud.click(); await thb.click() }
     await expect(panel.locator('#sav-goal')).toHaveValue('1,000,000')
     await aud.click()
     await expect(panel.locator('#sav-goal')).toHaveValue('42,553')
+    await stepShow(page, '#study-panel-savings', panel.getByRole('button', { name: '3 ปี' }))
     await panel.getByRole('button', { name: '3 ปี' }).click()
     await expect(result).toContainText('แผนนี้มีโอกาสถึงเป้าหมายที่ตั้งไว้')
     await expect(result).toContainText('A$82,440')     // 27,480 × 3

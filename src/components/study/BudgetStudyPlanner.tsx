@@ -8,8 +8,10 @@ import {
   ShieldCheck, AlertTriangle,
   Sparkles, ArrowRight,
   ChevronDown, ArrowDown, ArrowUp, Info, Plane, Briefcase, GraduationCap, Lightbulb, CheckCircle2, Clock,
-  ArrowLeft, Pencil,
 } from "lucide-react";
+import {
+  AnswerList, StepNav, StepProgress, STEP_AUTO_ADVANCE_MS, isBelowLg, stepVisibility, useStepFlowScroll,
+} from "../shared/StepFlow";
 import BSCConsultationCTA, { type CTAIllustration } from "../shared/BSCConsultationCTA";
 import {
   VisaRuleAlert, OnshoreEligibilityPanel, initialOnshoreCheck, ONSHORE_PANEL_HEADING_ID,
@@ -171,30 +173,21 @@ const BudgetStudyPlanner = () => {
   const stepIdx = Math.min(wizStep, steps.length - 1);
   const currentStep = steps[stepIdx];
   /** Hide an input group on phones/tablets unless it is the current step. */
-  const stepClass = (s: WizardStep) => (!wizDone && currentStep === s ? "" : "max-lg:hidden");
+  const stepClass = (s: WizardStep) => stepVisibility(!wizDone && currentStep === s);
   const goToStep = (i: number) => { setWizDone(false); setWizStep(i); };
   const finishWizard = () => setWizDone(true);
 
-  // Keep the planner in view as the visitor moves between steps, and bring
-  // the results up when they finish (phones/tablets only).
-  const firstWizRender = useRef(true);
-  useEffect(() => {
-    if (firstWizRender.current) { firstWizRender.current = false; return; }
-    if (!window.matchMedia?.("(max-width: 1023.98px)").matches) return;
-    const target = wizDone ? summaryRef.current : inputsRef.current;
-    if (target && (target.getBoundingClientRect().top < 72 || wizDone)) {
-      target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-    }
-  }, [stepIdx, wizDone, reduceMotion]);
+  // Keep the planner in view between steps; bring the results up at the end.
+  useStepFlowScroll(inputsRef, summaryRef, stepIdx, wizDone, reduceMotion);
 
   // Choosing a goal on phones/tablets moves straight on to the next step.
   const advanceTimer = useRef<ReturnType<typeof setTimeout>>();
   useEffect(() => () => clearTimeout(advanceTimer.current), []);
   const chooseGoal = (apply: () => void) => {
     apply();
-    if (wizDone || window.matchMedia?.("(min-width: 1024px)").matches) return;
+    if (wizDone || !isBelowLg()) return;
     clearTimeout(advanceTimer.current);
-    advanceTimer.current = setTimeout(() => setWizStep(1), AUTO_ADVANCE_MS);
+    advanceTimer.current = setTimeout(() => setWizStep(1), STEP_AUTO_ADVANCE_MS);
   };
 
   const englishNumeric = englishOptions.find((o) => o.id === english)?.numeric ?? 0;
@@ -270,21 +263,23 @@ const BudgetStudyPlanner = () => {
           {/* Outside CardContent: as a space-y child it would add a top margin to
               the first input group on desktop, where it is hidden. */}
           <div className="px-5 pt-5 sm:px-6 sm:pt-6 lg:hidden">
-            <WizardHeader
-              done={wizDone}
-              step={stepIdx}
-              total={steps.length}
-              answers={[
-                { step: "goal" as WizardStep, label: "เป้าหมายการเรียน", value: goalTitle(goal, degreeLevel) },
-                { step: "budget" as WizardStep, label: "งบที่เตรียมไว้", value: currency === "AUD" ? fmtAUD(budgetAUD) : fmtTHB(budgetTHB) },
-                { step: "age" as WizardStep, label: "อายุผู้สมัคร", value: `${age} ปี` },
-                ...(goal !== "english"
-                  ? [{ step: "english" as WizardStep, label: "IELTS", value: englishOptions.find((o) => o.id === english)?.label ?? "" }]
-                  : []),
-                { step: "location" as WizardStep, label: "ยื่นวีซ่าจากที่ไหน", value: location === "offshore" ? "ประเทศไทย" : "ออสเตรเลีย" },
-              ].map((a) => ({ ...a, onEdit: () => goToStep(steps.indexOf(a.step)) }))}
-              onEditAll={() => goToStep(0)}
-            />
+            {wizDone ? (
+              <AnswerList
+                answers={[
+                  { key: "goal" as WizardStep, label: "เป้าหมายการเรียน", value: goalTitle(goal, degreeLevel) },
+                  { key: "budget" as WizardStep, label: "งบที่เตรียมไว้", value: currency === "AUD" ? fmtAUD(budgetAUD) : fmtTHB(budgetTHB) },
+                  { key: "age" as WizardStep, label: "อายุผู้สมัคร", value: `${age} ปี` },
+                  ...(goal !== "english"
+                    ? [{ key: "english" as WizardStep, label: "IELTS", value: englishOptions.find((o) => o.id === english)?.label ?? "" }]
+                    : []),
+                  { key: "location" as WizardStep, label: "ยื่นวีซ่าจากที่ไหน", value: location === "offshore" ? "ประเทศไทย" : "ออสเตรเลีย" },
+                ].map((a) => ({ ...a, onEdit: () => goToStep(steps.indexOf(a.key)) }))}
+                editAllLabel="แก้ไขคำตอบ"
+                onEditAll={() => goToStep(0)}
+              />
+            ) : (
+              <StepProgress label={`ขั้นตอน ${stepIdx + 1} จาก ${steps.length}`} step={stepIdx} total={steps.length} />
+            )}
           </div>
           <CardContent className={`p-5 sm:p-6 space-y-7 ${wizDone ? "max-lg:pt-0" : ""}`}>
             <div className={stepClass("goal")}>
@@ -513,9 +508,12 @@ const BudgetStudyPlanner = () => {
             </div>
 
             {!wizDone && (
-              <WizardNav
+              <StepNav
                 canBack={stepIdx > 0}
                 last={stepIdx === steps.length - 1}
+                backLabel="ย้อนกลับ"
+                nextLabel="ถัดไป"
+                doneLabel="ดูผลการคำนวณ"
                 onBack={() => setWizStep(stepIdx - 1)}
                 onNext={() => (stepIdx === steps.length - 1 ? finishWizard() : setWizStep(stepIdx + 1))}
               />
@@ -618,7 +616,7 @@ const BudgetStudyPlanner = () => {
         }
         below={wizDone ? summaryBelow : true}
         onClick={() => {
-          if (!wizDone && window.matchMedia?.("(max-width: 1023.98px)").matches) { finishWizard(); return; }
+          if (!wizDone && isBelowLg()) { finishWizard(); return; }
           summaryRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
         }}
       />
@@ -628,104 +626,11 @@ const BudgetStudyPlanner = () => {
 
 type WizardStep = "goal" | "budget" | "age" | "english" | "location";
 const LAST_STEP = 99; // clamped to the last step for the current goal
-/** Matches the Planning hub tools (short selected state before moving on). */
-const AUTO_ADVANCE_MS = 200;
-
 const goalTitle = (goal: Goal, degree: DegreeLevel) =>
   goal === "english" ? "เรียนภาษาอังกฤษ"
   : goal === "vet" ? "เรียนสายอาชีพ"
   : goal === "short" ? "คอร์สระยะสั้น / เพิ่มทักษะ"
   : degree === "master" ? "ปริญญาโท" : "ปริญญาตรี";
-
-/**
- * Phones/tablets only. While stepping: "step n of total" + progress bar
- * (same wording and style as the Planning hub tools). After finishing: the
- * answers in one compact list; each row reopens its step.
- */
-const WizardHeader = ({
-  done, step, total, answers, onEditAll,
-}: {
-  done: boolean;
-  step: number;
-  total: number;
-  answers: { step: WizardStep; label: string; value: string; onEdit: () => void }[];
-  onEditAll: () => void;
-}) => {
-  if (!done) {
-    const label = `ขั้นตอน ${step + 1} จาก ${total}`;
-    return (
-      <div className="lg:hidden">
-        <p className="text-xs font-medium text-muted-foreground">{label}</p>
-        <div
-          className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={total}
-          aria-valuenow={step + 1}
-          aria-label={label}
-        >
-          <div className="h-full rounded-full bg-primary transition-[width] duration-300 motion-reduce:transition-none" style={{ width: `${((step + 1) / total) * 100}%` }} />
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="lg:hidden">
-      <ul className="divide-y divide-border rounded-xl border border-border bg-background">
-        {answers.map((a) => (
-          <li key={a.step}>
-            <button
-              type="button"
-              onClick={a.onEdit}
-              className="flex min-h-11 w-full items-center gap-3 px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
-            >
-              <span className="min-w-0 flex-1">
-                <span className="block text-[11px] leading-tight text-muted-foreground">{a.label}</span>
-                <span className="block truncate text-sm font-semibold text-foreground tabular-nums">{a.value}</span>
-              </span>
-              <Pencil className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
-            </button>
-          </li>
-        ))}
-      </ul>
-      <button
-        type="button"
-        onClick={onEditAll}
-        className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <Pencil className="h-4 w-4" aria-hidden /> แก้ไขคำตอบ
-      </button>
-    </div>
-  );
-};
-
-/** Phones/tablets only: back / next (last step shows the results). */
-const WizardNav = ({
-  canBack, last, onBack, onNext,
-}: {
-  canBack: boolean;
-  last: boolean;
-  onBack: () => void;
-  onNext: () => void;
-}) => (
-  <div className="flex items-center justify-between gap-3 lg:hidden">
-    <button
-      type="button"
-      onClick={onBack}
-      disabled={!canBack}
-      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-muted-foreground hover:text-foreground disabled:invisible focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
-      <ArrowLeft className="h-4 w-4" aria-hidden /> ย้อนกลับ
-    </button>
-    <button
-      type="button"
-      onClick={onNext}
-      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-    >
-      {last ? "ดูผลการคำนวณ" : "ถัดไป"} <ArrowRight className="h-4 w-4" aria-hidden />
-    </button>
-  </div>
-);
 
 const PlannerHeader = () => {
   const { language } = useLanguage();

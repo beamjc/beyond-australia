@@ -92,3 +92,15 @@ Look first:
 | SAV-075 | expense.2000 | Budget | **Owner text** — ประหยัด | Applied verbatim |
 | SAV-076 | expense.2500 | Moderate | **Owner text** — ทั่วไป | Applied verbatim |
 | SAV-077 | expense.3200 | Comfortable | **Owner text** — สบายขึ้น | Applied verbatim |
+
+## Step-by-step mode on phones/tablets (added 2026-10-05, owner request)
+
+Below 1024 px the savings planner shows one input card per screen (goal → duration → visa type → income → expenses), then the result with an editable answer list. Desktop unchanged. Screenshots: `screenshots/mobile/phone-savings-*.png`.
+
+| ID | Where | English | Current Thai | Suggested Thai | Notes |
+|---|---|---|---|---|---|
+| SAV-STEP-1 **DRAFT** | Last step button (`savingsCopy.seeResults`) | See results | ดูผลการคำนวณ | ดูผลการคำนวณ | **New — please review.** Same wording as the Budget Planner (BSP-143). |
+| SAV-STEP-2 | Progress text | Step {n} of {total} | ขั้นตอน {n} จาก {total} | — | Reused (`finderCopy.step`) |
+| SAV-STEP-3 | Buttons | Next · Back | ถัดไป · ย้อนกลับ | — | Reused (`finderCopy.next/back`) |
+| SAV-STEP-4 | Under the answer list | Edit answers | แก้ไขคำตอบ | — | Reused (`readinessCopy.editAnswers`) |
+| SAV-STEP-5 | Answer list rows | (existing card titles) | เป้าหมายเงินเก็บของคุณ · วางแผนอยู่ที่ออสเตรเลียนานแค่ไหน? · ประเภทวีซ่าของคุณ · รายได้ก่อนหักภาษีต่อปี · ค่าใช้จ่ายต่อเดือน | — | Reused card titles |

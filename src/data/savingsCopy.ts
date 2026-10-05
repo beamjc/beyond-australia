@@ -79,6 +79,8 @@ export const savingsCopy = {
   expensesYearly: { th: "ค่าใช้จ่ายต่อปีประมาณ {x}", en: "About {x} a year" },
 
   resultTitle: { th: "สรุปแผนการเงินของคุณ", en: "Your savings plan" },
+  // Phones/tablets step-by-step flow — DRAFT, awaiting the Thai editor (thai-review-savings.md SAV-STEP-1).
+  seeResults: { th: "ดูผลการคำนวณ", en: "See results" },
   gross: { th: "รายได้ก่อนหักภาษี", en: "Income before tax" },
   tax: { th: "ภาษีโดยประมาณ", en: "Estimated tax" },
   net: { th: "รายได้หลังหักภาษี", en: "Income after tax" },

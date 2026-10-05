@@ -1,4 +1,4 @@
-import { test, expect, mockSupabase } from './fixtures'
+import { test, expect, mockSupabase, stepShow } from './fixtures'
 
 // Phone/tablet layout (below the lg breakpoint). Desktop is checked separately
 // and must stay unchanged.
@@ -28,7 +28,7 @@ test.describe('phone & tablet usability', () => {
     await page.goto('/#study')
     await page.locator('#study-tab-savings').click()
     const income = page.locator('#study-panel-savings').getByRole('textbox', { name: /รายได้ต่อปี/ })
-    await income.scrollIntoViewIfNeeded()
+    await stepShow(page, '#study-panel-savings', income)
     await income.fill('80000')
     const bar = page.locator('#study-panel-savings').getByRole('button', { name: /เงินที่คาดว่าจะเก็บได้ต่อปี/ })
     await expect(bar).toBeVisible()
@@ -120,5 +120,30 @@ test.describe('phone & tablet usability', () => {
     const panel = page.locator('#study-panel-courses')
     await panel.getByRole('button', { name: /เรียนภาษาอังกฤษ/ }).click()
     await expect(panel.getByRole('progressbar')).toHaveAttribute('aria-label', 'ขั้นตอน 2 จาก 4')
+  })
+
+  test('Savings asks one card at a time on phones/tablets; result adjust buttons reopen the step', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    await page.locator('#study-tab-savings').click()
+    const panel = page.locator('#study-panel-savings')
+    const progress = panel.getByRole('progressbar')
+    if (isDesktop(page.viewportSize()!.width)) {
+      await expect(progress).toBeHidden()
+      await expect(page.locator('#sav-result')).toBeVisible()
+      await expect(panel.getByRole('textbox', { name: /รายได้ต่อปี/ })).toBeVisible()
+      return
+    }
+    await expect(progress).toHaveAttribute('aria-label', 'ขั้นตอน 1 จาก 5')
+    await expect(page.locator('#sav-result')).toBeHidden()
+    for (let i = 0; i < 4; i++) await panel.getByRole('button', { name: 'ถัดไป', exact: true }).click()
+    await expect(progress).toHaveAttribute('aria-label', 'ขั้นตอน 5 จาก 5')
+    await panel.getByRole('button', { name: /ดูผลการคำนวณ/ }).click()
+    await expect(page.locator('#sav-result')).toBeInViewport()
+    await expect(panel.getByRole('button', { name: /รายได้ก่อนหักภาษีต่อปี.*A\$60,000/ })).toBeVisible()
+    // "Increase income" reopens the income step with the field focused.
+    await panel.getByRole('button', { name: 'เพิ่มรายได้' }).click()
+    await expect(progress).toHaveAttribute('aria-label', 'ขั้นตอน 4 จาก 5')
+    await expect(panel.getByRole('textbox', { name: /รายได้ต่อปี/ })).toBeFocused()
   })
 })

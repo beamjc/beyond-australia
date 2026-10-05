@@ -75,13 +75,22 @@ export async function noHorizontalOverflow(page: Page) {
 // Budget Planner: below the lg breakpoint inputs are shown one step at a time.
 const plannerIsStepped = (page: Page) => page.viewportSize()!.width < 1024
 
-/** Phones/tablets: press "ถัดไป" until `target` is on screen. Desktop: no-op. */
-export async function plannerShow(page: Page, target: Locator) {
+/** Phones/tablets: press "ถัดไป" in `panel` until `target` is on screen. Desktop: no-op. */
+export async function stepShow(page: Page, panel: string, target: Locator) {
   if (!plannerIsStepped(page)) return
-  const next = page.locator('#study-panel-courses').getByRole('button', { name: 'ถัดไป', exact: true })
+  if (await target.isVisible()) return
+  const p = page.locator(panel)
+  // From the results view, reopen the steps; otherwise rewind to step 1.
+  const edit = p.getByRole('button', { name: 'แก้ไขคำตอบ' })
+  if (await edit.isVisible()) await edit.click()
+  const back = p.getByRole('button', { name: /ย้อนกลับ/ })
+  for (let i = 0; i < 6 && !(await target.isVisible()) && (await back.isVisible()); i++) await back.click()
+  const next = p.getByRole('button', { name: 'ถัดไป', exact: true })
   for (let i = 0; i < 6 && !(await target.isVisible()); i++) await next.click()
   await expect(target).toBeVisible()
 }
+
+export const plannerShow = (page: Page, target: Locator) => stepShow(page, '#study-panel-courses', target)
 
 /** Phones/tablets: go through the remaining steps to the results. Desktop: no-op. */
 export async function plannerResults(page: Page) {
