@@ -189,3 +189,4 @@ Owner-supplied Thai wording, applied verbatim. `nav.visaPathways` (TH) in `src/i
 
 - `BSCConsultationCTA.tsx` ("ต้องการคำแนะนำจากผู้เชี่ยวชาญ?"): "เว็บไซต์ BSC" → **"เว็บไซต์ Beyond Study Center"**; "BSC Website" → **"Beyond Study Center website"**. Same destination.
 - The longer label wrapped both buttons onto two lines at 1024–1440 px, where the text column sits beside the artwork. In the illustrated variant the buttons now stack at equal width from `md` (max 320 px) and don't wrap; they stay side by side at 640–767 px and stacked on phones. Screenshots: `screenshots/onshore-checker/cta-th-*.png`.
+- Follow-up (owner request): the Study tab `study.tabs.options` (TH) also changed from "วางแผนเส้นทาง" to "วางแผนเรียนต่อ", so the menu label and the tab it opens now match. Tab id `options` is unchanged.
