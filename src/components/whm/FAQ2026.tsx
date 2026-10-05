@@ -597,7 +597,8 @@ const FAQ2026 = () => {
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap ${
+              aria-pressed={activeCategory === cat.id}
+              className={`min-h-10 lg:min-h-0 px-3 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap ${
                 activeCategory === cat.id
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"

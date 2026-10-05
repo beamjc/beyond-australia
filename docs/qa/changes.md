@@ -205,3 +205,9 @@ Owner-supplied Thai wording, applied verbatim. `nav.visaPathways` (TH) in `src/i
   - Left as the owner wrote them (flagged, not changed): tags "(Northern Australia)" / "(Regional Australia)" in brackets; "ฟื้นฟูหลังน้ำท่วม และพายุ" has a space before "และ".
   - e2e: Thai test (labels, headings, no overflow). Screenshots `screenshots/postcode-checker/th-new-*.png`.
 
+
+## 2026-10-05 — Mobile & tablet usability pass
+
+Phone/tablet-only layout changes (desktop pixel-identical); details and measurements in `docs/qa/mobile-tablet-pass.md`. Files: `StudySection.tsx`, `WHMSection.tsx`, `FloatingLineButton.tsx`, `FloatingFacebookButton.tsx`, new `hooks/use-hide-on-scroll-down.ts`, `SavingsCalculator.tsx` + new `savings/SavingsResultBar.tsx`, `TopUniversities.tsx`, `FAQ2026.tsx`, `savings/IncomeSelector.tsx`, `BudgetStudyPlanner.tsx` (toggle height only), `ui/slider.tsx` (thumb size below lg). No copy changes.
+- Follow-up: Budget Planner step-by-step mode below lg (`BudgetStudyPlanner.tsx` `WizardHeader`/`WizardNav`; new DRAFT string "ดูผลการคำนวณ", BSP-143); navbar uses the hamburger menu below lg (`Navbar.tsx`).
+- Follow-up 2: shared `components/shared/StepFlow.tsx`; Savings calculator step-by-step below lg (new DRAFT string `savingsCopy.seeResults`, SAV-STEP-1); Budget Planner refactored onto the shared components. Visa Readiness, Checklist, FAQ, Universities intentionally not stepped (see mobile-tablet-pass.md).

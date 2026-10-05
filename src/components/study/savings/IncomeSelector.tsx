@@ -38,7 +38,7 @@ const IncomeSelector = forwardRef<HTMLInputElement, Props>(({ income, setIncome,
         value={income}
         onChange={(e) => setIncome(parseInt(e.target.value, 10))}
         aria-label={t(c.incomeCustom)}
-        className="mt-5 w-full accent-primary h-6"
+        className="mt-5 w-full accent-primary h-10 lg:h-6"
       />
       <input
         ref={ref}

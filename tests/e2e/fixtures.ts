@@ -2,7 +2,7 @@
 // rendering, ordering and empty/error states can be exercised locally.
 // Passing tests that use them are NOT evidence of live integration, of the
 // real published content, or of RLS behaviour.
-import { test as base, expect, type Page, type Route } from '@playwright/test'
+import { test as base, expect, type Locator, type Page, type Route } from '@playwright/test'
 
 export const MOCK_SUPABASE = 'http://127.0.0.1:54321'
 
@@ -70,4 +70,33 @@ export { expect }
 export async function noHorizontalOverflow(page: Page) {
   const { sw, cw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }))
   expect(sw, 'page should not scroll horizontally').toBeLessThanOrEqual(cw + 1)
+}
+
+// Budget Planner: below the lg breakpoint inputs are shown one step at a time.
+const plannerIsStepped = (page: Page) => page.viewportSize()!.width < 1024
+
+/** Phones/tablets: press "ถัดไป" in `panel` until `target` is on screen. Desktop: no-op. */
+export async function stepShow(page: Page, panel: string, target: Locator) {
+  if (!plannerIsStepped(page)) return
+  if (await target.isVisible()) return
+  const p = page.locator(panel)
+  // From the results view, reopen the steps; otherwise rewind to step 1.
+  const edit = p.getByRole('button', { name: 'แก้ไขคำตอบ' })
+  if (await edit.isVisible()) await edit.click()
+  const back = p.getByRole('button', { name: /ย้อนกลับ/ })
+  for (let i = 0; i < 6 && !(await target.isVisible()) && (await back.isVisible()); i++) await back.click()
+  const next = p.getByRole('button', { name: 'ถัดไป', exact: true })
+  for (let i = 0; i < 6 && !(await target.isVisible()); i++) await next.click()
+  await expect(target).toBeVisible()
+}
+
+export const plannerShow = (page: Page, target: Locator) => stepShow(page, '#study-panel-courses', target)
+
+/** Phones/tablets: go through the remaining steps to the results. Desktop: no-op. */
+export async function plannerResults(page: Page) {
+  if (!plannerIsStepped(page)) return
+  const panel = page.locator('#study-panel-courses')
+  const done = panel.getByRole('button', { name: /ดูผลการคำนวณ/ })
+  for (let i = 0; i < 6 && !(await done.isVisible()); i++) await panel.getByRole('button', { name: 'ถัดไป', exact: true }).click()
+  await done.click()
 }

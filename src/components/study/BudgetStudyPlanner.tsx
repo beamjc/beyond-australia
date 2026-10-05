@@ -9,6 +9,9 @@ import {
   Sparkles, ArrowRight,
   ChevronDown, ArrowDown, ArrowUp, Info, Plane, Briefcase, GraduationCap, Lightbulb, CheckCircle2, Clock,
 } from "lucide-react";
+import {
+  AnswerList, StepNav, StepProgress, STEP_AUTO_ADVANCE_MS, isBelowLg, stepVisibility, useStepFlowScroll,
+} from "../shared/StepFlow";
 import BSCConsultationCTA, { type CTAIllustration } from "../shared/BSCConsultationCTA";
 import {
   VisaRuleAlert, OnshoreEligibilityPanel, initialOnshoreCheck, ONSHORE_PANEL_HEADING_ID,
@@ -152,9 +155,39 @@ const BudgetStudyPlanner = () => {
     jumpToChecker();
   }, [jumpToOnshore, jumpToChecker]);
   const onCheckOnshore = () => {
+    // Phones/tablets: open the step-by-step flow at the location step.
+    setWizDone(false);
+    setWizStep(LAST_STEP);
     if (location === "onshore" || reduceMotion) setJumpToOnshore(true);
     else jumpWhenExpanded.current = true;
     setLocation("onshore");
+  };
+
+  // Phones/tablets (below lg): one input group per screen, then the results.
+  // Desktop shows every group beside the results, as before.
+  const [wizStep, setWizStep] = useState(0);
+  const [wizDone, setWizDone] = useState(false);
+  const steps: WizardStep[] = goal === "english"
+    ? ["goal", "budget", "age", "location"]
+    : ["goal", "budget", "age", "english", "location"];
+  const stepIdx = Math.min(wizStep, steps.length - 1);
+  const currentStep = steps[stepIdx];
+  /** Hide an input group on phones/tablets unless it is the current step. */
+  const stepClass = (s: WizardStep) => stepVisibility(!wizDone && currentStep === s);
+  const goToStep = (i: number) => { setWizDone(false); setWizStep(i); };
+  const finishWizard = () => setWizDone(true);
+
+  // Keep the planner in view between steps; bring the results up at the end.
+  useStepFlowScroll(inputsRef, summaryRef, stepIdx, wizDone, reduceMotion);
+
+  // Choosing a goal on phones/tablets moves straight on to the next step.
+  const advanceTimer = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => () => clearTimeout(advanceTimer.current), []);
+  const chooseGoal = (apply: () => void) => {
+    apply();
+    if (wizDone || !isBelowLg()) return;
+    clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(() => setWizStep(1), STEP_AUTO_ADVANCE_MS);
   };
 
   const englishNumeric = englishOptions.find((o) => o.id === english)?.numeric ?? 0;
@@ -227,43 +260,64 @@ const BudgetStudyPlanner = () => {
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Inputs */}
         <Card ref={inputsRef} className="lg:col-span-2 self-start rounded-2xl border-border/60 bg-gradient-to-br from-background to-muted/40 shadow-sm">
-          <CardContent className="p-5 sm:p-6 space-y-7">
-            <div>
+          {/* Outside CardContent: as a space-y child it would add a top margin to
+              the first input group on desktop, where it is hidden. */}
+          <div className="px-5 pt-5 sm:px-6 sm:pt-6 lg:hidden">
+            {wizDone ? (
+              <AnswerList
+                answers={[
+                  { key: "goal" as WizardStep, label: "เป้าหมายการเรียน", value: goalTitle(goal, degreeLevel) },
+                  { key: "budget" as WizardStep, label: "งบที่เตรียมไว้", value: currency === "AUD" ? fmtAUD(budgetAUD) : fmtTHB(budgetTHB) },
+                  { key: "age" as WizardStep, label: "อายุผู้สมัคร", value: `${age} ปี` },
+                  ...(goal !== "english"
+                    ? [{ key: "english" as WizardStep, label: "IELTS", value: englishOptions.find((o) => o.id === english)?.label ?? "" }]
+                    : []),
+                  { key: "location" as WizardStep, label: "ยื่นวีซ่าจากที่ไหน", value: location === "offshore" ? "ประเทศไทย" : "ออสเตรเลีย" },
+                ].map((a) => ({ ...a, onEdit: () => goToStep(steps.indexOf(a.key)) }))}
+                editAllLabel="แก้ไขคำตอบ"
+                onEditAll={() => goToStep(0)}
+              />
+            ) : (
+              <StepProgress label={`ขั้นตอน ${stepIdx + 1} จาก ${steps.length}`} step={stepIdx} total={steps.length} />
+            )}
+          </div>
+          <CardContent className={`p-5 sm:p-6 space-y-7 ${wizDone ? "max-lg:pt-0" : ""}`}>
+            <div className={stepClass("goal")}>
               <Label className={sectionLabel}>
                 <Target className="w-4 h-4 text-primary" aria-hidden /> เป้าหมายการเรียน
               </Label>
               <div className="grid grid-cols-2 gap-2.5">
                 <GoalOption
                   selected={goal === "english"}
-                  onClick={() => setGoal("english")}
+                  onClick={() => chooseGoal(() => setGoal("english"))}
                   icon={ART.english}
                   title="เรียนภาษาอังกฤษ"
                   sub="หลักสูตร ELICOS"
                 />
                 <GoalOption
                   selected={goal === "vet"}
-                  onClick={() => setGoal("vet")}
+                  onClick={() => chooseGoal(() => setGoal("vet"))}
                   icon={ART.vet}
                   title="เรียนสายอาชีพ"
                   sub="IELTS ขั้นต่ำ 6.0"
                 />
                 <GoalOption
                   selected={goal === "he" && degreeLevel === "bachelor"}
-                  onClick={() => { setGoal("he"); setDegreeLevel("bachelor"); }}
+                  onClick={() => chooseGoal(() => { setGoal("he"); setDegreeLevel("bachelor"); })}
                   icon={ART.degree}
                   title="ปริญญาตรี"
                   sub="ควรจะมี IELTS อย่างน้อย 6.5 ใช้เวลาเรียนประมาณ 3 ปี"
                 />
                 <GoalOption
                   selected={goal === "he" && degreeLevel === "master"}
-                  onClick={() => { setGoal("he"); setDegreeLevel("master"); }}
+                  onClick={() => chooseGoal(() => { setGoal("he"); setDegreeLevel("master"); })}
                   icon={ART.degree}
                   title="ปริญญาโท"
                   sub="ควรจะมี IELTS อย่างน้อย 6.5 ใช้เวลาเรียนประมาณ 2 ปี"
                 />
                 <GoalOption
                   selected={goal === "short"}
-                  onClick={() => setGoal("short")}
+                  onClick={() => chooseGoal(() => setGoal("short"))}
                   icon={ART.short}
                   title="คอร์สระยะสั้น / เพิ่มทักษะ"
                   sub="เหมาะสำหรับผู้ที่ถือวีซ่า WHM หรือต้องการเรียนคอร์ส Fast Track"
@@ -292,7 +346,7 @@ const BudgetStudyPlanner = () => {
             </div>
 
 
-            <div>
+            <div className={stepClass("budget")}>
               <div className="flex items-center justify-between gap-3 mb-3">
                 <Label htmlFor="bsp-budget" id="bsp-budget-label" className={`${sectionLabel} mb-0`}>
                   <Wallet className="w-4 h-4 text-primary" aria-hidden /> งบที่เตรียมไว้
@@ -304,7 +358,7 @@ const BudgetStudyPlanner = () => {
                       type="button"
                       aria-pressed={currency === c}
                       onClick={() => setCurrency(c)}
-                      className={`h-8 px-3 ${segmentButton(currency === c)}`}
+                      className={`h-10 lg:h-8 px-3 ${segmentButton(currency === c)}`}
                     >
                       {c}
                     </button>
@@ -336,7 +390,7 @@ const BudgetStudyPlanner = () => {
               </p>
             </div>
 
-            <div>
+            <div className={stepClass("age")}>
               <div className="flex items-center justify-between gap-3 mb-4">
                 <Label id="bsp-age-label" className={`${sectionLabel} mb-0`}>
                   <User className="w-4 h-4 text-primary" aria-hidden /> อายุผู้สมัคร
@@ -348,7 +402,7 @@ const BudgetStudyPlanner = () => {
 
             {goal !== "english" && (
               <>
-                <div>
+                <div className={stepClass("english")}>
                   <Label className={sectionLabel}>
                     <Languages className="w-4 h-4 text-primary" aria-hidden /> ตอนนี้คะแนน IELTS คุณอยู่ที่ประมาณเท่าไหร่
                   </Label>
@@ -390,7 +444,7 @@ const BudgetStudyPlanner = () => {
                 </div>
 
                 {/* Global English tuition slider — affects every pathway card */}
-                <div>
+                <div className={stepClass("english")}>
                   <div className="flex items-center justify-between gap-3 mb-4">
                     <Label id="bsp-elicos-label" className={`${sectionLabel} mb-0`}>
                       <GraduationCap className="w-4 h-4 text-primary" aria-hidden /> ค่าเรียนภาษา
@@ -415,7 +469,7 @@ const BudgetStudyPlanner = () => {
 
             {/* Last: the onshore checker can expand here without pushing the
                 inputs that drive the calculation out of view. */}
-            <div id="bsp-location" className="scroll-mt-24">
+            <div id="bsp-location" className={`scroll-mt-24 ${stepClass("location")}`}>
               <Label className={sectionLabel}>
                 <MapPin className="w-4 h-4 text-primary" aria-hidden /> ยื่นวีซ่าจากที่ไหน
               </Label>
@@ -453,14 +507,27 @@ const BudgetStudyPlanner = () => {
               </AnimatePresence>
             </div>
 
-            <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground pt-4 border-t border-border">
+            {!wizDone && (
+              <StepNav
+                canBack={stepIdx > 0}
+                last={stepIdx === steps.length - 1}
+                backLabel="ย้อนกลับ"
+                nextLabel="ถัดไป"
+                doneLabel="ดูผลการคำนวณ"
+                onBack={() => setWizStep(stepIdx - 1)}
+                onNext={() => (stepIdx === steps.length - 1 ? finishWizard() : setWizStep(stepIdx + 1))}
+              />
+            )}
+
+            {/* After the steps (phones/tablets) every input group above is hidden, so drop the gap. */}
+            <p className={`flex items-center gap-1.5 text-[11px] text-muted-foreground pt-4 border-t border-border ${wizDone ? "max-lg:!mt-0" : ""}`}>
               <Info className="w-3.5 h-3.5 shrink-0" aria-hidden /> ราคาที่แสดงเป็นแค่การประมาณเท่านั้น
             </p>
           </CardContent>
         </Card>
 
         {/* Results */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className={`lg:col-span-3 space-y-6 ${wizDone ? "" : "max-lg:hidden"}`}>
           <div ref={summaryRef} className="scroll-mt-24">
           <SummaryCard
             coverage={headlineCoverage}
@@ -547,12 +614,23 @@ const BudgetStudyPlanner = () => {
             ? `${fmtMoney(headlineUpfront)} – ${fmtMoney(headlineUpfrontHigh)}`
             : fmtMoney(headlineUpfront)
         }
-        below={summaryBelow}
-        onClick={() => summaryRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" })}
+        below={wizDone ? summaryBelow : true}
+        onClick={() => {
+          if (!wizDone && isBelowLg()) { finishWizard(); return; }
+          summaryRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        }}
       />
     </div>
   );
 };
+
+type WizardStep = "goal" | "budget" | "age" | "english" | "location";
+const LAST_STEP = 99; // clamped to the last step for the current goal
+const goalTitle = (goal: Goal, degree: DegreeLevel) =>
+  goal === "english" ? "เรียนภาษาอังกฤษ"
+  : goal === "vet" ? "เรียนสายอาชีพ"
+  : goal === "short" ? "คอร์สระยะสั้น / เพิ่มทักษะ"
+  : degree === "master" ? "ปริญญาโท" : "ปริญญาตรี";
 
 const PlannerHeader = () => {
   const { language } = useLanguage();

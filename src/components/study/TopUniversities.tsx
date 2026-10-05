@@ -32,13 +32,15 @@ const TopUniversities = () => {
 
   return (
     <div>
-      {/* Subject selector */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      {/* Subject selector — phones/tablets: one swipeable row instead of a tall
+          stack of chips; desktop (lg+): unchanged wrapping list. */}
+      <div className="flex gap-2 mb-6 -mx-8 px-8 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-wrap lg:mx-0 lg:px-0 lg:overflow-visible">
         {subjectGroups.map((g) => (
           <button
             key={g.subjectId}
             onClick={() => { setActiveSubject(g.subjectId); setSortBy("ausRank"); }}
-            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            aria-pressed={activeSubject === g.subjectId}
+            className={`shrink-0 whitespace-nowrap lg:shrink lg:whitespace-normal px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
               activeSubject === g.subjectId
                 ? "bg-primary text-primary-foreground shadow-warm"
                 : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
@@ -49,7 +51,7 @@ const TopUniversities = () => {
         ))}
         <button
           disabled
-          className="px-5 py-2.5 rounded-lg text-sm font-medium bg-muted/40 text-muted-foreground/50 cursor-not-allowed"
+          className="shrink-0 whitespace-nowrap lg:shrink lg:whitespace-normal px-5 py-2.5 rounded-lg text-sm font-medium bg-muted/40 text-muted-foreground/50 cursor-not-allowed"
         >
           More subjects coming soon…
         </button>
@@ -63,7 +65,8 @@ const TopUniversities = () => {
           <button
             key={key}
             onClick={() => setSortBy(key)}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+            aria-pressed={sortBy === key}
+            className={`min-h-10 lg:min-h-0 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
               sortBy === key
                 ? "bg-secondary text-secondary-foreground"
                 : "bg-muted/60 text-muted-foreground hover:bg-muted"
@@ -104,8 +107,9 @@ const UniversityCard = ({ uni, index }: { uni: University; index: number }) => {
       transition={{ delay: index * 0.05 }}
       className="group relative flex rounded-xl border border-border bg-popover overflow-hidden hover:shadow-warm transition-shadow"
     >
-      {/* Left accent */}
-      <div className="w-16 sm:w-20 shrink-0 bg-primary/10 flex flex-col items-center justify-center gap-1 border-r border-border">
+      {/* Left accent — hidden on phones: it repeats the "Australia #n" badge
+          and its width forced the card text to wrap. */}
+      <div className="w-16 sm:w-20 shrink-0 bg-primary/10 hidden sm:flex flex-col items-center justify-center gap-1 border-r border-border">
         <span className="text-2xl sm:text-3xl font-bold text-primary font-display">#{uni.ausRank}</span>
         <span className="text-[10px] uppercase tracking-wider text-muted-foreground">AUS</span>
       </div>

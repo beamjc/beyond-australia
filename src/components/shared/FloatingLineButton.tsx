@@ -3,12 +3,16 @@
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
+import { useHideOnScrollDown } from "@/hooks/use-hide-on-scroll-down";
 
 const LINE_URL = "https://line.me/ti/p/@beyondstudy";
 
 const FloatingLineButton = () => {
   const { language } = useLanguage();
   const tooltip = language === "th" ? "แชทกับเราทาง LINE" : "Chat with us on LINE";
+
+  // Phones/tablets: slide out of the way while scrolling down (see hook).
+  const tucked = useHideOnScrollDown();
 
   return (
     <motion.a
@@ -17,10 +21,12 @@ const FloatingLineButton = () => {
       rel="noopener noreferrer"
       aria-label={tooltip}
       title={tooltip}
+      tabIndex={tucked ? -1 : undefined}
+      aria-hidden={tucked || undefined}
       initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
+      animate={tucked ? { opacity: 0, scale: 0.8, x: 80 } : { opacity: 1, scale: 1, x: 0 }}
       transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
-      className="fixed z-50 flex items-center justify-center rounded-full shadow-lg hover:scale-105 transition-transform"
+      className={`fixed z-50 flex items-center justify-center rounded-full shadow-lg hover:scale-105 transition-transform ${tucked ? "pointer-events-none" : ""}`}
       style={{
         bottom: "84px",
         right: "20px",
