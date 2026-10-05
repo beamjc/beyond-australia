@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   MapPin, Wallet, User, Languages, Target,
   ShieldCheck, AlertTriangle,
   Sparkles, ArrowRight,
-  ChevronDown, Info, Plane, Briefcase, GraduationCap, Lightbulb, CheckCircle2, Clock,
+  ChevronDown, ArrowDown, ArrowUp, Info, Plane, Briefcase, GraduationCap, Lightbulb, CheckCircle2, Clock,
 } from "lucide-react";
 import BSCConsultationCTA, { type CTAIllustration } from "../shared/BSCConsultationCTA";
 import {
@@ -101,6 +101,41 @@ const BudgetStudyPlanner = () => {
   const [jumpToOnshore, setJumpToOnshore] = useState(false);
   const reduceMotion = useReducedMotion();
 
+  // Compact result bar: shown while the inputs are on screen but the summary
+  // card is not, so every change is visible without scrolling back.
+  const inputsRef = useRef<HTMLDivElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const [inputsInView, setInputsInView] = useState(false);
+  const [summaryInView, setSummaryInView] = useState(true);
+  const [summaryBelow, setSummaryBelow] = useState(false);
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const nav = { rootMargin: "-64px 0px 0px 0px" }; // fixed navbar
+    const inputs = new IntersectionObserver(([e]) => setInputsInView(e.isIntersecting), nav);
+    const summary = new IntersectionObserver(([e]) => setSummaryInView(e.isIntersecting), { ...nav, threshold: 0.6 });
+    if (inputsRef.current) inputs.observe(inputsRef.current);
+    if (summaryRef.current) summary.observe(summaryRef.current);
+    return () => { inputs.disconnect(); summary.disconnect(); };
+  }, []);
+  const showSummaryBar = inputsInView && !summaryInView;
+
+  // Arrow direction (summary above or below). Observer callbacks don't fire
+  // when the card jumps from below to above the screen, so track scroll
+  // while the bar is shown.
+  useEffect(() => {
+    if (!showSummaryBar) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const el = summaryRef.current;
+      if (el) setSummaryBelow(el.getBoundingClientRect().top > 0);
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(frame); };
+  }, [showSummaryBar]);
+
   // Alert CTA: bring the location selector into view and focus the checker
   // once it has rendered.
   useEffect(() => {
@@ -179,7 +214,7 @@ const BudgetStudyPlanner = () => {
 
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Inputs */}
-        <Card className="lg:col-span-2 self-start rounded-2xl border-border/60 bg-gradient-to-br from-background to-muted/40 shadow-sm">
+        <Card ref={inputsRef} className="lg:col-span-2 self-start rounded-2xl border-border/60 bg-gradient-to-br from-background to-muted/40 shadow-sm">
           <CardContent className="p-5 sm:p-6 space-y-7">
             <div>
               <Label className={sectionLabel}>
@@ -244,38 +279,6 @@ const BudgetStudyPlanner = () => {
               )}
             </div>
 
-            <div id="bsp-location" className="scroll-mt-24">
-              <Label className={sectionLabel}>
-                <MapPin className="w-4 h-4 text-primary" aria-hidden /> ยื่นวีซ่าจากที่ไหน
-              </Label>
-              <div className={segmentGroup}>
-                {(["offshore", "onshore"] as Location[]).map((loc) => (
-                  <button
-                    key={loc}
-                    type="button"
-                    aria-pressed={location === loc}
-                    onClick={() => setLocation(loc)}
-                    className={`min-h-11 ${segmentButton(location === loc)}`}
-                  >
-                    {loc === "offshore" ? "ประเทศไทย" : "ออสเตรเลีย"}
-                  </button>
-                ))}
-              </div>
-              <AnimatePresence initial={false}>
-                {location === "onshore" && (
-                  <motion.div
-                    key="onshore-check"
-                    initial={reduceMotion ? false : { height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={reduceMotion ? { opacity: 0, transition: { duration: 0 } } : { height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="overflow-hidden"
-                  >
-                    <OnshoreEligibilityPanel state={onshoreCheck} onChange={setOnshoreCheck} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
 
             <div>
               <div className="flex items-center justify-between gap-3 mb-3">
@@ -398,6 +401,41 @@ const BudgetStudyPlanner = () => {
               </>
             )}
 
+            {/* Last: the onshore checker can expand here without pushing the
+                inputs that drive the calculation out of view. */}
+            <div id="bsp-location" className="scroll-mt-24">
+              <Label className={sectionLabel}>
+                <MapPin className="w-4 h-4 text-primary" aria-hidden /> ยื่นวีซ่าจากที่ไหน
+              </Label>
+              <div className={segmentGroup}>
+                {(["offshore", "onshore"] as Location[]).map((loc) => (
+                  <button
+                    key={loc}
+                    type="button"
+                    aria-pressed={location === loc}
+                    onClick={() => setLocation(loc)}
+                    className={`min-h-11 ${segmentButton(location === loc)}`}
+                  >
+                    {loc === "offshore" ? "ประเทศไทย" : "ออสเตรเลีย"}
+                  </button>
+                ))}
+              </div>
+              <AnimatePresence initial={false}>
+                {location === "onshore" && (
+                  <motion.div
+                    key="onshore-check"
+                    initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={reduceMotion ? { opacity: 0, transition: { duration: 0 } } : { height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="overflow-hidden"
+                  >
+                    <OnshoreEligibilityPanel state={onshoreCheck} onChange={setOnshoreCheck} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground pt-4 border-t border-border">
               <Info className="w-3.5 h-3.5 shrink-0" aria-hidden /> ราคาที่แสดงเป็นแค่การประมาณเท่านั้น
             </p>
@@ -406,6 +444,7 @@ const BudgetStudyPlanner = () => {
 
         {/* Results */}
         <div className="lg:col-span-3 space-y-6">
+          <div ref={summaryRef} className="scroll-mt-24">
           <SummaryCard
             coverage={headlineCoverage}
             amount={
@@ -433,6 +472,7 @@ const BudgetStudyPlanner = () => {
               ) : null
             }
           />
+          </div>
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -481,6 +521,18 @@ const BudgetStudyPlanner = () => {
           <BSCConsultationCTA illustration={ART.consult} />
         </div>
       </div>
+
+      <SummaryBar
+        visible={showSummaryBar}
+        coverage={headlineCoverage}
+        amount={
+          headlineUpfrontHigh !== headlineUpfront
+            ? `${fmtMoney(headlineUpfront)} – ${fmtMoney(headlineUpfrontHigh)}`
+            : fmtMoney(headlineUpfront)
+        }
+        below={summaryBelow}
+        onClick={() => summaryRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" })}
+      />
     </div>
   );
 };
@@ -568,6 +620,58 @@ const SummaryCard = ({
   </Card>
 );
 
+const gaugeColor = (pct: number) => (pct >= 100 ? "hsl(var(--primary))" : pct >= 60 ? "#f59e0b" : "#ef4444");
+
+/** Floating one-line version of the summary card (mobile: left of the floating LINE/Facebook buttons). */
+const SummaryBar = ({
+  visible, coverage, amount, below, onClick,
+}: {
+  visible: boolean;
+  coverage: number;
+  amount: string;
+  below: boolean;
+  onClick: () => void;
+}) => {
+  const reduceMotion = useReducedMotion();
+  const pct = Math.max(0, Math.min(100, coverage));
+  const r = 15;
+  const c = 2 * Math.PI * r;
+  const Arrow = below ? ArrowDown : ArrowUp;
+  return (
+    <div className="pointer-events-none fixed bottom-4 left-4 right-[88px] z-40 sm:left-1/2 sm:right-auto sm:w-[24rem] sm:-translate-x-1/2">
+      <AnimatePresence>
+        {visible && (
+          <motion.button
+            type="button"
+            onClick={onClick}
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduceMotion ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.2 }}
+            className="pointer-events-auto flex min-h-14 w-full items-center gap-3 rounded-2xl border border-border bg-background/95 px-3 py-2 text-left shadow-lg backdrop-blur focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <span className="relative h-10 w-10 shrink-0">
+              <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden>
+                <circle cx="18" cy="18" r={r} stroke="hsl(var(--muted))" strokeWidth="4" fill="none" />
+                <circle cx="18" cy="18" r={r} stroke={gaugeColor(pct)} strokeWidth="4" strokeLinecap="round" fill="none"
+                  strokeDasharray={c} strokeDashoffset={c - (pct / 100) * c} />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold tabular-nums text-foreground">
+                <span className="sr-only">ครอบคลุมงบประมาณ </span>{Math.round(pct)}%
+              </span>
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[11px] leading-tight text-muted-foreground">จำนวนเงินคร่าวๆที่ต้องใช้</span>
+              <span className="block truncate text-base font-bold leading-snug tabular-nums text-foreground">{amount}</span>
+            </span>
+            <Arrow className="h-4 w-4 shrink-0 text-primary" aria-hidden />
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const DetailsToggle = ({ open, onToggle }: { open: boolean; onToggle: () => void }) => (
   <button
     type="button"
@@ -585,7 +689,7 @@ const Gauge = ({ pct }: { pct: number }) => {
   const r = 72;
   const c = 2 * Math.PI * r;
   const offset = c - (clamped / 100) * c;
-  const stroke = clamped >= 100 ? "hsl(var(--primary))" : clamped >= 60 ? "#f59e0b" : "#ef4444";
+  const stroke = gaugeColor(clamped);
   return (
     <div className="relative w-44 h-44">
       <svg viewBox="0 0 180 180" className="w-full h-full -rotate-90">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, type ReactNode, type Ref } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ShieldCheck, ArrowRight, ExternalLink, CheckCircle2, ChevronDown,
@@ -300,7 +300,8 @@ export const OnshoreEligibilityPanel = ({
   // Options disappear after an answer, so move focus to the next step's
   // heading (only after a click here, never on first render).
   const focusNext = useRef(false);
-  const stepHeading = useRef<HTMLParagraphElement>(null);
+  const stepHeading = useRef<HTMLElement | null>(null);
+  const setStepHeading = (el: HTMLElement | null) => { stepHeading.current = el; };
   useEffect(() => {
     if (!focusNext.current) return;
     focusNext.current = false;
@@ -331,14 +332,17 @@ export const OnshoreEligibilityPanel = ({
       >
         {c.panel.heading}
       </h4>
-      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{c.panel.description}</p>
+      {/* The intro is hidden once there is a result, to keep the input card short. */}
+      {state.step !== "result" && (
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{c.panel.description}</p>
+      )}
 
       <div className="mt-4">
         {/* Keyed fade-in without exit animations, so the next step's heading
             exists when focus moves to it. */}
           {state.step === "visa" && (
             <motion.div key="visa" {...stepMotion}>
-              <Question id="onshore-q-visa" label={c.panel.visaQuestion} headingRef={stepHeading}>
+              <Question id="onshore-q-visa" label={c.panel.visaQuestion} headingRef={setStepHeading}>
                 {CURRENT_VISAS.map((v) => (
                   <button key={v} type="button" aria-pressed={state.visa === v} onClick={() => chooseVisa(v)} className={optionButton(state.visa === v)}>
                     {c.visas[v]}
@@ -352,7 +356,7 @@ export const OnshoreEligibilityPanel = ({
           {state.step === "plan" && state.visa && (
             <motion.div key="plan" {...stepMotion} className="space-y-4">
               <AnswerSummary rows={[[c.panel.visaQuestion, c.visas[state.visa]]]} />
-              <Question id="onshore-q-plan" label={c.panel.planQuestion} headingRef={stepHeading}>
+              <Question id="onshore-q-plan" label={c.panel.planQuestion} headingRef={setStepHeading}>
                 {STUDY_PLANS.map((p) => (
                   <button key={p} type="button" aria-pressed={state.plan === p} onClick={() => choosePlan(p)} className={optionButton(state.plan === p)}>
                     {c.plans[p]}
@@ -367,18 +371,17 @@ export const OnshoreEligibilityPanel = ({
           )}
 
           {outcome && state.visa && (
-            <motion.div key={`result-${outcome}`} {...stepMotion} className="space-y-3">
-              <AnswerSummary
-                rows={[
-                  [c.panel.visaQuestion, c.visas[state.visa]],
-                  ...(needsStudyPlan(state.visa) && state.plan ? [[c.panel.planQuestion, c.plans[state.plan]] as [string, string]] : []),
-                ]}
+            <motion.div key={`result-${outcome}`} {...stepMotion} className="space-y-2">
+              <OutcomeCard
+                tone={OUTCOME_TONE[outcome]}
+                text={c.outcomes[outcome]}
+                answers={[c.visas[state.visa], ...(needsStudyPlan(state.visa) && state.plan ? [c.plans[state.plan]] : [])].join(" · ")}
+                headingRef={setStepHeading}
               />
-              <OutcomeCard tone={OUTCOME_TONE[outcome]} text={c.outcomes[outcome]} headingRef={stepHeading} />
               <button type="button" onClick={changeAnswer} className={linkButton}>
                 <Pencil className="h-3.5 w-3.5" aria-hidden /> {c.panel.change}
               </button>
-              <p className="flex items-start gap-1.5 border-t border-border/70 pt-3 text-[11px] leading-relaxed text-muted-foreground">
+              <p className="flex items-start gap-1.5 border-t border-border/70 pt-2.5 text-[11px] leading-relaxed text-muted-foreground">
                 <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
                 {c.disclaimer}
               </p>
@@ -396,7 +399,7 @@ const Question = ({
 }: {
   id: string;
   label: string;
-  headingRef: Ref<HTMLParagraphElement>;
+  headingRef: (el: HTMLElement | null) => void;
   children: ReactNode;
 }) => (
   <div>
@@ -421,40 +424,55 @@ const AnswerSummary = ({ rows }: { rows: [string, string][] }) => (
   </dl>
 );
 
+/**
+ * Result collapsed to one row (status + the answers given); the row toggles
+ * the explanation and any CTA, so the input card stays short.
+ */
 const OutcomeCard = ({
-  tone, text, headingRef,
+  tone, text, answers, headingRef,
 }: {
   tone: OutcomeTone;
   text: OutcomeCopy;
-  headingRef: Ref<HTMLParagraphElement>;
+  answers: string;
+  headingRef: (el: HTMLElement | null) => void;
 }) => {
+  const [open, setOpen] = useState(false);
   const s = toneStyles[tone];
   return (
-    <div className={`rounded-xl border p-3.5 ${s.box}`}>
-      {/* Status sits beside the icon; the explanation uses the full width so
-          Thai text doesn't wrap into a narrow column on phones. */}
-      <div className="flex items-center gap-2.5">
+    <div className={`rounded-xl border ${s.box}`}>
+      <button
+        ref={headingRef}
+        type="button"
+        aria-expanded={open}
+        aria-controls="onshore-result-details"
+        onClick={() => setOpen((o) => !o)}
+        className="flex min-h-11 w-full items-center gap-2.5 rounded-xl p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
         <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${s.icon}`}>
           <s.Icon className="h-4 w-4" aria-hidden />
         </span>
-        <p ref={headingRef} tabIndex={-1} className={`rounded text-base font-bold leading-snug focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${s.status}`}>
-          {text.status}
-        </p>
+        <span className="min-w-0 flex-1">
+          <span className={`block text-sm font-bold leading-snug ${s.status}`}>{text.status}</span>
+          <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">{answers}</span>
+        </span>
+        <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none ${open ? "rotate-180" : ""}`} aria-hidden />
+      </button>
+      <div id="onshore-result-details" hidden={!open} className="px-3.5 pb-3.5">
+        <p className="text-sm leading-relaxed text-foreground/85">{text.description}</p>
+        {text.extra && <p className="mt-1.5 text-xs font-medium text-muted-foreground">{text.extra}</p>}
+        {text.cta && (
+          <a
+            href={LINE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-auto"
+          >
+            <MessageCircle className="h-4 w-4" aria-hidden />
+            {text.cta}
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+          </a>
+        )}
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-foreground/85">{text.description}</p>
-      {text.extra && <p className="mt-1.5 text-xs font-medium text-muted-foreground">{text.extra}</p>}
-      {text.cta && (
-        <a
-          href={LINE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-auto"
-        >
-          <MessageCircle className="h-4 w-4" aria-hidden />
-          {text.cta}
-          <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-        </a>
-      )}
     </div>
   );
 };

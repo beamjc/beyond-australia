@@ -119,8 +119,15 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await expect(panel.getByText('คุณกำลังวางแผนเรียนต่อแบบไหน?')).toHaveCount(0)
 
     await panel.getByRole('button', { name: 'Work and Holiday Visa (Subclass 462)' }).click()
-    await expect(panel.getByText('ต้องยื่นจากนอกออสเตรเลีย', { exact: true })).toBeFocused()
+    // Result is one collapsed row (status + answer); details expand on demand.
+    const result = panel.getByRole('button', { name: /ต้องยื่นจากนอกออสเตรเลีย/ })
+    await expect(result).toBeFocused()
+    await expect(result).toHaveAttribute('aria-expanded', 'false')
+    await expect(result).toContainText('Work and Holiday Visa (Subclass 462)')
+    await expect(panel.getByText(/คุณจะต้องออกจากออสเตรเลีย/)).toBeHidden()
     await expect(panel.getByText(/ไม่ใช่คำแนะนำด้านกฎหมาย/)).toBeVisible()
+    await result.click()
+    await expect(panel.getByText(/คุณจะต้องออกจากออสเตรเลีย/)).toBeVisible()
     await noHorizontalOverflow(page)
 
     await panel.getByRole('button', { name: 'ประเทศไทย', exact: true }).click()
@@ -136,7 +143,7 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await panel.getByRole('button', { name: 'Student Visa (Subclass 500)' }).click()
     await expect(panel.getByText('คุณกำลังวางแผนเรียนต่อแบบไหน?')).toBeFocused()
     await panel.getByRole('button', { name: 'เรียนหลักสูตรใหม่ในระดับเดียวกัน' }).click()
-    await expect(panel.getByText('โดยทั่วไปต้องยื่นจากนอกออสเตรเลีย')).toBeVisible()
+    await panel.getByRole('button', { name: /โดยทั่วไปต้องยื่นจากนอกออสเตรเลีย/ }).click()
     await expect(panel.getByText('ตัวอย่าง: Master → Master')).toBeVisible()
 
     // Switch to English via the navbar toggle: same answers, English copy.
@@ -164,7 +171,7 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await expect(panel.locator('#onshore-check-heading')).toBeFocused()
 
     await panel.getByRole('button', { name: 'วีซ่าอื่น ๆ' }).click()
-    await expect(panel.getByText('ต้องตรวจสอบเพิ่มเติม', { exact: true })).toBeVisible()
+    await panel.getByRole('button', { name: /ต้องตรวจสอบเพิ่มเติม/ }).click()
     const cta = panel.getByRole('link', { name: /ตรวจสอบกับที่ปรึกษา/ })
     await expect(cta).toHaveAttribute('href', 'https://line.me/ti/p/@beyondstudy')
     await expect(cta).toHaveAttribute('target', '_blank')
@@ -190,7 +197,29 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await page.keyboard.press('Tab'); await page.keyboard.press('Tab')
     await expect(panel.getByRole('button', { name: 'Visitor Visa (Subclass 600)' })).toBeFocused()
     await page.keyboard.press('Enter')
-    await expect(panel.getByText('ต้องยื่นจากนอกออสเตรเลีย', { exact: true })).toBeFocused()
+    const result = panel.getByRole('button', { name: /ต้องยื่นจากนอกออสเตรเลีย/ })
+    await expect(result).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect(result).toHaveAttribute('aria-expanded', 'true')
+  })
+
+  test('location is the last input; summary bar shows while the summary card is off screen', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    const panel = page.locator('#study-panel-courses')
+    // Budget comes before the location selector, so the checker cannot push it down.
+    const budgetY = (await page.locator('#bsp-budget').boundingBox())!.y
+    const locationY = (await page.locator('#bsp-location').boundingBox())!.y
+    expect(locationY).toBeGreaterThan(budgetY)
+
+    await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
+    await page.locator('#bsp-location').evaluate((el) => el.scrollIntoView({ block: 'end' }))
+    const bar = page.getByRole('button', { name: /ครอบคลุมงบประมาณ.*จำนวนเงินคร่าวๆที่ต้องใช้/ })
+    await expect(bar).toBeVisible()
+    await expect(bar).toContainText('฿')
+    await bar.click()
+    await expect(bar).toBeHidden()
+    await expect(panel.getByText('จำนวนเงินคร่าวๆที่ต้องใช้').first()).toBeInViewport()
   })
 })
 
