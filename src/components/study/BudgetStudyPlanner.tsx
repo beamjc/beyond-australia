@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
@@ -138,12 +138,24 @@ const BudgetStudyPlanner = () => {
 
   // Alert CTA: bring the location selector into view and focus the checker
   // once it has rendered.
+  const jumpToChecker = useCallback(() => {
+    document.getElementById("bsp-location")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    document.getElementById(ONSHORE_PANEL_HEADING_ID)?.focus({ preventScroll: true });
+  }, [reduceMotion]);
+  // When the checker is opening, framer-motion measures its "auto" height and
+  // then restores the window scroll, which cancels a smooth scroll started
+  // earlier. So wait for the first animated frame (after measuring).
+  const jumpWhenExpanded = useRef(false);
   useEffect(() => {
     if (!jumpToOnshore) return;
     setJumpToOnshore(false);
-    document.getElementById("bsp-location")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-    document.getElementById(ONSHORE_PANEL_HEADING_ID)?.focus({ preventScroll: true });
-  }, [jumpToOnshore, reduceMotion]);
+    jumpToChecker();
+  }, [jumpToOnshore, jumpToChecker]);
+  const onCheckOnshore = () => {
+    if (location === "onshore" || reduceMotion) setJumpToOnshore(true);
+    else jumpWhenExpanded.current = true;
+    setLocation("onshore");
+  };
 
   const englishNumeric = englishOptions.find((o) => o.id === english)?.numeric ?? 0;
 
@@ -210,7 +222,7 @@ const BudgetStudyPlanner = () => {
   return (
     <div className="max-w-6xl mx-auto">
       <PlannerHeader />
-      <VisaRuleAlert onCheck={() => { setLocation("onshore"); setJumpToOnshore(true); }} />
+      <VisaRuleAlert onCheck={onCheckOnshore} />
 
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Inputs */}
@@ -428,6 +440,11 @@ const BudgetStudyPlanner = () => {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={reduceMotion ? { opacity: 0, transition: { duration: 0 } } : { height: 0, opacity: 0 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
+                    onUpdate={() => {
+                      if (!jumpWhenExpanded.current) return;
+                      jumpWhenExpanded.current = false;
+                      jumpToChecker();
+                    }}
                     className="overflow-hidden"
                   >
                     <OnshoreEligibilityPanel state={onshoreCheck} onChange={setOnshoreCheck} />

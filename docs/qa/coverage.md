@@ -36,8 +36,8 @@ Results: NOT RUN · PASS · FAIL · BLOCKED · NOT APPLICABLE. "(M)" = mocked co
 | WHM-06 | Postcode: non-digits stripped, <3 digits disabled, >4 digits truncated | EN | D/T/M | code | PASS | e2e | — |
 | WHM-07 | Postcode leading zero kept (0870 displayed, matched as NT) | EN | D/T/M + unit | CLAUDE.md | PASS | e2e + unit | — |
 | WHM-08 | Postcode listed / not listed / boundaries | — | unit | encoded list | PASS | `tests/unit/postcode.test.ts` | — |
-| WHM-09 | Postcode list matches Home Affairs | — | — | FC-17 | BLOCKED | sources blocked | — |
-| WHM-10 | Postcode result wording vs eligibility | EN | — | CLAUDE.md | FAIL (overclaims) | code | ISS-019 |
+| WHM-09 | Postcode list matches Home Affairs | — | — | FC-17 | PASS after fix (2026-10-05) | set diff vs page of 24/09/2026; `tests/unit/postcode.test.ts` | ISS-043 |
+| WHM-10 | Postcode result wording vs eligibility | EN + TH | D/T/M | CLAUDE.md | PASS (TH owner-approved, not editor-reviewed) | e2e + screenshots | ISS-019, ISS-044 |
 | WHM-11 | FAQ expand/collapse | — | D/T/M | code | PASS | e2e | — |
 | WHM-12 | FAQ factual freshness | — | — | official | BLOCKED | — | — |
 
