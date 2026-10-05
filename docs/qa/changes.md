@@ -180,3 +180,12 @@ Owner feedback: the left panel had become too long, so visitors scrolled up and 
 Panel height with the checker answered: desktop 1,637 → 1,401 px; mobile 1,902 → 1,628 px. The calculation inputs now come before the checker, so it no longer delays them. Screenshots: `screenshots/onshore-checker/compact-*.png`.
 
 Checks: `tsc` clean; Vitest 70/70; lint has only the 4 pre-existing warnings; `next build` OK; Playwright 96 passed / 6 skipped (hidden calculator) on all three viewports, including the new test "location is the last input; summary bar…".
+
+## Nav label: "วางแผนเส้นทาง" → "วางแผนเรียนต่อ" — 2026-10-05 (branch `qa/planner-compact-layout`)
+
+Owner-supplied Thai wording, applied verbatim. `nav.visaPathways` (TH) in `src/i18n/translations.ts` changed from "วางแผนเส้นทาง" to "วางแผนเรียนต่อ". The header menu and the footer both read this key, so both update. The link target (`#plan`), the English label, and the Study tab "วางแผนเส้นทาง" (`study.tabs.options`) are unchanged.
+
+## Consultation CTA: full name instead of "BSC" — 2026-10-05 (owner request, owner wording)
+
+- `BSCConsultationCTA.tsx` ("ต้องการคำแนะนำจากผู้เชี่ยวชาญ?"): "เว็บไซต์ BSC" → **"เว็บไซต์ Beyond Study Center"**; "BSC Website" → **"Beyond Study Center website"**. Same destination.
+- The longer label wrapped both buttons onto two lines at 1024–1440 px, where the text column sits beside the artwork. In the illustrated variant the buttons now stack at equal width from `md` (max 320 px) and don't wrap; they stay side by side at 640–767 px and stacked on phones. Screenshots: `screenshots/onshore-checker/cta-th-*.png`.
