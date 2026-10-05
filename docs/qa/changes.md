@@ -190,3 +190,18 @@ Owner-supplied Thai wording, applied verbatim. `nav.visaPathways` (TH) in `src/i
 - `BSCConsultationCTA.tsx` ("ต้องการคำแนะนำจากผู้เชี่ยวชาญ?"): "เว็บไซต์ BSC" → **"เว็บไซต์ Beyond Study Center"**; "BSC Website" → **"Beyond Study Center website"**. Same destination.
 - The longer label wrapped both buttons onto two lines at 1024–1440 px, where the text column sits beside the artwork. In the illustrated variant the buttons now stack at equal width from `md` (max 320 px) and don't wrap; they stay side by side at 640–767 px and stacked on phones. Screenshots: `screenshots/onshore-checker/cta-th-*.png`.
 - Follow-up (owner request): the Study tab `study.tabs.options` (TH) also changed from "วางแผนเส้นทาง" to "วางแผนเรียนต่อ", so the menu label and the tab it opens now match. Tab id `options` is unchanged.
+
+## Onshore CTA first click + Postcode Checker data — 2026-10-05
+
+- ISS-042 `BudgetStudyPlanner.tsx`: the alert CTA now scrolls on the first click too. When the checker is still closed, the jump waits for the panel's first animation frame, after framer-motion has measured it and restored the scroll. Already-open and reduced-motion paths are unchanged. Regression: `tests/e2e/public.spec.ts` ("alert CTA selects Australia…") now asserts the heading is in the viewport.
+- ISS-043 `postcodeData.ts`: bushfire QLD `[4515, 4519]` → `4515, [4517, 4519]`; added Norfolk Island `2899` to Regional Australia. Source and check date in the file header and FC-17. Regression tests in `tests/unit/postcode.test.ts`.
+- `PostcodeChecker.tsx`: result headings show the postcode padded to 4 digits (872 → 0872). No wording change.
+- Thai translation of the Postcode Checker: proposed only, in `thai-review-postcode-checker.md` (needs the Thai editor; PC-05/08/09 and IND-04 also change the English).
+- ISS-044 Postcode Checker redesign (owner approved, English first): `postcodeData.ts` areas now have an `id` and `work` types; `checkPostcode` also returns `work` (each kind of work once, with the matched areas). `PostcodeChecker.tsx` lists work types with official examples, area/date tags, an "other jobs" row (incl. Home Affairs' current support-role flexibility) and the list date. Headings: "Postcode 4810 is eligible!" → "Work that counts at postcode 4810"; "is not eligible" → "is not in a specified work area". `aria-live` on the result. Screenshots `screenshots/postcode-checker/new-*.png` (before: `th-*.png`). Tests: unit (grouping) + e2e (each type once, no overflow).
+- **Thai batch: Postcode Checker — owner-approved 2026-10-05 (not editor-reviewed; owner's decision).** `PostcodeChecker.tsx` now has `en`/`th` copy chosen by `useLanguage()` (closes the Postcode part of ISS-001). Thai is applied verbatim from `thai-review-postcode-checker.md`, with the intro alternative. English updated to match the owner's edits: `otherTitle` "Other jobs, like retail or office work" → "Other jobs"; `otherBody` drops "such as admin or cleaning". Before/after examples:
+  - Heading, listed: (EN only) "Postcode 4810 is eligible!" → **"งานที่นับได้ใน Postcode 4810"** — a list match doesn't make every job count.
+  - Heading, not listed: (EN only) "Postcode 2000 is not eligible" → **"Postcode 2000 ไม่อยู่ในพื้นที่ Specified Work"**.
+  - Intro: (EN only) "…(subclass 462) extension." → **"ใส่ Postcode ของเมืองที่สนใจ เพื่อเช็กว่างานประเภทไหนสามารถยื่นวีซ่า Work and Holiday ปีที่ 2 หรือ 3 ได้"** — says what the tool checks; no "extension".
+  - Left as the owner wrote them (flagged, not changed): tags "(Northern Australia)" / "(Regional Australia)" in brackets; "ฟื้นฟูหลังน้ำท่วม และพายุ" has a space before "และ".
+  - e2e: Thai test (labels, headings, no overflow). Screenshots `screenshots/postcode-checker/th-new-*.png`.
+
