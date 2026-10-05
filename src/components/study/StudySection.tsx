@@ -81,9 +81,12 @@ const StudySection = () => {
         </div>
 
         {/* Sub-tab bar */}
-        {/* No justify-center here: it would push the first tabs off-screen (unscrollable) when the bar is wider than the viewport; the inner mx-auto still centres it when it fits. */}
-        <div className="mb-12 -mx-4 px-4 overflow-x-auto [-webkit-overflow-scrolling:touch] flex">
-          <div role="tablist" className="inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
+        {/* Phones/tablets: a grid so every tab is visible without sideways scrolling.
+            Desktop (lg+): unchanged single scrollable row. No justify-center on the row: it
+            would push the first tabs off-screen (unscrollable) when the bar is wider than the
+            viewport; the inner mx-auto still centres it when it fits. */}
+        <div className="mb-8 lg:mb-12 lg:-mx-4 lg:px-4 lg:overflow-x-auto lg:[-webkit-overflow-scrolling:touch] lg:flex">
+          <div role="tablist" className="grid grid-cols-2 sm:grid-cols-3 lg:inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
             {subTabs.filter((tab) => !HIDDEN_STUDY_TABS.has(tab.id)).map((tab) => (
               <button
                 key={tab.id}
@@ -92,7 +95,7 @@ const StudySection = () => {
                 aria-selected={activeTab === tab.id}
                 aria-controls={`study-panel-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0 ${
+                className={`flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all whitespace-normal text-center shrink-0 lg:justify-start lg:px-5 lg:whitespace-nowrap ${
                   activeTab === tab.id
                     ? "bg-background text-foreground shadow-warm"
                     : "text-muted-foreground hover:text-foreground"

@@ -35,8 +35,9 @@ const WHMSection = () => {
         />
 
         {/* Sub-tab bar */}
-        <div className="mb-12 -mx-4 px-4 overflow-x-auto [-webkit-overflow-scrolling:touch] flex md:justify-center">
-          <div role="tablist" className="inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
+        {/* Phones/tablets: grid, all tabs visible. Desktop (lg+): unchanged row. */}
+        <div className="mb-8 lg:mb-12 lg:-mx-4 lg:px-4 lg:overflow-x-auto lg:[-webkit-overflow-scrolling:touch] lg:flex lg:justify-center">
+          <div role="tablist" className="grid grid-cols-2 sm:grid-cols-4 lg:inline-flex rounded-xl border border-border bg-muted/50 p-1.5 gap-1 mx-auto">
             {subTabs.map((tab) => (
               <button
                 key={tab.id}
@@ -45,7 +46,7 @@ const WHMSection = () => {
                 aria-selected={activeTab === tab.id}
                 aria-controls={`whm-panel-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0 ${
+                className={`flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all whitespace-normal text-center shrink-0 lg:justify-start lg:px-5 lg:whitespace-nowrap ${
                   activeTab === tab.id
                     ? "bg-background text-foreground shadow-warm"
                     : "text-muted-foreground hover:text-foreground"

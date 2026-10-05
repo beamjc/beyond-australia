@@ -304,7 +304,7 @@ const BudgetStudyPlanner = () => {
                       type="button"
                       aria-pressed={currency === c}
                       onClick={() => setCurrency(c)}
-                      className={`h-8 px-3 ${segmentButton(currency === c)}`}
+                      className={`h-10 lg:h-8 px-3 ${segmentButton(currency === c)}`}
                     >
                       {c}
                     </button>
