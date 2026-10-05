@@ -31,7 +31,7 @@ const BSCConsultationCTA = ({ variant = "standard", className = "", illustration
     ? "ปรึกษา Beyond Study Center ฟรี ด้วยประสบการณ์มากกว่า 15 ปี"
     : "Free consultation with Beyond Study Center 15 years+ experience";
   const lineLabel = "LINE: @beyondstudy";
-  const siteLabel = isTh ? "เว็บไซต์ BSC" : "BSC Website";
+  const siteLabel = isTh ? "เว็บไซต์ Beyond Study Center" : "Beyond Study Center website";
 
   const bgClass = isProminent
     ? "bg-primary/[0.07] dark:bg-primary/15"
@@ -46,12 +46,13 @@ const BSCConsultationCTA = ({ variant = "standard", className = "", illustration
           <div className="flex-1 min-w-0">
             <h4 className="text-lg font-bold text-foreground sm:text-xl">{heading}</h4>
             <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{sub}</p>
-            <div className="mt-4 flex flex-col gap-2.5 sm:flex-row md:flex-col lg:flex-row">
+            {/* Stacked from md: the text column beside the artwork is too narrow for two buttons in a row. */}
+            <div className="mt-4 flex flex-col gap-2.5 sm:flex-row md:max-w-xs md:flex-col">
               <a
                 href={LINE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="inline-flex min-h-11 whitespace-nowrap items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 style={{ backgroundColor: "#00B900" }}
               >
                 <MessageCircle className="w-4 h-4" aria-hidden />
@@ -61,7 +62,7 @@ const BSCConsultationCTA = ({ variant = "standard", className = "", illustration
                 href={SITE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border-2 border-primary bg-background px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="inline-flex min-h-11 whitespace-nowrap items-center justify-center gap-2 rounded-xl border-2 border-primary bg-background px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {siteLabel}
                 <ExternalLink className="w-3.5 h-3.5" aria-hidden />

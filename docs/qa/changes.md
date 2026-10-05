@@ -168,3 +168,24 @@ All Thai and English wording below was **supplied by the owner** in the request,
   - Savings planner (วางแผนเงินเก็บในออสเตรเลีย): removed the "ไม่แน่ใจว่าควรวางแผนงบเท่าไหร่?" card and the "แชร์ผลคำนวณ" LINE/Facebook share block. Deleted `SavingsConsultationCTA.tsx`, `SavingsShareButtons.tsx` and their copy keys. The result card now fills the right column on its own.
   - Study tab "คำนวณค่าเรียน" (Financial Calculator) is **hidden, not deleted**, via `HIDDEN_STUDY_TABS` in `src/components/plan/shared.tsx`. Planning-hub "related tools" and the explorer's "คำนวณค่าเรียน" action are hidden while the tab is hidden. Its e2e tests are `describe.skip` with a re-enable note.
 - **Checks:** `tsc` clean; Vitest 70/70 (8 new); lint has only the 4 pre-existing `<img>` warnings; `next build` and `opennextjs-cloudflare build` OK; Playwright **93 passed, 6 skipped** (Financial Calculator ×3 viewports), 0 failed, on desktop 1440 / tablet 768 / mobile 390 (emulation). Screenshots are in `screenshots/onshore-checker/`.
+
+## Budget Planner: shorter input panel — 2026-10-05 (branch `qa/planner-compact-layout`)
+
+Owner feedback: the left panel had become too long, so visitors scrolled up and down to finish a calculation. Layout and behaviour only. No new visible text and no calculation changes.
+
+1. **"ยื่นวีซ่าจากที่ไหน" is now the last input** (after English course price). The onshore checker expands at the end of the card instead of pushing budget, age and IELTS below the fold.
+2. **Floating summary bar** (`SummaryBar`). It appears while the inputs are on screen but the summary card is not (IntersectionObserver; 60% of the card visible counts as "in view"). It shows a coverage ring with %, "จำนวนเงินคร่าวๆที่ต้องใช้" and the amount (a range for short courses), plus an arrow towards the summary. Tapping it scrolls to the summary card. On mobile it sits to the left of the floating LINE/Facebook buttons; from 640 px up it is centred and 384 px wide. With reduced motion it appears without animation. It reuses existing strings ("ครอบคลุมงบประมาณ" is screen-reader only).
+3. **Checker result collapses to one row:** status plus the selected answers ("Work and Holiday Visa (Subclass 462)"), with a chevron. Tapping it shows the explanation and any CTA. The intro paragraph and the separate answer summary are hidden once there is a result. The disclaimer and "แก้ไขคำตอบ" stay visible.
+
+Panel height with the checker answered: desktop 1,637 → 1,401 px; mobile 1,902 → 1,628 px. The calculation inputs now come before the checker, so it no longer delays them. Screenshots: `screenshots/onshore-checker/compact-*.png`.
+
+Checks: `tsc` clean; Vitest 70/70; lint has only the 4 pre-existing warnings; `next build` OK; Playwright 96 passed / 6 skipped (hidden calculator) on all three viewports, including the new test "location is the last input; summary bar…".
+
+## Nav label: "วางแผนเส้นทาง" → "วางแผนเรียนต่อ" — 2026-10-05 (branch `qa/planner-compact-layout`)
+
+Owner-supplied Thai wording, applied verbatim. `nav.visaPathways` (TH) in `src/i18n/translations.ts` changed from "วางแผนเส้นทาง" to "วางแผนเรียนต่อ". The header menu and the footer both read this key, so both update. The link target (`#plan`), the English label, and the Study tab "วางแผนเส้นทาง" (`study.tabs.options`) are unchanged.
+
+## Consultation CTA: full name instead of "BSC" — 2026-10-05 (owner request, owner wording)
+
+- `BSCConsultationCTA.tsx` ("ต้องการคำแนะนำจากผู้เชี่ยวชาญ?"): "เว็บไซต์ BSC" → **"เว็บไซต์ Beyond Study Center"**; "BSC Website" → **"Beyond Study Center website"**. Same destination.
+- The longer label wrapped both buttons onto two lines at 1024–1440 px, where the text column sits beside the artwork. In the illustrated variant the buttons now stack at equal width from `md` (max 320 px) and don't wrap; they stay side by side at 640–767 px and stacked on phones. Screenshots: `screenshots/onshore-checker/cta-th-*.png`.
