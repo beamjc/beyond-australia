@@ -209,3 +209,4 @@ Owner-supplied Thai wording, applied verbatim. `nav.visaPathways` (TH) in `src/i
 ## 2026-10-05 — Mobile & tablet usability pass
 
 Phone/tablet-only layout changes (desktop pixel-identical); details and measurements in `docs/qa/mobile-tablet-pass.md`. Files: `StudySection.tsx`, `WHMSection.tsx`, `FloatingLineButton.tsx`, `FloatingFacebookButton.tsx`, new `hooks/use-hide-on-scroll-down.ts`, `SavingsCalculator.tsx` + new `savings/SavingsResultBar.tsx`, `TopUniversities.tsx`, `FAQ2026.tsx`, `savings/IncomeSelector.tsx`, `BudgetStudyPlanner.tsx` (toggle height only), `ui/slider.tsx` (thumb size below lg). No copy changes.
+- Follow-up: Budget Planner step-by-step mode below lg (`BudgetStudyPlanner.tsx` `WizardHeader`/`WizardNav`; new DRAFT string "ดูผลการคำนวณ", BSP-143); navbar uses the hamburger menu below lg (`Navbar.tsx`).

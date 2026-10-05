@@ -2,7 +2,7 @@
 // rendering, ordering and empty/error states can be exercised locally.
 // Passing tests that use them are NOT evidence of live integration, of the
 // real published content, or of RLS behaviour.
-import { test as base, expect, type Page, type Route } from '@playwright/test'
+import { test as base, expect, type Locator, type Page, type Route } from '@playwright/test'
 
 export const MOCK_SUPABASE = 'http://127.0.0.1:54321'
 
@@ -70,4 +70,24 @@ export { expect }
 export async function noHorizontalOverflow(page: Page) {
   const { sw, cw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }))
   expect(sw, 'page should not scroll horizontally').toBeLessThanOrEqual(cw + 1)
+}
+
+// Budget Planner: below the lg breakpoint inputs are shown one step at a time.
+const plannerIsStepped = (page: Page) => page.viewportSize()!.width < 1024
+
+/** Phones/tablets: press "ถัดไป" until `target` is on screen. Desktop: no-op. */
+export async function plannerShow(page: Page, target: Locator) {
+  if (!plannerIsStepped(page)) return
+  const next = page.locator('#study-panel-courses').getByRole('button', { name: 'ถัดไป', exact: true })
+  for (let i = 0; i < 6 && !(await target.isVisible()); i++) await next.click()
+  await expect(target).toBeVisible()
+}
+
+/** Phones/tablets: go through the remaining steps to the results. Desktop: no-op. */
+export async function plannerResults(page: Page) {
+  if (!plannerIsStepped(page)) return
+  const panel = page.locator('#study-panel-courses')
+  const done = panel.getByRole('button', { name: /ดูผลการคำนวณ/ })
+  for (let i = 0; i < 6 && !(await done.isVisible()); i++) await panel.getByRole('button', { name: 'ถัดไป', exact: true }).click()
+  await done.click()
 }

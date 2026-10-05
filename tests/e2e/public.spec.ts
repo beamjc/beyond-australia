@@ -1,4 +1,4 @@
-import { test, expect, mockSupabase, noHorizontalOverflow } from './fixtures'
+import { test, expect, mockSupabase, noHorizontalOverflow, plannerShow, plannerResults } from './fixtures'
 
 // 'calculator' is hidden for now (HIDDEN_STUDY_TABS in src/components/plan/shared.tsx).
 const STUDY_TABS = ['courses', 'universities', 'options', 'savings', 'strength']
@@ -33,7 +33,7 @@ for (const lang of ['en', 'th'] as const) {
 test('language choice persists across reload and page navigation', async ({ page }) => {
   await mockSupabase(page)
   await page.goto('/')
-  if (page.viewportSize()!.width < 768) await page.locator('nav button.md\\:hidden').click()
+  if (page.viewportSize()!.width < 1024) await page.locator('nav button.lg\\:hidden').click()
   await page.locator('nav').getByRole('button', { name: 'th', exact: true }).locator('visible=true').click()
   await expect(page.locator('html')).toHaveAttribute('lang', 'th')
   await page.reload()
@@ -49,6 +49,7 @@ test.describe('Budget Study Planner', () => {
     await mockSupabase(page)
     await page.goto('/#study')
     const input = page.locator('#bsp-budget')
+    await plannerShow(page, input)
     await input.fill('800000')
     const thb = page.locator('#study-panel-courses').getByRole('button', { name: 'THB', exact: true })
     const aud = page.locator('#study-panel-courses').getByRole('button', { name: 'AUD', exact: true })
@@ -64,6 +65,7 @@ test.describe('Budget Study Planner', () => {
   test('inputs survive switching to another Study tab and back', async ({ page }) => {
     await mockSupabase(page)
     await page.goto('/#study')
+    await plannerShow(page, page.locator('#bsp-budget'))
     await page.locator('#bsp-budget').fill('1234567')
     await page.locator('#study-tab-savings').click()
     await page.locator('#study-tab-courses').click()
@@ -74,6 +76,7 @@ test.describe('Budget Study Planner', () => {
     await mockSupabase(page)
     await page.goto('/#study')
     const age = page.locator('#study-panel-courses').getByRole('slider', { name: /อายุ/ })
+    await plannerShow(page, age)
     await age.focus()
     await page.keyboard.press('End')
     await expect(age).toHaveAttribute('aria-valuenow', '50')
@@ -84,7 +87,9 @@ test.describe('Budget Study Planner', () => {
   test('blank budget is treated as 0 and shows a shortfall, not NaN', async ({ page }) => {
     await mockSupabase(page)
     await page.goto('/#study')
+    await plannerShow(page, page.locator('#bsp-budget'))
     await page.locator('#bsp-budget').fill('')
+    await plannerResults(page)
     const panel = page.locator('#study-panel-courses')
     await expect(panel).not.toContainText('NaN')
     await expect(panel.getByText('0%').first()).toBeVisible()
@@ -93,7 +98,10 @@ test.describe('Budget Study Planner', () => {
   test('low-budget tip appears below ฿180,000 and switches goal to short courses', async ({ page }) => {
     await mockSupabase(page)
     await page.goto('/#study')
+    await plannerShow(page, page.locator('#bsp-budget'))
     await page.locator('#bsp-budget').fill('150000')
+    // Phones/tablets: the tip sits with the goal options on step 1.
+    if (page.viewportSize()!.width < 1024) await page.locator('#study-panel-courses').getByRole('button', { name: /ย้อนกลับ/ }).click()
     const tip = page.getByRole('button', { name: /งบต่ำกว่า/ })
     await expect(tip).toBeVisible()
     await tip.click()
@@ -108,6 +116,7 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await mockSupabase(page)
     await page.goto('/#study')
     const panel = page.locator('#study-panel-courses')
+    await plannerShow(page, panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }))
     await expect(panel.getByText('อัปเดตข้อมูลล่าสุด ตุลาคม 2569')).toBeVisible()
     await expect(panel.getByText('อัปเดตกฎวีซ่า • 2 ต.ค. 2569')).toBeVisible()
     await expect(panel.locator('#onshore-check-heading')).toHaveCount(0)
@@ -139,6 +148,7 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await mockSupabase(page)
     await page.goto('/#study')
     const panel = page.locator('#study-panel-courses')
+    await plannerShow(page, panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }))
     await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
     await panel.getByRole('button', { name: 'Student Visa (Subclass 500)' }).click()
     await expect(panel.getByText('คุณกำลังวางแผนเรียนต่อแบบไหน?')).toBeFocused()
@@ -147,11 +157,11 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await expect(panel.getByText('ตัวอย่าง: Master → Master')).toBeVisible()
 
     // Switch to English via the navbar toggle: same answers, English copy.
-    if (page.viewportSize()!.width < 768) await page.locator('nav button.md\\:hidden').click()
+    if (page.viewportSize()!.width < 1024) await page.locator('nav button.lg\\:hidden').click()
     await page.locator('nav').getByRole('button', { name: 'en', exact: true }).locator('visible=true').click()
     await expect(panel.getByText('You will generally need to apply offshore')).toBeVisible()
     await expect(panel.getByText('Last updated October 2026')).toBeVisible()
-    if (page.viewportSize()!.width < 768) await page.locator('nav button.md\\:hidden').click()
+    if (page.viewportSize()!.width < 1024) await page.locator('nav button.lg\\:hidden').click()
 
     await panel.getByRole('button', { name: 'Change answer' }).click()
     await expect(panel.getByText('What visa do you currently hold?')).toBeFocused()
@@ -191,6 +201,7 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await mockSupabase(page)
     await page.goto('/#study')
     const panel = page.locator('#study-panel-courses')
+    await plannerShow(page, panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }))
     await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
     const first = panel.getByRole('button', { name: 'Student Visa (Subclass 500)' })
     await first.focus()
@@ -210,9 +221,13 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await page.goto('/#study')
     const panel = page.locator('#study-panel-courses')
     // Budget comes before the location selector, so the checker cannot push it down.
-    const budgetY = (await page.locator('#bsp-budget').boundingBox())!.y
-    const locationY = (await page.locator('#bsp-location').boundingBox())!.y
-    expect(locationY).toBeGreaterThan(budgetY)
+    // (Phones/tablets show one step at a time; location is the last step.)
+    if (page.viewportSize()!.width >= 1024) {
+      const budgetY = (await page.locator('#bsp-budget').boundingBox())!.y
+      const locationY = (await page.locator('#bsp-location').boundingBox())!.y
+      expect(locationY).toBeGreaterThan(budgetY)
+    }
+    await plannerShow(page, panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }))
 
     await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
     await page.locator('#bsp-location').evaluate((el) => el.scrollIntoView({ block: 'end' }))

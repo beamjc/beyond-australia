@@ -170,3 +170,16 @@ Mocked environment (local build, no real Supabase content — not relevant to th
 1. **Terminology to settle once** (then applied everywhere): Work and Holiday / WHM / WAH; สายอาชีพ vs วิชาชีพ; สถาบัน vs โรงเรียน; เงินก้อนแรก for the "first payment" concept; OSHC explained once as ประกันสุขภาพนักเรียน.
 2. Owner decisions (2026-09-24): BSP-001, 040, 062, 084, 087 — leave the claims as they are; BSP-109/113 — keep the budget promises. Still open for the owner: BSP-074/075 (visa-rate label). Rows BSP-014, 055, 061, 104, 111 contain claims that need an **owner/factual decision** before final wording — see `docs/qa/issues.md` and `docs/qa/factual-checks.md`.
 3. After approval, the plan is to move all planner strings into `src/i18n/translations.ts` (EN + TH) in one change, so the English version is added at the same time.
+
+## Step-by-step mode on phones/tablets (added 2026-10-05, owner request)
+
+Below 1024 px the planner asks one input group per screen, then shows the results with an editable answer list. Desktop unchanged. Screenshots: `screenshots/mobile/phone-planner-*.png`, `tablet-planner-*.png`.
+
+| ID | Source | Where / what the user is doing | English | Current Thai | Suggested Thai | Variables / length |
+|---|---|---|---|---|---|---|
+| BSP-140 | BudgetStudyPlanner.tsx `WizardHeader` | Above each step: progress text + bar | Step {n} of {total} | ขั้นตอน {n} จาก {total} | — (reused from the Study Pathway Finder, `studyFinder.ts` `step`) | `{total}` = 5, or 4 for the English-only goal |
+| BSP-141 | `WizardNav` | Button to the next step | Next | ถัดไป | — (reused, `studyFinder.ts` `next`) | Button ≥ 44 px tall |
+| BSP-142 | `WizardNav` | Button to the previous step | Back | ย้อนกลับ | — (reused, `studyFinder.ts` `back`) | Hidden on step 1 |
+| BSP-143 **DRAFT** | `WizardNav` | Last step: shows the results | See results | ดูผลการคำนวณ | ดูผลการคำนวณ | **New string — please review.** Button ~180 px on phones. |
+| BSP-144 | `WizardHeader` (results) | Link under the answer list; reopens step 1 | Edit answers | แก้ไขคำตอบ | — (reused, `visaReadiness.ts` `editAnswers`) | — |
+| BSP-145 | `WizardHeader` (results) | Answer list row labels | Study goal · Your budget · Age · IELTS · Applying from | เป้าหมายการเรียน · งบที่เตรียมไว้ · อายุผู้สมัคร · IELTS · ยื่นวีซ่าจากที่ไหน | — (planner's own field labels; "IELTS" short for the IELTS question) | Each row reopens its step |

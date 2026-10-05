@@ -40,3 +40,13 @@ Scope: phones (390 × 844) and tablets (768 × 1024), Thai UI. **Desktop (≥ 10
 - Budget Planner (3.9 screens on phones) is long mainly because of content (onshore notice, five input groups); its existing result bar covers the scrolling problem.
 - Visa Readiness (2 screens: 8 sliders then a results button) and Checklist/FAQ (accordion content) left as is.
 - Tablet landscape (≥ 1024 px) uses the desktop layout by design.
+
+## Follow-up (owner request): Budget Planner step by step on phones/tablets
+
+- Below 1024 px the planner shows **one input group per screen** with "ขั้นตอน n จาก 5" and a progress bar: goal → budget → age → English (IELTS + course fee; skipped for the English-only goal) → applying from. Choosing a goal moves on automatically (200 ms, as in the Planning hub tools). "ย้อนกลับ" / "ถัดไป" between steps; the last step's button "ดูผลการคำนวณ" (new string, DRAFT in the Thai review file) shows the results.
+- The running estimate bar (existing) stays at the bottom while stepping; tapping it also goes to the results.
+- Results view: the answers in a compact list (each row reopens its step) + "แก้ไขคำตอบ", then the existing summary and course cards.
+- The "check onshore" alert button opens the location step directly.
+- Desktop: unchanged (all inputs beside the results) — pixel comparison identical.
+- Also: the top menu now uses the phone (hamburger) menu up to 1023 px; at 768 px the desktop menu labels were wrapping ("วีซ่า/ทำงาน", "ติดต่อ/เรา").
+- Tests: new stepped-flow tests in `tests/e2e/mobile.spec.ts`; the existing planner tests walk the steps on phones/tablets via `plannerShow` / `plannerResults` helpers.

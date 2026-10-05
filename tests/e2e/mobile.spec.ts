@@ -72,4 +72,53 @@ test.describe('phone & tablet usability', () => {
     const noOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)
     expect(noOverflow).toBe(true)
   })
+
+  test('Budget Planner asks one question at a time on phones/tablets; desktop shows all inputs', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    const panel = page.locator('#study-panel-courses')
+    const progress = panel.getByRole('progressbar')
+    if (isDesktop(page.viewportSize()!.width)) {
+      await expect(progress).toBeHidden()
+      for (const sel of ['#bsp-budget', '#bsp-location']) await expect(page.locator(sel)).toBeVisible()
+      await expect(panel.getByRole('slider', { name: /อายุ/ })).toBeVisible()
+      return
+    }
+    await expect(progress).toHaveAttribute('aria-label', 'ขั้นตอน 1 จาก 5')
+    await expect(page.locator('#bsp-budget')).toBeHidden()
+    await expect(panel.getByText('ครอบคลุมงบประมาณ').first()).toBeHidden() // results wait until the end
+
+    // Picking a goal moves straight on.
+    await panel.getByRole('button', { name: /ปริญญาโท/ }).click()
+    await expect(progress).toHaveAttribute('aria-label', 'ขั้นตอน 2 จาก 5')
+    await expect(page.locator('#bsp-budget')).toBeVisible()
+    await page.locator('#bsp-budget').fill('500000')
+    await panel.getByRole('button', { name: 'ถัดไป', exact: true }).click()
+    await expect(panel.getByRole('slider', { name: /อายุ/ })).toBeVisible()
+    await panel.getByRole('button', { name: /ย้อนกลับ/ }).click()
+    await expect(page.locator('#bsp-budget')).toHaveValue('500,000')
+    await panel.getByRole('button', { name: 'ถัดไป', exact: true }).click()
+    await panel.getByRole('button', { name: 'ถัดไป', exact: true }).click()
+    await panel.getByRole('button', { name: 'ถัดไป', exact: true }).click()
+    await expect(progress).toHaveAttribute('aria-label', 'ขั้นตอน 5 จาก 5')
+    await panel.getByRole('button', { name: /ดูผลการคำนวณ/ }).click()
+
+    // Results, with the answers listed and editable.
+    await expect(panel.getByText('ครอบคลุมงบประมาณ').first()).toBeInViewport()
+    const budgetRow = panel.getByRole('button', { name: /งบที่เตรียมไว้.*฿500,000/ })
+    await expect(budgetRow).toBeVisible()
+    await expect(panel.getByRole('button', { name: /เป้าหมายการเรียน.*ปริญญาโท/ })).toBeVisible()
+    await budgetRow.click()
+    await expect(progress).toHaveAttribute('aria-label', 'ขั้นตอน 2 จาก 5')
+    await expect(page.locator('#bsp-budget')).toBeVisible()
+  })
+
+  test('Budget Planner: English-only goal skips the IELTS step', async ({ page }) => {
+    test.skip(isDesktop(page.viewportSize()!.width), 'stepped flow is phones/tablets only')
+    await mockSupabase(page)
+    await page.goto('/#study')
+    const panel = page.locator('#study-panel-courses')
+    await panel.getByRole('button', { name: /เรียนภาษาอังกฤษ/ }).click()
+    await expect(panel.getByRole('progressbar')).toHaveAttribute('aria-label', 'ขั้นตอน 2 จาก 4')
+  })
 })

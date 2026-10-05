@@ -48,7 +48,7 @@ const Navbar = () => {
           </span>
           Beyond Australia
         </Link>
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-6">
           {sectionLinks.map((link) => (
             isHome
               ? <a key={link.href} href={link.href} className="text-sm font-medium text-white/80 hover:text-white transition-colors">{t(link.key)}</a>
@@ -70,12 +70,12 @@ const Navbar = () => {
           </a>
           <LanguageSwitcher />
         </div>
-        <button onClick={() => setOpen(!open)} className="md:hidden p-2 text-white" aria-label={t('nav.toggleMenu')}>
+        <button onClick={() => setOpen(!open)} className="lg:hidden p-2 text-white" aria-label={t('nav.toggleMenu')}>
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
       {open && (
-        <div className="md:hidden border-t border-white/10 bg-primary">
+        <div className="lg:hidden border-t border-white/10 bg-primary">
           <div className="container py-4 flex flex-col gap-3">
             {sectionLinks.map((link) => (
               isHome
