@@ -168,7 +168,7 @@ export const translations = {
     nav: {
       whm: "วีซ่าทำงาน",
       study: "เรียนต่อ",
-      visaPathways: "วางแผนเส้นทาง",
+      visaPathways: "วางแผนเรียนต่อ",
       services: "บริการ",
       events: "กิจกรรม",
       toggleMenu: "เปิด/ปิดเมนู",
@@ -226,7 +226,7 @@ export const translations = {
       tabs: {
         courses: "วางแผนเรียน & งบประมาณ",
         universities: "มหาวิทยาลัยชั้นนำ",
-        options: "วางแผนเส้นทาง",
+        options: "วางแผนเรียนต่อ",
         calculator: "คำนวณค่าเรียน",
         savings: "คำนวณเงินออม",
         strength: "เช็กความพร้อมก่อนยื่นวีซ่า",
@@ -325,7 +325,7 @@ export const translations = {
     },
     footer: {
       tagline:
-        "© {year} Beyond Australia ผู้ช่วยคนไทยทุกคนเดินตามฝันสู่ออสเตรเลียอย่างมั่นใจ",
+        "© {year} Beyond Australia",
     },
   },
 } as const;
