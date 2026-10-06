@@ -22,19 +22,23 @@ test.describe('phone & tablet usability', () => {
     }
   })
 
-  test('Savings shows a result bar while editing inputs, and it jumps to the result', async ({ page }) => {
+  test('Savings result bar waits until the steps are finished; the result is shown at the end', async ({ page }) => {
     test.skip(isDesktop(page.viewportSize()!.width), 'desktop shows the result beside the inputs')
     await mockSupabase(page)
     await page.goto('/#study')
     await page.locator('#study-tab-savings').click()
-    const income = page.locator('#study-panel-savings').getByRole('textbox', { name: /รายได้ต่อปี/ })
+    const panel = page.locator('#study-panel-savings')
+    const income = panel.getByRole('textbox', { name: /รายได้ต่อปี/ })
     await stepShow(page, '#study-panel-savings', income)
     await income.fill('80000')
-    const bar = page.locator('#study-panel-savings').getByRole('button', { name: /เงินที่คาดว่าจะเก็บได้ต่อปี/ })
-    await expect(bar).toBeVisible()
-    await bar.click()
-    await expect(page.locator('#sav-result')).toBeInViewport()
+    const bar = panel.getByRole('button', { name: /เงินที่คาดว่าจะเก็บได้ต่อปี/ })
+    // No figures while the visitor is still answering (they would come from defaults).
+    await page.mouse.wheel(0, 200); await page.waitForTimeout(300)
     await expect(bar).toBeHidden()
+    await panel.getByRole('button', { name: 'ถัดไป', exact: true }).click()
+    await panel.getByRole('button', { name: /ดูผลการคำนวณ/ }).click()
+    await expect(page.locator('#sav-result')).toBeInViewport()
+    await expect(panel.locator('section[aria-labelledby="sav-result"]')).toContainText('A$')
   })
 
   test('floating LINE/Facebook buttons tuck away while scrolling down and return on scroll up', async ({ page }) => {

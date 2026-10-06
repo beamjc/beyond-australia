@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { ArrowLeft, ArrowRight, Pencil } from "lucide-react";
 
 /**
@@ -12,6 +12,20 @@ import { ArrowLeft, ArrowRight, Pencil } from "lucide-react";
 
 export const isBelowLg = () =>
   typeof window !== "undefined" && !!window.matchMedia?.("(max-width: 1023.98px)").matches;
+
+/** Live `isBelowLg()`; false during server render and on desktop. */
+export const useBelowLg = () => {
+  const [below, setBelow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia?.("(max-width: 1023.98px)");
+    if (!mq) return;
+    const update = () => setBelow(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+  return below;
+};
 
 /** Short selected state before auto-advancing (matches the Planning hub tools). */
 export const STEP_AUTO_ADVANCE_MS = 200;

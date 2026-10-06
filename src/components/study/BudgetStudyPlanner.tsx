@@ -10,7 +10,7 @@ import {
   ChevronDown, ArrowDown, ArrowUp, Info, Plane, Briefcase, GraduationCap, Lightbulb, CheckCircle2, Clock,
 } from "lucide-react";
 import {
-  AnswerList, StepNav, StepProgress, STEP_AUTO_ADVANCE_MS, isBelowLg, stepVisibility, useStepFlowScroll,
+  AnswerList, StepNav, StepProgress, STEP_AUTO_ADVANCE_MS, isBelowLg, stepVisibility, useBelowLg, useStepFlowScroll,
 } from "../shared/StepFlow";
 import BSCConsultationCTA, { type CTAIllustration } from "../shared/BSCConsultationCTA";
 import {
@@ -172,9 +172,18 @@ const BudgetStudyPlanner = () => {
     : ["goal", "budget", "age", "english", "location"];
   const stepIdx = Math.min(wizStep, steps.length - 1);
   const currentStep = steps[stepIdx];
-  /** Hide an input group on phones/tablets unless it is the current step. */
-  const stepClass = (s: WizardStep) => stepVisibility(!wizDone && currentStep === s);
+  /** Hide an input group on phones/tablets unless it is the current step.
+   *  The step's first group drops the space-y gap left by hidden groups above it
+   *  (phones/tablets only), so every step starts at the same distance. */
+  const stepClass = (s: WizardStep, keepGap = false) => {
+    const current = !wizDone && currentStep === s;
+    return current ? (keepGap ? "" : "max-lg:!mt-0") : stepVisibility(false);
+  };
   const goToStep = (i: number) => { setWizDone(false); setWizStep(i); };
+  // While stepping on phones/tablets the total would come from default
+  // values the visitor has not chosen yet, so the floating bar waits until
+  // the steps are finished.
+  const belowLg = useBelowLg();
   const finishWizard = () => setWizDone(true);
 
   // Keep the planner in view between steps; bring the results up at the end.
@@ -444,7 +453,7 @@ const BudgetStudyPlanner = () => {
                 </div>
 
                 {/* Global English tuition slider — affects every pathway card */}
-                <div className={stepClass("english")}>
+                <div className={stepClass("english", true)}>
                   <div className="flex items-center justify-between gap-3 mb-4">
                     <Label id="bsp-elicos-label" className={`${sectionLabel} mb-0`}>
                       <GraduationCap className="w-4 h-4 text-primary" aria-hidden /> ค่าเรียนภาษา
@@ -607,18 +616,15 @@ const BudgetStudyPlanner = () => {
       </div>
 
       <SummaryBar
-        visible={showSummaryBar}
+        visible={showSummaryBar && (!belowLg || wizDone)}
         coverage={headlineCoverage}
         amount={
           headlineUpfrontHigh !== headlineUpfront
             ? `${fmtMoney(headlineUpfront)} – ${fmtMoney(headlineUpfrontHigh)}`
             : fmtMoney(headlineUpfront)
         }
-        below={wizDone ? summaryBelow : true}
-        onClick={() => {
-          if (!wizDone && isBelowLg()) { finishWizard(); return; }
-          summaryRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-        }}
+        below={summaryBelow}
+        onClick={() => summaryRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" })}
       />
     </div>
   );

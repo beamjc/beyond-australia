@@ -66,3 +66,7 @@ Shared implementation: `src/components/shared/StepFlow.tsx` (progress, back/next
 | Postcode checker / Timeline | ≤ 0.9 screens | Short | — | — |
 
 Savings phone length while stepping: one card + navigation per screen; result screen 1.8 screens (was 3.0 for everything).
+
+## Fix 2026-10-06 (owner report): estimate bar showed before any input
+
+On phones/tablets the floating "จำนวนเงินคร่าวๆที่ต้องใช้" bar appeared during the steps, showing a total computed from default values the visitor had not chosen (e.g. ฿779,323 · 100%). Now the bar (and the Savings result bar) stays hidden until the visitor finishes the steps; after that it behaves as before. Desktop unchanged (pixel-identical). Also: every step now starts the same distance below the progress bar (hidden groups no longer leave a 28 px gap). Screenshot: `screenshots/mobile/phone-planner-step4-no-bar.png`.

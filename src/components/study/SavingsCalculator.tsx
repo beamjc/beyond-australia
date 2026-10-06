@@ -16,7 +16,7 @@ import ExpenseSelector from "./savings/ExpenseSelector";
 import SavingsResult, { type Adjust } from "./savings/SavingsResult";
 import { fmtA, fmtB, useT, yearsText } from "./savings/shared";
 import {
-  AnswerList, StepNav, StepProgress, isBelowLg, stepVisibility, useStepFlowScroll,
+  AnswerList, StepNav, StepProgress, isBelowLg, stepVisibility, useBelowLg, useStepFlowScroll,
 } from "../shared/StepFlow";
 import SavingsResultBar from "./savings/SavingsResultBar";
 
@@ -74,6 +74,9 @@ const SavingsCalculator = () => {
   const [done, setDone] = useState(false);
   const stepClass = (s: Step) => stepVisibility(!done && STEPS[step] === s);
   const goToStep = (i: number) => { setDone(false); setStep(i); };
+  // Phones/tablets: no result bar while stepping — it would show figures
+  // from inputs the visitor has not reached yet.
+  const belowLg = useBelowLg();
   useStepFlowScroll(inputsRef, resultRef, step, done, reduceMotion);
 
   // "Adjust" buttons in the result: on phones/tablets reopen that step, then
@@ -178,12 +181,11 @@ const SavingsCalculator = () => {
       </div>
 
       <SavingsResultBar
-        visible={inputsInView && !resultInView}
+        visible={inputsInView && !resultInView && (!belowLg || done)}
         yearlySavings={plan.yearlySavings}
         reached={plan.isAchievable}
         gap={Math.abs(plan.buffer)}
         onClick={() => {
-          if (!done && isBelowLg()) { setDone(true); return; }
           const smooth = !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
           resultRef.current?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
         }}
