@@ -232,6 +232,14 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
     await page.locator('#bsp-location').evaluate((el) => el.scrollIntoView({ block: 'end' }))
     const bar = page.getByRole('button', { name: /ครอบคลุมงบประมาณ.*จำนวนเงินคร่าวๆที่ต้องใช้/ })
+    if (page.viewportSize()!.width < 1024) {
+      // Phones/tablets: no total while still answering (it would come from defaults);
+      // after the last step the results are shown directly.
+      await expect(bar).toBeHidden()
+      await plannerResults(page)
+      await expect(panel.getByText('จำนวนเงินคร่าวๆที่ต้องใช้').first()).toBeInViewport()
+      return
+    }
     await expect(bar).toBeVisible()
     await expect(bar).toContainText('฿')
     await bar.click()
