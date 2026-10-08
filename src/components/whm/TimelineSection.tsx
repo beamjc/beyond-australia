@@ -34,13 +34,13 @@ const STEP_TEXT = {
   },
   registrationTitle: { en: "Username/Password Registration", th: "สมัคร Username / Password" },
   registrationAlert: {
-    en: "Very competitive — be ready at the exact opening time.",
-    th: "การแข่งขันสูงมาก — เตรียมตัวให้พร้อมและเข้าเว็บไซต์ทันทีที่ระบบเปิด",
+    en: "Places go fast. Be on the site when registration opens.",
+    th: "การแข่งขันสูงมาก ควรเข้าเว็บไซต์ทันทีที่ระบบเปิด",
   },
   prepareTitle: { en: "Prepare Everything", th: "เตรียมเอกสารให้ครบ" },
   prepareAlert: {
-    en: "No second chances — have all documents prepared in advance.",
-    th: "ไม่มีรอบแก้ตัว — ควรเตรียมเอกสารทุกอย่างให้พร้อมล่วงหน้า",
+    en: "You can't fix missing documents later in the round, so prepare everything in advance.",
+    th: "ถ้าเอกสารไม่ครบจะแก้ไขทีหลังในรอบนี้ไม่ได้ ควรเตรียมทุกอย่างให้พร้อมล่วงหน้า",
   },
   quotaTitle: { en: "Quota Selection Day", th: "วันกดโควตา" },
   approval: {
@@ -65,7 +65,7 @@ const timeline2025: TimelineStep[] = [
     date: { en: "7–14 Mar 2025", th: "7–14 มี.ค. 2025" },
     title: STEP_TEXT.registrationTitle,
     description: {
-      en: "Secure your login credentials via the DCY website. Max 500/day for 8 days = 4,000 total spots. Think of it like a limited concert ticket!",
+      en: "Secure your login credentials via the DCY website. 500 a day for 8 days, 4,000 places in total. Places usually run out quickly.",
       th: "ลงทะเบียนเพื่อรับ Username และ Password ผ่านเว็บไซต์ของ DCY โดยเปิดรับวันละไม่เกิน 500 คน เป็นเวลา 8 วัน รวมทั้งหมด 4,000 สิทธิ์ เรียกได้ว่าต้องแย่งกันเหมือนกดบัตรคอนเสิร์ตเลยทีเดียว!",
     },
     icon: Users,
@@ -76,7 +76,7 @@ const timeline2025: TimelineStep[] = [
     date: { en: "Before 27 Mar 2025", th: "ก่อน 27 มี.ค. 2025" },
     title: STEP_TEXT.prepareTitle,
     description: {
-      en: "IELTS 4.5+ overall (or PTE equivalent), bank certificate, qualifications — all must be ready BEFORE quota day.",
+      en: "IELTS 4.5+ overall (or PTE equivalent), a bank certificate and your qualifications must all be ready before quota day.",
       th: "ผลภาษา IELTS Overall 4.5 ขึ้นไป (หรือผล PTE ที่เทียบเท่า), หนังสือรับรองยอดเงินในบัญชี, เอกสารการศึกษา และเอกสารอื่น ๆ ต้องเตรียมให้พร้อม **ก่อนวันกดโควตา**",
     },
     icon: FileCheck,
@@ -88,7 +88,7 @@ const timeline2025: TimelineStep[] = [
     title: STEP_TEXT.quotaTitle,
     description: {
       en: "Out of 4,000 registered, ~2,000 are selected + 300–500 substitutes. This is your one-off chance.",
-      th: "จากผู้ที่ลงทะเบียนไว้ 4,000 คน จะได้รับสิทธิ์ประมาณ 2,000 คน และมีรายชื่อสำรองอีกราว 300–500 คน ถือเป็นโอกาสสำคัญเพียงครั้งเดียวของรอบนี้",
+      th: "จากผู้ที่ลงทะเบียนไว้ 4,000 คน จะได้รับสิทธิ์ประมาณ 2,000 คน และมีรายชื่อสำรองอีกราว 300–500 คน",
     },
     icon: Award,
     status: "complete",
@@ -121,7 +121,7 @@ const timeline2026: TimelineStep[] = [
     date: { en: "23–28 Mar 2026", th: "23–28 มี.ค. 2026" },
     title: STEP_TEXT.registrationTitle,
     description: {
-      en: "Secure your login credentials via the DCY website. Max 500/day for 6 days = 3,000 total spots. Think of it like a limited concert ticket!",
+      en: "Secure your login credentials via the DCY website. 500 a day for 6 days, 3,000 places in total. Places usually run out quickly.",
       th: "ลงทะเบียนเพื่อรับ Username และ Password ผ่านเว็บไซต์ของ DCY โดยเปิดรับวันละไม่เกิน 500 คน เป็นเวลา 6 วัน รวมทั้งหมด 3,000 สิทธิ์ เรียกได้ว่าต้องแย่งกันเหมือนกดบัตรคอนเสิร์ตเลยทีเดียว!",
     },
     icon: Users,
@@ -132,7 +132,7 @@ const timeline2026: TimelineStep[] = [
     date: { en: "Before 8 Apr 2026", th: "ก่อน 8 เม.ย. 2026" },
     title: STEP_TEXT.prepareTitle,
     description: {
-      en: "IELTS 4.5+ overall (or PTE equivalent), bank certificate, qualifications — all must be ready BEFORE quota day. You must obtain everything by 7 April 2026 at the latest.",
+      en: "IELTS 4.5+ overall (or PTE equivalent), a bank certificate and your qualifications must all be ready before quota day. You must obtain everything by 7 April 2026 at the latest.",
       th: "ผลภาษา IELTS Overall 4.5 ขึ้นไป (หรือผล PTE ที่เทียบเท่า), หนังสือรับรองยอดเงินในบัญชี, เอกสารการศึกษา และเอกสารอื่น ๆ ต้องเตรียมให้พร้อม **ก่อนวันกดโควตา** โดยควรมีเอกสารทุกอย่างครบไม่เกินวันที่ 7 เมษายน 2026",
     },
     icon: FileCheck,
@@ -144,7 +144,7 @@ const timeline2026: TimelineStep[] = [
     title: STEP_TEXT.quotaTitle,
     description: {
       en: "Out of 3,000 registered, 2,000 are selected + 500 substitutes. This is your one-off chance.",
-      th: "จากผู้ที่ลงทะเบียนไว้ 3,000 คน จะได้รับสิทธิ์ประมาณ 2,000 คน และมีรายชื่อสำรองอีก 500 คน ถือเป็นโอกาสสำคัญเพียงครั้งเดียวของรอบนี้",
+      th: "จากผู้ที่ลงทะเบียนไว้ 3,000 คน จะได้รับสิทธิ์ประมาณ 2,000 คน และมีรายชื่อสำรองอีก 500 คน",
     },
     icon: Award,
     status: "complete",

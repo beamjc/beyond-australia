@@ -26,10 +26,10 @@ const BSCConsultationCTA = ({ variant = "standard", className = "", illustration
   const isCompact = variant === "compact";
   const isProminent = variant === "prominent";
 
-  const heading = isTh ? "ต้องการคำแนะนำจากผู้เชี่ยวชาญ?" : "Want expert guidance?";
+  const heading = isTh ? "อยากคุยรายละเอียดกับทีมงาน?" : "Want to talk it through?";
   const sub = isTh
     ? "ปรึกษา Beyond Study Center ฟรี ด้วยประสบการณ์มากกว่า 15 ปี"
-    : "Free consultation with Beyond Study Center 15 years+ experience";
+    : "Free consultation with Beyond Study Center (15+ years of experience).";
   const lineLabel = "LINE: @beyondstudy";
   const siteLabel = isTh ? "เว็บไซต์ Beyond Study Center" : "Beyond Study Center website";
 

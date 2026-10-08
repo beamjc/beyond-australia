@@ -84,8 +84,8 @@ export const pathwayInfo: Record<PathwayId, { name: Bi; short: Bi; desc: Bi; clo
     short: { th: "ELICOS", en: "ELICOS" },
     desc: { th: "หลักสูตรภาษาอังกฤษ สำหรับเตรียมความพร้อมก่อนเรียนต่อหรือใช้ชีวิตในออสเตรเลีย", en: "English courses to get ready for further study or life in Australia." },
     closing: {
-      th: "การเริ่มจากหลักสูตร ELICOS จึงเป็นหนึ่งในตัวเลือกที่น่าสนใจสำหรับเตรียมความพร้อมก่อนเรียนต่อ",
-      en: "so starting with an ELICOS course is one option worth considering to get ready for further study.",
+      th: "จึงอาจเริ่มจากหลักสูตร ELICOS เพื่อเตรียมพร้อมก่อนเรียนต่อ",
+      en: "so an ELICOS course can help you get ready for further study.",
     },
   },
   vet: {
@@ -93,8 +93,8 @@ export const pathwayInfo: Record<PathwayId, { name: Bi; short: Bi; desc: Bi; clo
     short: { th: "VET", en: "VET" },
     desc: { th: "เรียนทักษะที่นำไปใช้กับงานได้โดยตรง ผ่านหลักสูตร Certificate หรือ Diploma", en: "Practical, job-focused skills through certificate or diploma courses." },
     closing: {
-      th: "หลักสูตรสายวิชาชีพ (VET) จึงเป็นหนึ่งในตัวเลือกที่น่าสนใจ สำหรับเรียนทักษะที่นำไปใช้กับงานได้โดยตรง",
-      en: "so a vocational (VET) course is one option worth considering for practical, job-focused skills.",
+      th: "หลักสูตรสายวิชาชีพ (VET) จึงเหมาะถ้าอยากได้ทักษะที่นำไปใช้ทำงานได้จริง",
+      en: "so a vocational (VET) course fits if you want practical, job-focused skills.",
     },
   },
   he: {
@@ -102,8 +102,8 @@ export const pathwayInfo: Record<PathwayId, { name: Bi; short: Bi; desc: Bi; clo
     short: { th: "มหาวิทยาลัย", en: "University" },
     desc: { th: "Bachelor, Graduate Certificate, Master และหลักสูตรระดับมหาวิทยาลัย", en: "Bachelor, Graduate Certificate, Master and other university courses." },
     closing: {
-      th: "การเรียนระดับมหาวิทยาลัยจึงเป็นหนึ่งในตัวเลือกที่น่าสนใจสำหรับเป้าหมายของคุณ",
-      en: "so university study is one option worth considering for your goals.",
+      th: "การเรียนระดับมหาวิทยาลัยจึงตรงกับเป้าหมายของคุณ",
+      en: "so university study fits your goals.",
     },
   },
 };
@@ -153,14 +153,14 @@ export const finderCopy = {
   optional: { th: "(ไม่บังคับ)", en: "(optional)" },
   qTiming: { th: "ตอนนี้คุณวางแผนมาออสเตรเลียช่วงไหน?", en: "When are you planning to come to Australia?" },
 
-  resultTitle: { th: "เส้นทางเรียนที่น่าสนใจสำหรับคุณ", en: "Study pathways worth exploring" },
+  resultTitle: { th: "เส้นทางเรียนที่อาจเหมาะกับคุณ", en: "Study pathways that may suit you" },
   recommended: { th: "เส้นทางที่แนะนำ", en: "Suggested pathway" },
-  tie: { th: "จากข้อมูลของคุณ มี 2 ทางเลือกที่น่าสนใจใกล้เคียงกัน", en: "Based on your answers, two options look similarly relevant." },
+  tie: { th: "จากข้อมูลของคุณ มี 2 ทางเลือกที่เหมาะใกล้เคียงกัน", en: "Based on your answers, two options look similarly relevant." },
   fromAnswers: { th: "จากคำตอบของคุณ", en: "Based on your answers," },
   and: { th: " และ", en: " and " },
   whyTitle: { th: "ทำไมเราถึงแนะนำทางเลือกนี้?", en: "Why this suggestion?" },
   sequenceTitle: { th: "ตัวอย่างเส้นทางที่สามารถพิจารณาได้", en: "An example pathway you could consider" },
-  alternativeTitle: { th: "อีกทางเลือกที่น่าสนใจ", en: "Another option worth a look" },
+  alternativeTitle: { th: "อีกทางเลือกหนึ่ง", en: "Another option to consider" },
   budgetConstraint: {
     th: "เส้นทางนี้ค่อนข้างตรงกับเป้าหมายของคุณ แต่ค่าเรียนของบางหลักสูตรอาจสูงกว่างบที่ตั้งไว้",
     en: "This pathway fits your goals, but some courses may cost more than your budget.",

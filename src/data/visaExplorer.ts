@@ -56,7 +56,7 @@ export type ExplorerNode = QuestionNode | ResultNode | CompareNode;
 
 const bi = (th: string, en: string): Bi => ({ th, en });
 
-const EXPLORE = bi("ตัวเลือกที่ควรศึกษาต่อ", "Worth exploring");
+const EXPLORE = bi("ทางเลือกที่เป็นไปได้", "Possible option");
 const CHECK_NEXT = bi("สิ่งที่ควรเช็กต่อ", "What to check next");
 const HA = (label: Bi, href: string) => ({ label, href });
 const toCompare: Action = { kind: "node", label: bi("ดูตัวเลือกวีซ่าอื่น", "See other visa options"), node: "compare" };
@@ -74,7 +74,7 @@ export const explorerNodes: ExplorerNode[] = [
       { id: "study", icon: "cap", label: bi("อยากไปเรียนต่อ", "I want to study"), next: "student-plan", reason: bi("ต้องการเรียนต่อ", "You want to study") },
       { id: "skilled", icon: "briefcase", label: bi("มีประสบการณ์ทำงานและอยากดู Skilled Visa", "I have work experience and want to look at skilled visas"), next: "skilled-list", reason: bi("มีประสบการณ์ทำงานและสนใจ Skilled Visa", "You have work experience and are interested in skilled visas") },
       { id: "employer", icon: "building", label: bi("มีนายจ้างในออสเตรเลียที่สนใจสนับสนุนวีซ่า", "An Australian employer is interested in sponsoring me"), next: "employer-status", reason: bi("มีนายจ้างในออสเตรเลียที่สนใจสนับสนุนวีซ่า", "An Australian employer is interested in sponsoring you") },
-      { id: "unsure", icon: "help", label: bi("ยังไม่แน่ใจ อยากดูทุกตัวเลือก", "Not sure — show me all the options"), next: "compare" },
+      { id: "unsure", icon: "help", label: bi("ยังไม่แน่ใจ อยากดูทุกตัวเลือก", "Not sure yet. Show me all the options"), next: "compare" },
     ],
   },
 
@@ -115,7 +115,7 @@ export const explorerNodes: ExplorerNode[] = [
     kind: "result",
     id,
     eyebrow: EXPLORE,
-    title: bi("Working Holiday อาจเป็นตัวเลือกที่ควรศึกษาต่อ", "A Working Holiday visa may be worth exploring"),
+    title: bi("Working Holiday อาจเหมาะกับคุณ", "A Working Holiday visa could suit you"),
     summary: bi(
       "จากคำตอบของคุณ วีซ่า Working Holiday (417/462) อาจเกี่ยวข้องกับแผนของคุณ ควรตรวจสอบเงื่อนไขล่าสุดก่อนเตรียมตัว",
       "Based on your answers, a Working Holiday visa (417/462) may relate to your plans. Check the latest conditions before you prepare.",
@@ -154,7 +154,7 @@ export const explorerNodes: ExplorerNode[] = [
   {
     kind: "question",
     id: "student-plan",
-    title: bi("Student Visa — คุณกำลังวางแผนแบบไหน?", "Student visa — where are you in your planning?"),
+    title: bi("Student Visa: คุณวางแผนไว้ถึงขั้นไหนแล้ว?", "Student visa: where are you in your planning?"),
     options: [
       { id: "ready", icon: "check", label: bi("พร้อมเลือกหลักสูตรแล้ว", "Ready to choose a course"), next: "student-ready", reason: bi("พร้อมเลือกหลักสูตรแล้ว", "You're ready to choose a course") },
       { id: "unsure", icon: "help", label: bi("อยากเรียน แต่ยังไม่แน่ใจว่าจะเรียนอะไร", "I want to study but don't know what yet"), next: "student-unsure", reason: bi("ยังไม่แน่ใจว่าจะเรียนอะไร", "You're not sure what to study yet") },
@@ -199,7 +199,7 @@ export const explorerNodes: ExplorerNode[] = [
     kind: "result",
     id: "student-english",
     eyebrow: EXPLORE,
-    title: bi("ELICOS อาจเป็นจุดเริ่มต้นที่น่าสนใจ", "ELICOS may be a good place to start"),
+    title: bi("ELICOS อาจเป็นจุดเริ่มต้นที่เหมาะ", "ELICOS may be a good place to start"),
     summary: bi(
       "หากระดับภาษาอังกฤษยังไม่ถึงเงื่อนไขของหลักสูตรที่สนใจ การเรียนภาษาอังกฤษก่อนสามารถช่วยเตรียมความพร้อมได้",
       "If your English is not yet at the level your course requires, an English course first can help you prepare.",
@@ -366,7 +366,7 @@ export const explorerNodes: ExplorerNode[] = [
     kind: "result",
     id: "employer-result",
     eyebrow: EXPLORE,
-    title: bi("เส้นทาง Employer-Sponsored อาจเป็นตัวเลือกที่ควรศึกษาต่อ", "An employer-sponsored visa may be worth exploring"),
+    title: bi("วีซ่าแบบนายจ้างสปอนเซอร์อาจเหมาะกับคุณ", "An employer-sponsored visa could suit you"),
     summary: bi(
       "จากข้อมูลที่คุณให้มา คุณมีนายจ้างที่สนใจสนับสนุน จึงควรตรวจสอบรายละเอียดของวีซ่าที่เกี่ยวข้องกับตำแหน่งงานของคุณเพิ่มเติม",
       "Based on your answers, an employer is interested in sponsoring you, so check the details of the visas that relate to your role.",

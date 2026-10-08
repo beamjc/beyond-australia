@@ -333,7 +333,7 @@ export const verdicts: Record<VerdictBand, { title: Bi; desc: Bi }> = {
     title: { th: "มีหลายจุดที่ควรเตรียมเพิ่มเติม", en: "Several points need more preparation" },
     desc: {
       th: "จากข้อมูลที่คุณกรอก มีหลายประเด็นที่ควรอธิบายหรือเตรียมหลักฐานเพิ่มเติม การขอคำแนะนำจากผู้เชี่ยวชาญจะช่วยให้เตรียมตัวได้ครบขึ้น",
-      en: "Based on your answers, several points need more explanation or evidence. Professional guidance can help you prepare fully",
+      en: "Based on your answers, several points need more explanation or evidence. Talking to an adviser can help you prepare them.",
     },
   },
   many: {

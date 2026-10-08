@@ -1,6 +1,6 @@
 # Humanizer review: public copy (EN + TH)
 
-Status: **DRAFT, awaiting owner / Thai editor review. Nothing in this file has been applied to the site.**
+Status: **APPLIED 2026-10-08.** The owner approved the whole list; the external Thai editor did not review it. For the exceptions (HUM-07/13 fallbacks, HUM-41 not applied), see `changes.md`.
 Date: 2026-10-07. Base: `main` @ 9d21f25.
 
 Method: the installed `humanizer` skill, run over every public string (translations.ts, data files, component-inline copy). Pattern numbers refer to that skill:

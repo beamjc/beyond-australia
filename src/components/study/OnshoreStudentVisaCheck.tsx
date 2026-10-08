@@ -179,14 +179,14 @@ const copy = (lang: Language) => {
       studentUnsure: {
         status: "Further assessment recommended",
         description: "Your situation may depend on the AQF level, your previous course, your new course and the education provider.",
-        cta: "Ask Beyond to review my situation",
+        cta: "Ask Beyond Study Center about my case",
       },
     } satisfies Record<OnshoreOutcome, OutcomeCopy>,
     thaiNote: {
       heading: "Additional information for Thai applicants",
       body: "Thailand is included among eligible ASEAN countries for certain family-related Student Visa exemptions. Family-member rules and onshore application eligibility are separate requirements and should be assessed independently.",
     },
-    disclaimer: "This tool is for general planning purposes only and does not constitute legal or migration advice. Always confirm the latest requirements with the Department of Home Affairs or an appropriately authorised adviser before lodging a visa application.",
+    disclaimer: "This tool is for general planning only. It is not legal or migration advice. Always confirm the latest requirements with the Department of Home Affairs or an appropriately authorised adviser before lodging a visa application.",
   };
 };
 
