@@ -67,7 +67,7 @@ export const savingsCopy = {
   incomeCustom: { th: "กำหนดรายได้ต่อปีเอง (AUD)", en: "Your own yearly income (AUD)" },
   studentHours: {
     th: "รายได้นี้ต้องทำงานประมาณ {h} ชั่วโมงต่อ 2 สัปดาห์ (คิดจากค่าแรงขั้นต่ำ) ซึ่งเกิน 48 ชั่วโมงที่ผู้ถือวีซ่านักเรียนทำงานได้ในช่วงเปิดเรียน",
-    en: "This income needs about {h} hours per fortnight at minimum wage — more than the 48 hours a student visa allows during study periods.",
+    en: "This income needs about {h} hours per fortnight at minimum wage. That is more than the 48 hours a student visa allows during study periods.",
   },
 
   expensesLabel: { th: "ค่าใช้จ่ายต่อเดือน", en: "Monthly expenses" },

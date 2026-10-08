@@ -346,7 +346,7 @@ const BudgetStudyPlanner = () => {
                         งบต่ำกว่า ฿180,000? ลองเส้นทาง WHM หรือเรียนด้วยวีซ่าท่องเที่ยวก่อน
                       </p>
                       <p className="text-[11px] text-amber-700/80 mt-0.5">
-                        หารายได้ เรียนรู้ และสัมผัสประสบการณ์ที่ออสเตรเลีย ก่อนตัดสินใจเรียนต่อแบบเต็มรูปแบบ
+                        ทำงานหารายได้และลองใช้ชีวิตที่ออสเตรเลียก่อน แล้วค่อยตัดสินใจเรียนต่อเต็มรูปแบบ
                       </p>
                     </div>
                   </div>
@@ -442,7 +442,7 @@ const BudgetStudyPlanner = () => {
                   )}
                   {englishPkg.straightEntry && (
                     <p className="text-xs text-emerald-600 mt-3 flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3" aria-hidden /> ระดับภาษาอังกฤษคุณโอเคแล้ว! ไม่จำเป็นต้องเรียนภาษา
+                      <ShieldCheck className="w-3 h-3" aria-hidden /> ระดับภาษาอังกฤษของคุณผ่านเกณฑ์แล้ว ไม่จำเป็นต้องเรียนภาษา
                     </p>
                   )}
                   {englishPkg.weeks > 0 && (
@@ -877,7 +877,7 @@ const PathwayCard = ({
             <div className="mb-4 flex items-start gap-2 rounded-xl bg-amber-500/10 border border-amber-500/30 p-3">
               <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" aria-hidden />
               <p className="text-xs leading-relaxed text-amber-700">
-                ราคาค่าเรียนเป็นการประมาณเท่านั้น ค่าเรียนจะขึ้นอยู่คณะและมหาลัยที่นักเรียนเลือกเรียน
+                ราคาค่าเรียนเป็นการประมาณเท่านั้น ค่าเรียนขึ้นอยู่กับคณะและมหาวิทยาลัยที่เลือกเรียน
               </p>
             </div>
           )}
@@ -1057,7 +1057,7 @@ const StandaloneEnglishSection = ({
               >
                 <div className="text-sm font-semibold text-foreground">{w} สัปดาห์</div>
                 <div className="text-[11px] text-muted-foreground">
-                  {w === 24 ? "ต้องจ่ายค่าเรียนเต็มจำนวน ใช้ระยะเวลาเรียนประมาณ 6 เดือน" : "จ่ายค่าเรียนครึ่งนึงก่อนได้ ใช้ระยะเวลาเรียนประมาณ 10 เดือน"}
+                  {w === 24 ? "ต้องจ่ายค่าเรียนเต็มจำนวน ใช้ระยะเวลาเรียนประมาณ 6 เดือน" : "จ่ายค่าเรียนครึ่งหนึ่งก่อนได้ ใช้ระยะเวลาเรียนประมาณ 10 เดือน"}
                 </div>
               </button>
             ))}
@@ -1164,7 +1164,7 @@ const ShortPathwaySection = ({
           <ShortCard
             icon={<Briefcase className="w-5 h-5 text-primary" />}
             title="Working Holiday (WHM)"
-            tagline="เรียน ทำงาน และ หาประสบการณ์ใหม่ด้วยงบไม่เกิน 100,000 บาท"
+            tagline="เรียนและทำงานที่ออสเตรเลียด้วยงบไม่เกิน 100,000 บาท"
             calc={whm}
             elicosWeekly={elicosWeekly}
             shortSkill={shortSkill}
@@ -1302,7 +1302,7 @@ const ShortCard = ({
               rel="noreferrer"
               className="mt-4 flex min-h-11 items-center justify-between gap-2 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span>อยากปรึกษาเพิ่มเติม? ติดต่อทีมงานของเราได้เลย</span>
+              <span>อยากปรึกษาเพิ่มเติม? ทักทีมงานได้เลย</span>
               <ArrowRight className="w-3 h-3 shrink-0" aria-hidden />
             </a>
           )}

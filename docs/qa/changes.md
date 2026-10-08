@@ -211,3 +211,25 @@ Owner-supplied Thai wording, applied verbatim. `nav.visaPathways` (TH) in `src/i
 Phone/tablet-only layout changes (desktop pixel-identical); details and measurements in `docs/qa/mobile-tablet-pass.md`. Files: `StudySection.tsx`, `WHMSection.tsx`, `FloatingLineButton.tsx`, `FloatingFacebookButton.tsx`, new `hooks/use-hide-on-scroll-down.ts`, `SavingsCalculator.tsx` + new `savings/SavingsResultBar.tsx`, `TopUniversities.tsx`, `FAQ2026.tsx`, `savings/IncomeSelector.tsx`, `BudgetStudyPlanner.tsx` (toggle height only), `ui/slider.tsx` (thumb size below lg). No copy changes.
 - Follow-up: Budget Planner step-by-step mode below lg (`BudgetStudyPlanner.tsx` `WizardHeader`/`WizardNav`; new DRAFT string "ดูผลการคำนวณ", BSP-143); navbar uses the hamburger menu below lg (`Navbar.tsx`).
 - Follow-up 2: shared `components/shared/StepFlow.tsx`; Savings calculator step-by-step below lg (new DRAFT string `savingsCopy.seeResults`, SAV-STEP-1); Budget Planner refactored onto the shared components. Visa Readiness, Checklist, FAQ, Universities intentionally not stepped (see mobile-tablet-pass.md).
+
+## 2026-10-08: Humanizer copy batch (EN + TH), owner-approved
+
+The owner approved the whole list in `docs/qa/humanizer-review.md` ("Approved", 2026-10-08). This was the owner's decision; the external Thai editor did not review it. The suggested wording was applied word for word, with the exceptions below. Files changed: `translations.ts`, `BSCConsultationCTA.tsx`, `TimelineSection.tsx`, `savingsCopy.ts`, `visaExplorer.ts`, `studyFinder.ts`, `visaReadiness.ts`, `OnshoreStudentVisaCheck.tsx`, `PostcodeChecker.tsx`, `BudgetStudyPlanner.tsx`.
+
+Before → after examples:
+- Hero subtitle (TH): "…ต่อยอดสู่วีซ่าถัดไป และสร้างอนาคตในออสเตรเลีย พร้อมคำแนะนำจากผู้เชี่ยวชาญในทุกขั้นตอน" → "วางแผนวีซ่า Work and Holiday และวีซ่าตัวถัดไป โดยมีทีมงานช่วยให้คำแนะนำเมื่อคุณต้องการ" (triad and inflated claim removed).
+- Short courses (TH): "…เพื่อเพิ่มโอกาสได้งานทำทันทีเมื่อเดินทางถึงออสเตรเลีย" → "…ซึ่งเป็นทักษะที่ใช้ในงานที่คน WHM ทำกันบ่อย" (unsupported job promise removed).
+- Visa explorer tag: "ตัวเลือกที่ควรศึกษาต่อ" / "Worth exploring" → "ทางเลือกที่เป็นไปได้" / "Possible option" ("ควรศึกษาต่อ" could be read as "continue studying").
+- Timeline (EN): "No second chances — have all documents prepared in advance." → "You can't fix missing documents later in the round, so prepare everything in advance."
+
+Decisions made where the review left an owner check open:
+- HUM-07: health insurance was not confirmed, so the fallback wording without "and health" / "และประกันสุขภาพ" was used.
+- HUM-13: the founder holding a WHM visa was not confirmed, so the fallback "who shares firsthand experience" / "ซึ่งเล่าจากประสบการณ์ตรง" was used.
+- HUM-19: applied as suggested. The owner approved the "can't fix later" reading.
+
+Not changed:
+- HUM-17 TH, HUM-20 TH (concert-ticket line kept, as suggested), HUM-21 TH (the `**…**` emphasis already renders as bold).
+- HUM-41: optional and conditional on the editor; the owner-voice dashes in Checklist/FAQ were left as written.
+- `visaExplorer.ts` subtitle (line 434) and the hub description (line 471) still use "ควรศึกษาต่อ". The review did not propose wording for them, so they are flagged for the next batch.
+
+Checks: vitest 75/75; `tsc --noEmit` clean; lint has only pre-existing warnings; Playwright 119 passed, 10 skipped (desktop-only skips), including `next build`.

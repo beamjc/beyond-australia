@@ -13,12 +13,12 @@ export const translations = {
       getInTouch: "Get in touch",
     },
     hero: {
-      badge: "Beyond Australia — Thailand → Australia WHM Program",
+      badge: "Beyond Australia: Work and Holiday and study advice for Thai applicants",
       titleLine1: "Your Journey to",
       titleHighlight: "Australia",
       titleLine2: "Starts Here",
       subtitle:
-        "Navigate the Working Holiday visa process, transition to your next visa, and build your future in Australia — with expert guidance every step of the way.",
+        "Plan your Working Holiday visa and your next visa after it, with advice from our team when you need it.",
       ctaPrimary: "View WHM Timeline",
       ctaSecondary: "Explore Visa Pathways",
       stats: {
@@ -31,7 +31,7 @@ export const translations = {
       eyebrow: "Working Holiday Maker",
       title: "WHM Program (462)",
       subtitle:
-        "Everything you need for your Working Holiday journey — from DCY timeline to visa extension eligibility.",
+        "The DCY timeline, document checklist, specified-work postcodes and visa extension rules in one place.",
       tabs: {
         timeline: "Timeline",
         checklist: "Checklist",
@@ -41,7 +41,7 @@ export const translations = {
       timeline: {
         eyebrow: "FY {year} Schedule",
         title: "WHM Timeline",
-        subtitle: "Follow each step carefully. Timelines change yearly — stay updated with us.",
+        subtitle: "Dates change every year, so check back before each round.",
         yearLabel: "FY {year}",
         countdownTitle: "Preparation Countdown",
         countdownDescription:
@@ -77,7 +77,7 @@ export const translations = {
       eyebrow: "How We Help",
       title: "Services & Support",
       subtitle:
-        "Whether you're preparing for WHM, transitioning to a student visa, or exploring migration — we're here.",
+        "We help with WHM applications, student visas and longer-term migration planning.",
       items: {
         ielts: {
           title: "IELTS & PTE Prep",
@@ -91,24 +91,24 @@ export const translations = {
         },
         insurance: {
           title: "Travel Insurance",
-          description: "Comprehensive coverage for your Australian journey at competitive rates.",
+          description: "Travel insurance options for your time in Australia.",
           tag: "Insurance",
         },
         shortCourses: {
           title: "WHM Short Courses",
           description:
-            "Aged care, childcare, English, barista — boost your employability on arrival.",
+            "Short courses such as aged care, childcare, English and barista skills, useful for common WHM jobs.",
           tag: "Courses",
         },
         migration: {
           title: "Migration Referrals",
-          description: "Connected with registered migration agents for professional visa advice.",
+          description: "We refer you to registered migration agents for visa advice.",
           tag: "Migration",
         },
         community: {
           title: "Community & Events",
           description:
-            "Online, offline & hybrid events in Thailand and Australia to support your journey.",
+            "Online, in-person and hybrid events in Thailand and Australia.",
           tag: "Community",
         },
       },
@@ -139,7 +139,7 @@ export const translations = {
             "Learn about our IELTS preparation classes and get exclusive discount codes.",
         },
         panel: {
-          title: "Life in Australia — WHM Returnees Panel",
+          title: "Life in Australia: WHM returnees panel",
           date: "April 2025",
           location: "Bangkok, Thailand",
           description: "Hear from Thai WHM alumni about working and living in Australia.",
@@ -151,8 +151,8 @@ export const translations = {
       subtitle: "Beyond Study Center",
       highlights: {
         experience: "15+ years of experience",
-        founder: "Personally guided by ThaiWAHClub's founder, ready to share firsthand experience and support you at every step.",
-        offices: "Offices in Bangkok, Melbourne, and Sydney, with a team ready to advise and take care of you closely.",
+        founder: "Run by the founder of ThaiWAHClub, who shares firsthand experience.",
+        offices: "Offices in Bangkok, Melbourne and Sydney.",
       },
     },
     ctaBanner: {
@@ -161,7 +161,7 @@ export const translations = {
     },
     footer: {
       tagline:
-        "© {year} Beyond Australia. Helping Thai WHM candidates navigate their Australian dream.",
+        "© {year} Beyond Australia",
     },
   },
   th: {
@@ -181,7 +181,7 @@ export const translations = {
       titleHighlight: "ออสเตรเลีย",
       titleLine2: "ของคุณที่นี่",
       subtitle:
-        "วางแผนวีซ่า Work and Holiday ต่อยอดสู่วีซ่าถัดไป และสร้างอนาคตในออสเตรเลีย พร้อมคำแนะนำจากผู้เชี่ยวชาญในทุกขั้นตอน",
+        "วางแผนวีซ่า Work and Holiday และวีซ่าตัวถัดไป โดยมีทีมงานช่วยให้คำแนะนำเมื่อคุณต้องการ",
       ctaPrimary: "ดูข้อมูล Work and Holiday",
       ctaSecondary: "ดูตัวเลือกวีซ่าอื่นๆ",
       stats: {
@@ -194,7 +194,7 @@ export const translations = {
       eyebrow: "วีซ่า Work and Holiday",
       title: "โครงการ WHM (462)",
       subtitle:
-        "ครบทุกเรื่องที่คุณต้องรู้สำหรับวีซ่า Work and Holiday ตั้งแต่ไทม์ไลน์จาก ดย. ไปจนถึงเงื่อนไขการต่อวีซ่า",
+        "ไทม์ไลน์จาก ดย. เช็กลิสต์เอกสาร เช็กรหัสไปรษณีย์ และเงื่อนไขการต่อวีซ่า รวมไว้ในที่เดียว",
       tabs: {
         timeline: "ไทม์ไลน์",
         checklist: "เช็กลิสต์",
@@ -205,7 +205,7 @@ export const translations = {
         eyebrow: "กำหนดการปี {year}",
         title: "ไทม์ไลน์ WHM",
         subtitle:
-          "เช็กแต่ละขั้นตอนให้ครบและเตรียมตัวให้พร้อม เพราะกำหนดการอาจเปลี่ยนแปลงทุกปี — ติดตามอัปเดตล่าสุดกับเรา",
+          "ไทม์ไลน์เปลี่ยนทุกปี ควรเช็กวันที่ล่าสุดก่อนเปิดรับแต่ละรอบ",
         yearLabel: "ปี {year}",
         countdownTitle: "นับถอยหลังเตรียมตัว",
         countdownDescription:
@@ -240,12 +240,12 @@ export const translations = {
       eyebrow: "เราช่วยอะไรคุณได้บ้าง?",
       title: "บริการและการดูแลจากเรา",
       subtitle:
-        "ไม่ว่าคุณกำลังเตรียมยื่น WHM, สมัครวีซ่านักเรียน หรือวางแผนย้ายถิ่นฐานระยะยาว เราพร้อมดูแลในทุกขั้นตอน",
+        "เราช่วยได้ทั้งการเตรียมยื่น WHM วีซ่านักเรียน และการวางแผนย้ายถิ่นฐานระยะยาว",
       items: {
         ielts: {
           title: "ติว IELTS และ PTE",
           description:
-            "รับส่วนลดพิเศษ พร้อมคลาสเรียนและคอร์สเรียนด้วยตัวเอง ที่จะช่วยให้คุณคว้าคะแนนตามเป้าหมายได้ง่ายขึ้น",
+            "มีส่วนลดค่าเรียน ทั้งคลาสสดและคอร์สเรียนด้วยตัวเอง สำหรับเตรียมสอบให้ได้คะแนนตามเป้า",
           tag: "เตรียมสอบ",
         },
         student: {
@@ -257,19 +257,19 @@ export const translations = {
         insurance: {
           title: "ประกันการเดินทาง",
           description:
-            "อุ่นใจด้วยความคุ้มครองที่ครอบคลุมตลอดการเดินทางในออสเตรเลีย ในราคาพิเศษ",
+            "แนะนำประกันการเดินทางสำหรับช่วงที่อยู่ออสเตรเลีย",
           tag: "ประกัน",
         },
         shortCourses: {
           title: "คอร์สระยะสั้นสำหรับ WHM",
           description:
-            "คอร์สเรียนสั้นๆ เช่น การดูแลผู้สูงอายุ, ดูแลเด็ก, ภาษาอังกฤษ และบาริสต้า เพื่อเพิ่มโอกาสได้งานทำทันทีเมื่อเดินทางถึงออสเตรเลีย",
+            "คอร์สสั้น เช่น ดูแลผู้สูงอายุ ดูแลเด็ก ภาษาอังกฤษ และบาริสต้า ซึ่งเป็นทักษะที่ใช้ในงานที่คน WHM ทำกันบ่อย",
           tag: "คอร์สเรียน",
         },
         migration: {
           title: "แนะนำตัวแทนย้ายถิ่นฐาน",
           description:
-            "เชื่อมต่อคุณกับ Migration Agent ที่ได้มาตรฐานและขึ้นทะเบียนถูกต้อง พร้อมให้คำปรึกษาเรื่องวีซ่าอย่างมืออาชีพ",
+            "แนะนำ Migration Agent ที่ขึ้นทะเบียนถูกต้อง สำหรับปรึกษาเรื่องวีซ่า",
           tag: "ย้ายถิ่นฐาน",
         },
         community: {
@@ -300,10 +300,10 @@ export const translations = {
           title: "สัมมนาแนะนำคอร์ส IELTS เร่งรัด",
           date: "เปิดรับสมัครต่อเนื่อง",
           location: "กรุงเทพฯ และออนไลน์",
-          description: "เรียนรู้รายละเอียดคอร์สเตรียมสอบ IELTS พร้อมรับโค้ดส่วนลดสุดพิเศษ",
+          description: "ฟังรายละเอียดคอร์สเตรียมสอบ IELTS และรับโค้ดส่วนลด",
         },
         panel: {
-          title: "ชีวิตในออสเตรเลีย — เวทีแชร์ประสบการณ์ศิษย์เก่า WHM",
+          title: "ชีวิตในออสเตรเลีย: เวทีแชร์ประสบการณ์ศิษย์เก่า WHM",
           date: "เมษายน 2025",
           location: "กรุงเทพฯ ประเทศไทย",
           description: "ฟังประสบการณ์ตรงจากศิษย์เก่า WHM ไทยในเรื่องการทำงานและใช้ชีวิตที่ออสเตรเลีย",
@@ -315,8 +315,8 @@ export const translations = {
       subtitle: "Beyond Study Center",
       highlights: {
         experience: "ประสบการณ์มากกว่า 15 ปี",
-        founder: "ดูแลโดยผู้ก่อตั้งเพจ ThaiWAHClub ที่พร้อมแบ่งปันประสบการณ์และให้คำปรึกษาในทุกขั้นตอน",
-        offices: "มีสำนักงานในกรุงเทพฯ เมลเบิร์น และซิดนีย์ พร้อมทีมงานที่คอยให้คำปรึกษาและดูแลคุณอย่างใกล้ชิด",
+        founder: "ดูแลโดยผู้ก่อตั้งเพจ ThaiWAHClub ซึ่งเล่าจากประสบการณ์ตรง",
+        offices: "มีสำนักงานในกรุงเทพฯ เมลเบิร์น และซิดนีย์",
       },
     },
     ctaBanner: {
