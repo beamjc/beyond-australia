@@ -64,12 +64,12 @@ Owner decisions 2026-09-24: ⚠️ claims in BSP-001 (as-of date), BSP-040 ("Lev
 | ISS-044 | Medium | Postcode Checker | Result was grouped by the 5 Home Affairs area lists: a postcode on several lists (e.g. 4810) showed 5 cards and 11 industry lines with repeats, under "is eligible!". Visitors couldn't tell which jobs count (owner feedback). | Owner screenshot 2026-10-05. | FIXED (owner approved the redesign, English first) — one row per kind of work with examples, tags for where/when it counts, an "other jobs" row, and a dated source note. Also resolves the English part of ISS-019. Thai in `thai-review-postcode-checker.md`. |
 
 
-## DEC-LINE-001 (2026-10-28): LINE button that shows the visitor's planner answers to the admin — OWNER DECISION NEEDED
+## DEC-LINE-001 (2026-10-28): LINE button that shows the visitor's planner answers to the admin — IMPLEMENTED (Budget Planner)
 
-Request: when a visitor taps "LINE: @beyondstudy", they add the Official Account and the admin can see what they selected.
+The owner gave access to developers.line.biz. WebFetch still could not resolve it, but curl through the proxy could. Checked 2026-10-28: https://developers.line.biz/en/docs/messaging-api/using-line-url-scheme/
+- `https://line.me/R/oaMessage/{percent-encoded LINE ID}/?{text}` "Opens a chat screen with your LINE Official Account and enters the text message … into the message input field." The ID and the text must be percent-encoded in UTF-8.
+- "The LINE URL scheme is supported in LINE for iOS and LINE for Android … isn't supported in LINE for PC (macOS, Windows)." If LINE isn't installed, a browser opens and prompts the visitor to download LINE.
+- The page does not say whether a visitor who has not added the OA as a friend can send. Needs a real-phone check.
 
-Recommendation: the planner's LINE button opens the OA chat with a message already filled in (LINE URL scheme `https://line.me/R/oaMessage/%40beyondstudy/?<url-encoded text>`). The message lists the visitor's answers, for example goal, budget, age, IELTS, Off/On Shore, and for ELICOS the 24/40 weeks. The visitor sees the message and decides whether to send it. Nothing is stored by the site, and nothing is sent automatically. The admin reads it in the LINE OA Manager chat.
-- Not verified: the exact URL format, how it behaves for non-friends, and how it behaves on desktop/PC LINE. developers.line.biz is blocked by this session's network policy. Needs testing on a real phone with the account before release.
-- The visitor may not have added the account as a friend first. LINE shows an Add friend bar in the chat, and a greeting message set in OA Manager can ask them to add it.
-- New visible Thai copy (the message template) needs owner/editor approval.
-- Alternative (not recommended for now): LIFF + Messaging API webhook. This needs LINE Login, a server endpoint, and storing personal data, so it is out of scope for this pass.
+Implemented: `src/lib/lineMessage.ts`, plus the `lineMessage` prop on `BSCConsultationCTA`. On iOS/Android, the Budget Planner's LINE button fills in the visitor's answers. The text is built only from the planner's existing labels, so it adds no new Thai copy. Elsewhere it keeps the add-friend link. The visitor decides whether to send, and the site stores nothing.
+Next: test on a real iPhone and Android phone, set up the greeting/auto-reply in OA Manager, and decide whether other tools (Savings, Visa Readiness) should do the same.

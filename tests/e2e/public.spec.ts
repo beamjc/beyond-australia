@@ -138,6 +138,39 @@ test.describe('Budget Study Planner', () => {
   })
 })
 
+for (const [device, userAgent] of [
+  ['desktop browser', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36'],
+  ['iPhone', 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'],
+] as const) {
+  test.describe(`Budget Planner — LINE button (${device})`, () => {
+    test.use({ lang: 'th', userAgent })
+
+    test('LINE link carries the planner answers only where LINE supports it; nothing is opened', async ({ page }) => {
+      await mockSupabase(page)
+      await page.goto('/#study')
+      const panel = page.locator('#study-panel-courses')
+      await plannerShow(page, panel.getByRole('button', { name: /เรียนภาษาอังกฤษ/ }))
+      await panel.getByRole('button', { name: /เรียนภาษาอังกฤษ/ }).click()
+      await plannerShow(page, panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }))
+      await panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }).click()
+      await plannerResults(page)
+      await panel.getByRole('button', { name: /^40 สัปดาห์/ }).click()
+      const line = panel.getByRole('link', { name: 'LINE: @beyondstudy' })
+      if (device === 'desktop browser') {
+        // LINE for PC does not support the LINE URL scheme: keep the add-friend link.
+        await expect(line).toHaveAttribute('href', 'https://line.me/ti/p/@beyondstudy')
+        return
+      }
+      await expect(line).toHaveAttribute('href', /^https:\/\/line\.me\/R\/oaMessage\/%40beyondstudy\/\?/)
+      const text = decodeURIComponent(new URL((await line.getAttribute('href'))!).search.slice(1))
+      expect(text).toContain('เป้าหมายการเรียน: เรียนภาษาอังกฤษ')
+      expect(text).toContain('ยื่นวีซ่าจากที่ไหน: On Shore (ในประเทศออสเตรเลีย)')
+      expect(text).toContain('ELICOS: 40 สัปดาห์')
+      expect(text).not.toContain('IELTS')
+    })
+  })
+}
+
 test.describe('Budget Planner — onshore Student visa checker', () => {
   test.use({ lang: 'th' })
 

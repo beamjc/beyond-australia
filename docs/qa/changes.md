@@ -251,3 +251,8 @@ Checks: vitest 75/75; `tsc --noEmit` clean; lint has only pre-existing warnings;
 - **ยื่นวีซ่าจากที่ไหน**: "ประเทศไทย" → **"Off Shore (นอกประเทศออสเตรเลีย)"**, "ออสเตรเลีย" → **"On Shore (ในประเทศออสเตรเลีย)"**. These apply to both the buttons and the answer summary. On the buttons, the Thai part sits on its own line in smaller text, so it never breaks mid-word on phones. Screenshots: `screenshots/planner-labels/`.
 - Suggestion for the Thai editor (not applied): "เป็นคาดคะเน" → "เป็นการคาดคะเน".
 - Tests: the e2e button names were updated, and a new test covers the visa chance label and the removed pill.
+
+## 2026-10-28: Budget Planner LINE button fills in the visitor's answers (owner request)
+
+- On iOS/Android, "LINE: @beyondstudy" under the planner results opens `line.me/R/oaMessage/%40beyondstudy/?…`. The message box is filled with the answers (goal, budget, age, IELTS, Off/On Shore, plus the ELICOS or short-course weeks). The visitor can edit it or choose not to send it. Desktop and LINE for PC keep `line.me/ti/p/@beyondstudy`, because LINE for PC does not support the scheme. Source and limits: `issues.md` DEC-LINE-001.
+- Tests: `tests/unit/lineMessage.test.ts` (encoding, Thai round-trip, device detection). The e2e "Budget Planner — LINE button" test checks the link with a desktop and an iPhone user agent without opening it.

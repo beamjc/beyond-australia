@@ -20,6 +20,7 @@ import {
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { PLANNER_DATA_UPDATED } from "@/data/studyVisaRules";
 import { formatMonthYear } from "@/lib/plannerDates";
+import { formatLineMessage } from "@/lib/lineMessage";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -259,6 +260,22 @@ const BudgetStudyPlanner = () => {
 
   const headlineUpfrontHigh = goal === "short" ? whmShort.upfrontHigh : headlineUpfront;
 
+  const answers = [
+    { key: "goal" as WizardStep, label: "เป้าหมายการเรียน", value: goalTitle(goal, degreeLevel) },
+    { key: "budget" as WizardStep, label: "งบที่เตรียมไว้", value: currency === "AUD" ? fmtAUD(budgetAUD) : fmtTHB(budgetTHB) },
+    { key: "age" as WizardStep, label: "อายุผู้สมัคร", value: `${age} ปี` },
+    ...(goal !== "english"
+      ? [{ key: "english" as WizardStep, label: "IELTS", value: englishOptions.find((o) => o.id === english)?.label ?? "" }]
+      : []),
+    { key: "location" as WizardStep, label: "ยื่นวีซ่าจากที่ไหน", value: locationLabel(location) },
+  ];
+  // Typed into the LINE chat for the visitor to send (or not); built from the labels above.
+  const lineMessage = formatLineMessage([
+    ...answers,
+    ...(goal === "english" ? [{ label: "ELICOS", value: `${standaloneWeeks} สัปดาห์` }] : []),
+    ...(goal === "short" ? [{ label: "ระยะเวลาที่ต้องเรียนภาษาเพิ่ม", value: `${shortWeeks} สัปดาห์` }] : []),
+  ]);
+
   const fmtMoney = (aud: number) => (currency === "AUD" ? fmtAUD(aud) : fmtTHB(aud * rate));
 
   return (
@@ -274,15 +291,7 @@ const BudgetStudyPlanner = () => {
           <div className="px-5 pt-5 sm:px-6 sm:pt-6 lg:hidden">
             {wizDone ? (
               <AnswerList
-                answers={[
-                  { key: "goal" as WizardStep, label: "เป้าหมายการเรียน", value: goalTitle(goal, degreeLevel) },
-                  { key: "budget" as WizardStep, label: "งบที่เตรียมไว้", value: currency === "AUD" ? fmtAUD(budgetAUD) : fmtTHB(budgetTHB) },
-                  { key: "age" as WizardStep, label: "อายุผู้สมัคร", value: `${age} ปี` },
-                  ...(goal !== "english"
-                    ? [{ key: "english" as WizardStep, label: "IELTS", value: englishOptions.find((o) => o.id === english)?.label ?? "" }]
-                    : []),
-                  { key: "location" as WizardStep, label: "ยื่นวีซ่าจากที่ไหน", value: locationLabel(location) },
-                ].map((a) => ({ ...a, onEdit: () => goToStep(steps.indexOf(a.key)) }))}
+                answers={answers.map((a) => ({ ...a, onEdit: () => goToStep(steps.indexOf(a.key)) }))}
                 editAllLabel="แก้ไขคำตอบ"
                 onEditAll={() => goToStep(0)}
               />
@@ -612,7 +621,7 @@ const BudgetStudyPlanner = () => {
             </motion.div>
           </AnimatePresence>
 
-          <BSCConsultationCTA illustration={ART.consult} />
+          <BSCConsultationCTA illustration={ART.consult} lineMessage={lineMessage} />
         </div>
       </div>
 

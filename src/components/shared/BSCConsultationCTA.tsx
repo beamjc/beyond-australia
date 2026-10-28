@@ -1,8 +1,10 @@
 'use client'
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ExternalLink, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
+import { lineOAMessageUrl, supportsLineUrlScheme } from "@/lib/lineMessage";
 
 export interface CTAIllustration {
   src: string;
@@ -15,13 +17,21 @@ interface Props {
   className?: string;
   /** Decorative artwork: right of the text on md+, below the buttons on mobile. */
   illustration?: CTAIllustration;
+  /** On iOS/Android, the LINE button opens the OA chat with this text typed in (not sent). */
+  lineMessage?: string;
 }
 
 export const LINE_URL = "https://line.me/ti/p/@beyondstudy";
 export const SITE_URL = "https://www.beyondstudycenter.com/inquiry-form/";
 
-const BSCConsultationCTA = ({ variant = "standard", className = "", illustration }: Props) => {
+const BSCConsultationCTA = ({ variant = "standard", className = "", illustration, lineMessage }: Props) => {
   const { language } = useLanguage();
+  // Decided after mount: the server render and LINE for PC both get the add-friend link.
+  const [lineScheme, setLineScheme] = useState(false);
+  useEffect(() => {
+    setLineScheme(supportsLineUrlScheme(navigator.userAgent, navigator.maxTouchPoints));
+  }, []);
+  const lineHref = lineMessage && lineScheme ? lineOAMessageUrl(lineMessage) : LINE_URL;
   const isTh = language === "th";
   const isCompact = variant === "compact";
   const isProminent = variant === "prominent";
@@ -49,7 +59,7 @@ const BSCConsultationCTA = ({ variant = "standard", className = "", illustration
             {/* Stacked from md: the text column beside the artwork is too narrow for two buttons in a row. */}
             <div className="mt-4 flex flex-col gap-2.5 sm:flex-row md:max-w-xs md:flex-col">
               <a
-                href={LINE_URL}
+                href={lineHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex min-h-11 whitespace-nowrap items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -108,7 +118,7 @@ const BSCConsultationCTA = ({ variant = "standard", className = "", illustration
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <a
-            href={LINE_URL}
+            href={lineHref}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
