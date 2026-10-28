@@ -108,6 +108,15 @@ test.describe('Budget Study Planner', () => {
     await expect(page.getByRole('button', { name: /คอร์สระยะสั้น/ }).first()).toHaveAttribute('aria-pressed', 'true')
   })
 
+  test('visa chance label names Home Affairs statistics; no risk pill (owner request 2026-10-28)', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    await plannerResults(page)
+    const panel = page.locator('#study-panel-courses')
+    await expect(panel.getByText('โอกาสที่วีซ่าจะผ่าน (เป็นคาดคะเนจากสถิติจาก Home Affairs)').first()).toBeVisible()
+    await expect(panel.getByText(/^(Low Risk|Moderate|High Risk|Critical Risk)$/)).toHaveCount(0)
+  })
+
   test('English only: one ELICOS card for the chosen duration (owner request 2026-10-28)', async ({ page }) => {
     await mockSupabase(page)
     await page.goto('/#study')
@@ -136,12 +145,12 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await mockSupabase(page)
     await page.goto('/#study')
     const panel = page.locator('#study-panel-courses')
-    await plannerShow(page, panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }))
+    await plannerShow(page, panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }))
     await expect(panel.getByText('อัปเดตข้อมูลล่าสุด ตุลาคม 2569')).toBeVisible()
     await expect(panel.getByText('อัปเดตกฎวีซ่า • 2 ต.ค. 2569')).toBeVisible()
     await expect(panel.locator('#onshore-check-heading')).toHaveCount(0)
 
-    await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
+    await panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }).click()
     await expect(panel.locator('#onshore-check-heading')).toBeVisible()
     // Only the first question is shown.
     await expect(panel.getByText('ตอนนี้คุณถือวีซ่าอะไรอยู่?')).toBeVisible()
@@ -159,7 +168,7 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await expect(panel.getByText(/คุณจะต้องออกจากออสเตรเลีย/)).toBeVisible()
     await noHorizontalOverflow(page)
 
-    await panel.getByRole('button', { name: 'ประเทศไทย', exact: true }).click()
+    await panel.getByRole('button', { name: 'Off Shore (นอกประเทศออสเตรเลีย)', exact: true }).click()
     await expect(panel.locator('#onshore-check-heading')).toHaveCount(0)
     expect(errors).toEqual([])
   })
@@ -168,8 +177,8 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await mockSupabase(page)
     await page.goto('/#study')
     const panel = page.locator('#study-panel-courses')
-    await plannerShow(page, panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }))
-    await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
+    await plannerShow(page, panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }))
+    await panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }).click()
     await panel.getByRole('button', { name: 'Student Visa (Subclass 500)' }).click()
     await expect(panel.getByText('คุณกำลังวางแผนเรียนต่อแบบไหน?')).toBeFocused()
     await panel.getByRole('button', { name: 'เรียนหลักสูตรใหม่ในระดับเดียวกัน' }).click()
@@ -197,7 +206,7 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await page.goto('/#study')
     const panel = page.locator('#study-panel-courses')
     await panel.getByRole('button', { name: 'เช็กว่าฉันยื่น Onshore ได้ไหม' }).click()
-    await expect(panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await expect(panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true })).toHaveAttribute('aria-pressed', 'true')
     await expect(panel.locator('#onshore-check-heading')).toBeFocused()
     // First click must scroll too: the panel's expand animation used to cancel the smooth scroll.
     await expect(panel.locator('#onshore-check-heading')).toBeInViewport()
@@ -221,8 +230,8 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
     await mockSupabase(page)
     await page.goto('/#study')
     const panel = page.locator('#study-panel-courses')
-    await plannerShow(page, panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }))
-    await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
+    await plannerShow(page, panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }))
+    await panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }).click()
     const first = panel.getByRole('button', { name: 'Student Visa (Subclass 500)' })
     await first.focus()
     await page.keyboard.press('Tab')
@@ -247,9 +256,9 @@ test.describe('Budget Planner — onshore Student visa checker', () => {
       const locationY = (await page.locator('#bsp-location').boundingBox())!.y
       expect(locationY).toBeGreaterThan(budgetY)
     }
-    await plannerShow(page, panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }))
+    await plannerShow(page, panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }))
 
-    await panel.getByRole('button', { name: 'ออสเตรเลีย', exact: true }).click()
+    await panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }).click()
     await page.locator('#bsp-location').evaluate((el) => el.scrollIntoView({ block: 'end' }))
     const bar = page.getByRole('button', { name: /ครอบคลุมงบประมาณ.*จำนวนเงินคร่าวๆที่ต้องใช้/ })
     if (page.viewportSize()!.width < 1024) {

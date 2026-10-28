@@ -281,7 +281,7 @@ const BudgetStudyPlanner = () => {
                   ...(goal !== "english"
                     ? [{ key: "english" as WizardStep, label: "IELTS", value: englishOptions.find((o) => o.id === english)?.label ?? "" }]
                     : []),
-                  { key: "location" as WizardStep, label: "ยื่นวีซ่าจากที่ไหน", value: location === "offshore" ? "ประเทศไทย" : "ออสเตรเลีย" },
+                  { key: "location" as WizardStep, label: "ยื่นวีซ่าจากที่ไหน", value: locationLabel(location) },
                 ].map((a) => ({ ...a, onEdit: () => goToStep(steps.indexOf(a.key)) }))}
                 editAllLabel="แก้ไขคำตอบ"
                 onEditAll={() => goToStep(0)}
@@ -489,9 +489,10 @@ const BudgetStudyPlanner = () => {
                     type="button"
                     aria-pressed={location === loc}
                     onClick={() => setLocation(loc)}
-                    className={`min-h-11 ${segmentButton(location === loc)}`}
+                    className={`min-h-11 px-2 py-2 leading-snug ${segmentButton(location === loc)}`}
                   >
-                    {loc === "offshore" ? "ประเทศไทย" : "ออสเตรเลีย"}
+                    {loc === "offshore" ? "Off Shore" : "On Shore"}{" "}
+                    <span className="block whitespace-nowrap text-xs font-normal">{loc === "offshore" ? "(นอกประเทศออสเตรเลีย)" : "(ในประเทศออสเตรเลีย)"}</span>
                   </button>
                 ))}
               </div>
@@ -883,10 +884,7 @@ const PathwayCard = ({
           )}
 
           <div className={`rounded-xl p-3 mb-3 ${risk.bg}`}>
-            <div className="flex items-center justify-between gap-2 mb-1">
-              <span className="text-xs text-muted-foreground">เปอร์เซนต์ที่วีซ่าจะผ่าน</span>
-              <Badge variant="outline" className={`text-[10px] ${risk.text} border-current`}>{risk.label}</Badge>
-            </div>
+            <p className="text-xs text-muted-foreground mb-1">โอกาสที่วีซ่าจะผ่าน (เป็นคาดคะเนจากสถิติจาก Home Affairs)</p>
             <span className={`text-2xl font-bold tabular-nums ${risk.text}`}>{calc.adjusted.toFixed(1)}%</span>
           </div>
 
@@ -930,6 +928,9 @@ const PathwayCard = ({
     </div>
   );
 };
+
+const locationLabel = (loc: Location) =>
+  loc === "offshore" ? "Off Shore (นอกประเทศออสเตรเลีย)" : "On Shore (ในประเทศออสเตรเลีย)";
 
 const breakdownBox = "space-y-2 text-xs rounded-xl border border-border/60 bg-muted/30 p-3 mt-1 mb-1";
 const breakdownTotals = "border-t border-border pt-2 mt-2 space-y-1.5";

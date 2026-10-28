@@ -243,3 +243,11 @@ Checks: vitest 75/75; `tsc --noEmit` clean; lint has only pre-existing warnings;
 - 40 weeks: the "จ่ายก่อน 50% ได้" badge uses the same amber warning colours as the "ค่าเรียนที่เหลือ" note.
 - Regression: `tests/e2e/public.spec.ts` "English only: one ELICOS card for the chosen duration" (desktop/tablet/mobile pass). Screenshots: `screenshots/elicos-single-card/`.
 - Environment note: the pinned `@playwright/test@1.56.1` looked for Chromium build 1194, but this container has 1243, so the run used a temporary uncommitted config with `executablePath: '/opt/pw-browsers/chromium'`.
+
+## 2026-10-28: Budget Planner visa label, risk pill, location labels (owner request, owner wording)
+
+- **Visa chance label** (`PathwayCard`): "เปอร์เซนต์ที่วีซ่าจะผ่าน" → **"โอกาสที่วีซ่าจะผ่าน (เป็นคาดคะเนจากสถิติจาก Home Affairs)"**. Owner wording, except for one change: the department's name is "Home Affairs", so I wrote that instead of the owner's "Home Affair". Source confirmed: `src/data/grantRates.ts` comes from Department of Home Affairs BP0015 Student visa grant rates (data.gov.au "student-visas"), Thai citizens, primary applicants, Sep 2025 – Aug 2026 (see `grant-rate-check.md`). There are two exceptions. Age groups with fewer than 30 decisions use the site's own age factor, which has no cited source. Values are capped at 8–98 %.
+- **Risk pill removed** (Low Risk / Moderate / High Risk / Critical Risk). The card's colour still follows the same bands, and `riskBadge()` is unchanged.
+- **ยื่นวีซ่าจากที่ไหน**: "ประเทศไทย" → **"Off Shore (นอกประเทศออสเตรเลีย)"**, "ออสเตรเลีย" → **"On Shore (ในประเทศออสเตรเลีย)"**. These apply to both the buttons and the answer summary. On the buttons, the Thai part sits on its own line in smaller text, so it never breaks mid-word on phones. Screenshots: `screenshots/planner-labels/`.
+- Suggestion for the Thai editor (not applied): "เป็นคาดคะเน" → "เป็นการคาดคะเน".
+- Tests: the e2e button names were updated, and a new test covers the visa chance label and the removed pill.

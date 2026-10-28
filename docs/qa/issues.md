@@ -63,3 +63,13 @@ Owner decisions 2026-09-24: ⚠️ claims in BSP-001 (as-of date), BSP-040 ("Lev
 | ISS-043 | Medium | Postcode Checker | Data vs Home Affairs (24/09/2026): 4516 wrongly listed as a bushfire declared postcode; Norfolk Island (2899) missing from Regional Australia. Also: a 3-digit entry such as 872 was shown as "872" (now "0872"). | FC-17 set diff. | FIXED + unit tests. Thai translation proposed in `thai-review-postcode-checker.md` (not applied). |
 | ISS-044 | Medium | Postcode Checker | Result was grouped by the 5 Home Affairs area lists: a postcode on several lists (e.g. 4810) showed 5 cards and 11 industry lines with repeats, under "is eligible!". Visitors couldn't tell which jobs count (owner feedback). | Owner screenshot 2026-10-05. | FIXED (owner approved the redesign, English first) — one row per kind of work with examples, tags for where/when it counts, an "other jobs" row, and a dated source note. Also resolves the English part of ISS-019. Thai in `thai-review-postcode-checker.md`. |
 
+
+## DEC-LINE-001 (2026-10-28): LINE button that shows the visitor's planner answers to the admin — OWNER DECISION NEEDED
+
+Request: when a visitor taps "LINE: @beyondstudy", they add the Official Account and the admin can see what they selected.
+
+Recommendation: the planner's LINE button opens the OA chat with a message already filled in (LINE URL scheme `https://line.me/R/oaMessage/%40beyondstudy/?<url-encoded text>`). The message lists the visitor's answers, for example goal, budget, age, IELTS, Off/On Shore, and for ELICOS the 24/40 weeks. The visitor sees the message and decides whether to send it. Nothing is stored by the site, and nothing is sent automatically. The admin reads it in the LINE OA Manager chat.
+- Not verified: the exact URL format, how it behaves for non-friends, and how it behaves on desktop/PC LINE. developers.line.biz is blocked by this session's network policy. Needs testing on a real phone with the account before release.
+- The visitor may not have added the account as a friend first. LINE shows an Add friend bar in the chat, and a greeting message set in OA Manager can ask them to add it.
+- New visible Thai copy (the message template) needs owner/editor approval.
+- Alternative (not recommended for now): LIFF + Messaging API webhook. This needs LINE Login, a server endpoint, and storing personal data, so it is out of scope for this pass.
