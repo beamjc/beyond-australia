@@ -945,30 +945,31 @@ const Row = ({ label, sub, value, bold, muted }: { label: string; sub?: string; 
 );
 
 const ElicosCard = ({
-  calc, fmtMoney, selected,
+  calc, fmtMoney,
 }: {
   calc: ElicosOnlyCalc;
   fmtMoney: (aud: number) => string;
-  selected?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
   const risk = riskBadge(calc.adjusted);
   const partPay = calc.paidPct < 1;
   return (
-    <Card className={`h-full rounded-2xl border-2 ring-1 shadow-sm ${risk.ring} ${selected ? "border-primary" : ""}`}>
+    <Card className={`h-full rounded-2xl border-2 ring-1 shadow-sm ${risk.ring}`}>
       <CardContent className="p-5 sm:p-6">
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">ELICOS</p>
             <h4 className="font-bold text-foreground">ระยะเวลาเรียนคอร์สภาษาอังกฤษ {calc.weeks} สัปดาห์</h4>
           </div>
           {partPay && (
-            <Badge variant="outline" className="text-[10px]">จ่ายก่อน 50% ได้</Badge>
+            <Badge variant="outline" className="shrink-0 text-[10px] text-amber-700 bg-amber-500/10 border-amber-500/30">จ่ายก่อน 50% ได้</Badge>
           )}
         </div>
 
         <div className="mt-4">
-          <p className="text-xs text-muted-foreground">ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก</p>
+          <p className="text-xs text-muted-foreground">
+            {partPay ? "ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก (กรณีที่จ่ายก่อน 50%)" : "ค่าใช้จ่ายที่ต้องจ่ายทั้งหมด"}
+          </p>
           <p className="text-2xl font-bold tracking-tight text-foreground tabular-nums">{fmtMoney(calc.upfront)}</p>
         </div>
         <div className="mt-3 rounded-xl bg-muted/50 px-3 py-2.5 flex items-start gap-2">
@@ -1065,10 +1066,7 @@ const StandaloneEnglishSection = ({
         </CardContent>
       </Card>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        <ElicosCard calc={calc24} fmtMoney={fmtMoney} selected={selected === 24} />
-        <ElicosCard calc={calc40} fmtMoney={fmtMoney} selected={selected === 40} />
-      </div>
+      <ElicosCard key={selected} calc={selected === 24 ? calc24 : calc40} fmtMoney={fmtMoney} />
     </div>
   );
 };

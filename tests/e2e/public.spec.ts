@@ -107,6 +107,26 @@ test.describe('Budget Study Planner', () => {
     await tip.click()
     await expect(page.getByRole('button', { name: /คอร์สระยะสั้น/ }).first()).toHaveAttribute('aria-pressed', 'true')
   })
+
+  test('English only: one ELICOS card for the chosen duration (owner request 2026-10-28)', async ({ page }) => {
+    await mockSupabase(page)
+    await page.goto('/#study')
+    const panel = page.locator('#study-panel-courses')
+    await plannerShow(page, panel.getByRole('button', { name: /เรียนภาษาอังกฤษ/ }))
+    await panel.getByRole('button', { name: /เรียนภาษาอังกฤษ/ }).click()
+    await plannerResults(page)
+    const heading = panel.getByRole('heading', { name: /ระยะเวลาเรียนคอร์สภาษาอังกฤษ \d+ สัปดาห์/ })
+    await panel.getByRole('button', { name: /^24 สัปดาห์/ }).click()
+    await expect(heading).toHaveCount(1)
+    await expect(heading).toHaveText(/24 สัปดาห์/)
+    await expect(panel.getByText('ค่าใช้จ่ายที่ต้องจ่ายทั้งหมด', { exact: true })).toBeVisible()
+    await expect(panel.getByText('จ่ายก่อน 50% ได้')).toHaveCount(0)
+    await panel.getByRole('button', { name: /^40 สัปดาห์/ }).click()
+    await expect(heading).toHaveCount(1)
+    await expect(heading).toHaveText(/40 สัปดาห์/)
+    await expect(panel.getByText('ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก (กรณีที่จ่ายก่อน 50%)', { exact: true })).toBeVisible()
+    await expect(panel.getByText('จ่ายก่อน 50% ได้')).toBeVisible()
+  })
 })
 
 test.describe('Budget Planner — onshore Student visa checker', () => {

@@ -233,3 +233,13 @@ Not changed:
 - `visaExplorer.ts` subtitle (line 434) and the hub description (line 471) still use "ควรศึกษาต่อ". The review did not propose wording for them, so they are flagged for the next batch.
 
 Checks: vitest 75/75; `tsc --noEmit` clean; lint has only pre-existing warnings; Playwright 119 passed, 10 skipped (desktop-only skips), including `next build`.
+
+## 2026-10-28: ELICOS "เรียนภาษาอย่างเดียว" shows one card (owner request, owner wording)
+
+- `BudgetStudyPlanner.tsx` (`StandaloneEnglishSection`): showed the 24- and 40-week cards side by side. It now shows only the card for the duration the visitor picks with the 24/40 สัปดาห์ toggle. Calculations unchanged.
+- Owner-supplied Thai wording, applied verbatim:
+  - 24 weeks (pay in full): "ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก" → **"ค่าใช้จ่ายที่ต้องจ่ายทั้งหมด"**
+  - 40 weeks (50% deposit): "ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก" → **"ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก (กรณีที่จ่ายก่อน 50%)"**
+- 40 weeks: the "จ่ายก่อน 50% ได้" badge uses the same amber warning colours as the "ค่าเรียนที่เหลือ" note.
+- Regression: `tests/e2e/public.spec.ts` "English only: one ELICOS card for the chosen duration" (desktop/tablet/mobile pass). Screenshots: `screenshots/elicos-single-card/`.
+- Environment note: the pinned `@playwright/test@1.56.1` looked for Chromium build 1194, but this container has 1243, so the run used a temporary uncommitted config with `executablePath: '/opt/pw-browsers/chromium'`.
