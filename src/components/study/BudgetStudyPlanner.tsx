@@ -21,6 +21,7 @@ import { useLanguage } from "@/i18n/LanguageProvider";
 import { PLANNER_DATA_UPDATED } from "@/data/studyVisaRules";
 import { formatMonthYear } from "@/lib/plannerDates";
 import { formatLineMessage } from "@/lib/lineMessage";
+import type { LeadDraft } from "@/lib/leadDraft";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -275,6 +276,27 @@ const BudgetStudyPlanner = () => {
     ...(goal === "english" ? [{ label: "ELICOS", value: `${standaloneWeeks} สัปดาห์` }] : []),
     ...(goal === "short" ? [{ label: "ระยะเวลาที่ต้องเรียนภาษาเพิ่ม", value: `${shortWeeks} สัปดาห์` }] : []),
   ]);
+
+  // For the LINE lead form (only used when LIFF is configured): the same answers,
+  // plus the course type mapped to the form's "interested in" options.
+  const leadDraft: LeadDraft = {
+    tool: "budget-planner",
+    answers: {
+      summary: lineMessage,
+      program_interest:
+        goal === "english" ? "English course"
+        : goal === "vet" ? "Diploma / VET"
+        : goal === "short" ? "Short course"
+        : degreeLevel === "master" ? "Master" : "Bachelor",
+      goal,
+      degree_level: goal === "he" ? degreeLevel : null,
+      budget_aud: Math.round(budgetAUD),
+      currency,
+      age,
+      english: goal !== "english" ? english : null,
+      location,
+    },
+  };
 
   const fmtMoney = (aud: number) => (currency === "AUD" ? fmtAUD(aud) : fmtTHB(aud * rate));
 
@@ -621,7 +643,7 @@ const BudgetStudyPlanner = () => {
             </motion.div>
           </AnimatePresence>
 
-          <BSCConsultationCTA illustration={ART.consult} lineMessage={lineMessage} />
+          <BSCConsultationCTA illustration={ART.consult} lineMessage={lineMessage} leadDraft={leadDraft} />
         </div>
       </div>
 

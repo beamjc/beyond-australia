@@ -30,6 +30,8 @@ export default defineConfig({
     env: {
       NEXT_PUBLIC_SUPABASE_URL: MOCK_SUPABASE_URL,
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa-dummy-anon-key',
+      // Turns on the LINE (LIFF) lead flow; LINE and the Edge Functions are mocked in line-leads.spec.ts.
+      NEXT_PUBLIC_LIFF_ID: '1234567890-QaTest01',
       NEXT_TELEMETRY_DISABLED: '1',
     },
   },
