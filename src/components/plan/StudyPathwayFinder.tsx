@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
+import { useRecordToolAnswers } from "@/hooks/use-record-tool-answers";
 import { ArrowLeft, ArrowRight, ExternalLink, Info, RotateCcw } from "lucide-react";
 import { SITE_URL } from "../shared/BSCConsultationCTA";
 import {
@@ -12,7 +13,7 @@ import type { Bi } from "@/data/visaReadiness";
 import type { ToolId } from "@/data/visaExplorer";
 import {
   emptyStudyAnswers, isValidAge, isValidExperience, recommendStudyPathway,
-  type StudyAnswers, type StudyRecommendation,
+  studyFinderLeadAnswers, type StudyAnswers, type StudyRecommendation,
 } from "@/lib/studyFinder";
 import {
   AUTO_ADVANCE_MS, Card, CheckList, ConsultBlock, PathwayOption, RelatedTools, Sequence, ToolHeader,
@@ -229,6 +230,7 @@ const PathwayBlock = ({ p, rec, lead }: { p: PathwayId; rec: StudyRecommendation
 
 const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswers; rec: StudyRecommendation; onRestart: () => void; onEdit: () => void }) => {
   const { t } = useT();
+  useRecordToolAnswers("study-finder", studyFinderLeadAnswers(answers, rec));
   const nav = usePlanNav();
   const stepAction: Partial<Record<NextStepId, () => void>> = {
     compareBudget: () => nav.openTab("courses"),

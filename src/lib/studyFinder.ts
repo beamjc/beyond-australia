@@ -3,7 +3,8 @@
 // traced back to what the visitor chose. Scores are never shown to visitors.
 
 import {
-  budgetOptions, englishOptions, goalOptions, interestOptions, qualificationOptions,
+  budgetOptions, cityOptions, englishOptions, finderCopy as c, goalOptions, interestOptions, pathwayInfo,
+  qualificationOptions, timingOptions,
   type BudgetId, type EnglishId, type FinderOption, type GoalId, type InterestId,
   type NextStepId, type PathwayId, type QualificationId, type TimingId,
 } from "@/data/studyFinder";
@@ -146,3 +147,37 @@ export const isValidExperience = (years: string) => {
   const n = Number(years);
   return Number.isInteger(n) && n >= 0 && n <= 50;
 };
+
+/** "Question? answer" or "Label: answer", using the tool's existing Thai wording. */
+const qa = (q: Bi, answer: string) => (q.th.trim().endsWith("?") ? `${q.th} ${answer}` : `${q.th}: ${answer}`);
+const thLabel = <Id extends string>(opts: { id: Id; label: Bi }[], id: Id | null) => opts.find((o) => o.id === id)?.label.th;
+
+/** Answers + result for the LINE lead form (only used when LIFF is configured). */
+export function studyFinderLeadAnswers(a: StudyAnswers, rec: StudyRecommendation) {
+  const shown = [rec.primary, ...(rec.tieWith ? [rec.tieWith] : [])];
+  const age = Number(a.age);
+  const lines = [
+    a.age && qa(c.qAge, a.age),
+    a.english && qa(c.qEnglish, thLabel(englishOptions, a.english) ?? a.english),
+    a.goals.length > 0 && qa(c.qGoals, a.goals.map((g) => thLabel(goalOptions, g) ?? g).join(", ")),
+    a.city && qa(c.qCity, thLabel(cityOptions, a.city) ?? a.city),
+    a.budget && qa(c.qBudget, thLabel(budgetOptions, a.budget) ?? a.budget),
+    a.interest && qa(c.qInterest, thLabel(interestOptions, a.interest) ?? a.interest),
+    a.qualification && qa(c.qualificationLabel, thLabel(qualificationOptions, a.qualification) ?? a.qualification),
+    a.experienceYears && qa(c.experienceLabel, a.experienceYears),
+    a.field.trim() && qa(c.fieldLabel, a.field.trim().slice(0, 80)),
+    a.timing && qa(c.qTiming, thLabel(timingOptions, a.timing) ?? a.timing),
+    qa(c.resultTitle, shown.map((p) => pathwayInfo[p].name.th).join(" / ")),
+  ].filter((l): l is string => Boolean(l));
+  return {
+    title: c.title.th,
+    lines,
+    age: Number.isFinite(age) && age > 0 ? age : null,
+    visaInterest: "student" as const,
+    course:
+      rec.primary === "elicos" ? "English course"
+      : rec.primary === "vet" ? "Diploma / VET"
+      : a.qualification === "bachelor" || a.qualification === "master" ? "Master" : "Bachelor",
+    data: { ...a, recommended: shown },
+  };
+}

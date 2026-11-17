@@ -11,7 +11,7 @@ Deno.serve(handler(async (req) => {
 
   const { data: lead, error } = await db
     .from("leads")
-    .select("id, full_name, nickname, phone, email, current_level, program_interest, intake")
+    .select("id, full_name, nickname, age, visa_interest, phone, email, current_level, program_interest, intake")
     .eq("line_user_id", me.userId)
     .maybeSingle();
   if (error) throw error;
@@ -25,6 +25,7 @@ Deno.serve(handler(async (req) => {
   // so a returning student sees what they just chose.
   const a = (draft?.answers ?? {}) as Record<string, unknown>;
   const pick = (k: string) => (typeof a[k] === "string" ? a[k] : null);
+  const draftAge = typeof a.age === "number" && a.age >= 15 && a.age <= 70 ? Math.round(a.age) : null;
 
   return json(req, {
     profile: { name: me.name, picture: me.picture },
@@ -34,6 +35,8 @@ Deno.serve(handler(async (req) => {
     prefill: {
       full_name: lead?.full_name ?? null,
       nickname: lead?.nickname ?? me.name,
+      age: draftAge ?? lead?.age ?? null,
+      visa_interest: pick("visa_interest") ?? lead?.visa_interest ?? null,
       phone: lead?.phone ?? null,
       email: lead?.email ?? me.email,
       current_level: pick("current_level") ?? lead?.current_level ?? null,

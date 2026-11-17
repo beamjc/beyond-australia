@@ -62,3 +62,11 @@ describe('leadDraft URLs and attribution', () => {
     expect(sourceFromLanding('https://beyond.example/study', 'https://beyond.example/').referrer).toBeUndefined()
   })
 })
+
+describe('isValidAge', () => {
+  it('accepts whole years 15–70 only', async () => {
+    const { isValidAge } = await import('@/lib/liffForm')
+    for (const ok of ['15', '24', '70', ' 30 ']) expect(isValidAge(ok), ok).toBe(true)
+    for (const bad of ['', '14', '71', '24.5', 'abc', '-20', '100']) expect(isValidAge(bad), bad).toBe(false)
+  })
+})

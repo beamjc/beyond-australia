@@ -15,6 +15,15 @@ function normalisePhone(v: unknown): string | null {
   return /^\+?\d{8,15}$/.test(cleaned) ? cleaned : null;
 }
 
+const VISAS = new Set(["student", "whm", "skilled", "employer", "unsure"]);
+
+function normaliseAge(v: unknown): number | null {
+  const s = typeof v === "number" ? String(v) : str(v, 3);
+  if (!s || !/^\d{1,2}$/.test(s)) return null;
+  const n = Number(s);
+  return n >= 15 && n <= 70 ? n : null;
+}
+
 function normaliseEmail(v: unknown): string | null {
   const s = str(v, 120);
   if (!s) return null;
@@ -33,8 +42,13 @@ Deno.serve(handler(async (req) => {
   const phone = normalisePhone(form.phone);
   const emailRaw = str(form.email, 120);
   const email = normaliseEmail(form.email);
+  const age = normaliseAge(form.age);
+  const visa = str(form.visa_interest, 20);
+  const visa_interest = visa && VISAS.has(visa) ? visa : null;
   const errors: Record<string, string> = {};
   if (!full_name) errors.full_name = "required";
+  if (!age) errors.age = "invalid";
+  if (!visa_interest) errors.visa_interest = "required";
   if (!phone) errors.phone = "invalid";
   if (emailRaw && !email) errors.email = "invalid";
   if (consent.privacy !== true) errors.consent = "required";
@@ -43,10 +57,13 @@ Deno.serve(handler(async (req) => {
   const fields = {
     full_name,
     nickname: str(form.nickname, 60),
+    age,
+    visa_interest,
     phone,
     email,
     current_level: str(form.current_level, 80),
-    program_interest: str(form.program_interest, 120),
+    // Course only matters for students; drop a stale pick from another visa.
+    program_interest: visa_interest === "student" ? str(form.program_interest, 120) : null,
     intake: str(form.intake, 40),
     message: str(form.message, 1000),
   };
@@ -121,7 +138,7 @@ Deno.serve(handler(async (req) => {
   }
 
   // Messages: failures are logged but never block the student's submit.
-  const summary = typeof answers.summary === "string" ? answers.summary.slice(0, 300) : null;
+  const summary = typeof answers.summary === "string" ? answers.summary.slice(0, 3000) : null;
   const tool = draft?.tool ?? null;
   const tasks: Promise<unknown>[] = [];
   if (friend) {
@@ -133,6 +150,8 @@ Deno.serve(handler(async (req) => {
       isNew,
       fullName: fields.full_name,
       nickname: fields.nickname,
+      age: fields.age,
+      visaInterest: fields.visa_interest,
       lineName: me.name,
       phone: fields.phone,
       email: fields.email,

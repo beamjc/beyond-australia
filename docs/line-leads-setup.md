@@ -4,14 +4,28 @@ Branch: `feat/line-liff-leads`. Nothing is deployed, and the feature stays **off
 
 ## What it does
 
-1. A visitor finishes the **Budget Study Planner** and taps the existing **LINE: @beyondstudy** button.
-2. The site saves their planner answers as a short-lived **draft** in Supabase (`save-draft`) and opens `https://liff.line.me/<LIFF_ID>?d=<draftId>`. Only the random draft ID goes in the URL, never personal data.
+1. As a visitor uses the site's tools, each tool saves its answers in the browser tab (`sessionStorage`, cleared when the tab closes). Nothing leaves the browser yet.
+2. When they tap **any** "@beyondstudy" LINE link (Budget Planner, Study Pathway Finder or Visa Explorer consult buttons, the footer, or the floating button), the site combines every tool's answers into one short-lived **draft** in Supabase (`save-draft`). It then opens `https://liff.line.me/<LIFF_ID>?d=<draftId>`. Only the random draft ID goes in the URL, never personal data.
+   - If they haven't used any tool yet, the link opens the normal LINE chat, as before.
+   - LINE share links (Savings share buttons) are never touched.
 3. LINE opens the form at `/line` (the LIFF page). The visitor logs in with LINE and is prompted to add `@beyondstudy` as a friend.
-4. `liff-session` verifies the LINE ID token with LINE, loads the draft, and pre-fills the form. The visitor's planner answers are shown at the top.
-5. The visitor adds name and phone, ticks consent, and submits. `submit-lead` verifies the token again, then saves or updates the lead (one row per LINE user) and records the submission.
-6. If they're a friend, the bot sends them a summary in LINE. If `STAFF_GROUP_ID` is set, the staff LINE group gets an alert.
+4. `liff-session` verifies the LINE ID token with LINE, loads the draft, and pre-fills the form. A summary of all their website answers is shown at the top.
+5. The visitor confirms the **main fields**: name, age, visa interest, and course (only asked for a student visa). Then phone, and consent. `submit-lead` verifies the token again, saves or updates the lead (one row per LINE user), and records the submission.
+6. If they're a friend, the bot sends them the summary in LINE. If `STAFF_GROUP_ID` is set, the staff LINE group gets an alert that starts with Name / Age / Visa / Course, followed by every website answer.
 
 If anything fails on the website side (e.g. Supabase is down), the button falls back to the normal LINE link.
+
+### Which tools feed it
+
+| Tool | Saved when | Gives | Main fields |
+|---|---|---|---|
+| Budget Study Planner | Result reached (phone), or any input used (desktop) | Goal, budget, age, IELTS, where they apply from, ELICOS weeks | age (only if they set it), visa = student, course from goal |
+| Study Pathway Finder | Result shown | All 8 answers + recommended pathway | age, visa = student, course from the recommendation |
+| Visa Options Explorer | Result or comparison shown | Each question and choice, and the result reached | visa from the first choice (student, Work and Holiday, skilled, employer, unsure). Course only for the "English first" result |
+| Savings planner | Any input used | Goal, years, visa type, income, expenses | visa = student or Work and Holiday |
+| WHM Postcode Checker | A postcode checked | Postcode and the work types that count | visa = Work and Holiday |
+
+If tools disagree, the most recently used one wins for age, visa and course. The visitor can correct all three in the form. The Visa Strength Assessment is left out on purpose: its score is a self-assessment, and passing it to staff could read as a real eligibility result.
 
 ## Files
 
@@ -24,8 +38,9 @@ If anything fails on the website side (e.g. Supabase is down), the button falls 
 | `supabase/functions/line-webhook` | LINE → keeps `is_friend` in sync (follow/unfollow), and replies with the group ID when the bot joins a group. Checks LINE's signature. |
 | `supabase/functions/_shared/messages.ts` | Wording of the student message and staff alert. |
 | `src/app/line/page.tsx`, `src/components/line/LiffLeadForm.tsx` | The LIFF form (TH/EN). |
-| `src/lib/leadDraft.ts` | Website helper: UTM capture, save draft, open LIFF. |
-| `src/components/shared/BSCConsultationCTA.tsx` | New optional `leadDraft` prop. Only the Budget Planner passes it for now. |
+| `src/lib/visitorAnswers.ts`, `src/hooks/use-record-tool-answers.ts` | Per-tab store of each tool's answers, and the merge into one draft. |
+| `src/lib/lineLeadInterceptor.ts` | One click handler (installed in `src/app/providers.tsx`) for every @beyondstudy LINE link. |
+| `src/lib/leadDraft.ts` | UTM capture, save draft, open LIFF. |
 
 ## Setup checklist
 
@@ -80,6 +95,7 @@ NEXT_PUBLIC_PRIVACY_URL=<privacy policy URL>   # optional; shows a link next to 
 - [ ] Desktop browser: the button opens LINE's web login (QR or email). After login, the same form appears.
 - [ ] Decline the add-friend prompt: the lead is still saved. Staff alert shows "not a friend". The form shows the add-friend button.
 - [ ] Submit twice from one LINE account: one `leads` row, two `lead_submissions` rows.
+- [ ] Use two or three tools, then tap the footer LINE icon: the form summary and staff alert list every tool. Age, visa and course match the last tool used.
 - [ ] Block the OA, then unblock it: `leads.is_friend` follows (webhook).
 - [ ] In Supabase, the `leads` table is empty for the anon key: `select` through the REST API with the anon key returns nothing.
 
@@ -90,11 +106,12 @@ NEXT_PUBLIC_PRIVACY_URL=<privacy policy URL>   # optional; shows a link next to 
 3. **Staff alert contains phone numbers** in a LINE group. Keep that group small, or remove the phone line in `messages.ts`.
 4. **Message quota.** Each student summary and staff alert is a push message and counts against the OA plan's monthly message allowance.
 5. **Where staff work the leads.** Supabase Table Editor works on day one (filter `leads` by `status`). A small admin page or a CRM sync can come later.
-6. **More tools.** Only the Budget Planner passes answers today. Other tools can pass `leadDraft` to `BSCConsultationCTA` the same way, and the floating LINE button can point at the LIFF URL with no draft.
+6. **Visitors with no tool answers** still go to the normal LINE chat. If you'd rather send everyone to the form (a lead from every LINE tap), change one line in `lineLeadInterceptor.ts`. That changes where the generic "chat with us" button goes, so it's your call.
+7. **New tools:** call `useRecordToolAnswers("<tool-id>", {...})` once the tool shows a result.
 
 ## Tests
 
-- `npm test` → `tests/unit/liffForm.test.ts` (intakes, validation, LIFF URL, UTM capture).
+- `npm test` → `tests/unit/liffForm.test.ts` (intakes, validation, LIFF URL, UTM capture) and `tests/unit/visitorAnswers.test.ts` (merging tools, which links are intercepted, Explorer/Finder answers).
 - `deno test supabase/functions/_shared --allow-env` → webhook signature, ID token verification, friendship check (LINE mocked).
 - `npx playwright test tests/e2e/line-leads.spec.ts` → LIFF form and Budget Planner button with **mocked** LINE SDK and Edge Functions.
 

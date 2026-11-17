@@ -33,7 +33,7 @@ const session = {
   isFriend: false,
   returning: false,
   draft: { tool: 'budget-planner', summary: 'เป้าหมายการเรียน: เรียนภาษาอังกฤษ\nELICOS: 40 สัปดาห์' },
-  prefill: { full_name: null, nickname: 'Nong', phone: null, email: null, current_level: null, program_interest: 'English course', intake: null },
+  prefill: { full_name: null, nickname: 'Nong', age: 26, visa_interest: 'student', phone: null, email: null, current_level: null, program_interest: 'English course', intake: null },
 }
 
 test.describe('LIFF lead form (/line)', () => {
@@ -61,6 +61,8 @@ test.describe('LIFF lead form (/line)', () => {
     await expect(page.getByRole('link', { name: /เพิ่มเพื่อนใน LINE/ })).toHaveAttribute('href', 'https://line.me/ti/p/@beyondstudy')
     await expect(page.locator('#program_interest')).toHaveValue('English course')
     await expect(page.locator('#nickname')).toHaveValue('Nong')
+    await expect(page.locator('#age')).toHaveValue('26')
+    await expect(page.locator('#visa_interest')).toHaveValue('student')
 
     // Empty submit: errors shown and linked, nothing sent.
     await page.getByRole('button', { name: 'ส่งข้อมูลให้ทีมที่ปรึกษา' }).click()
@@ -81,12 +83,39 @@ test.describe('LIFF lead form (/line)', () => {
     const body = submitReq!.postDataJSON()
     expect(body.draftId).toBe(DRAFT)
     expect(body.idToken).toBe('fake.id.token.for.qa.only.0123456789')
-    expect(body.form).toMatchObject({ full_name: 'Nong Test', phone: '081 234 5678', program_interest: 'English course' })
+    expect(body.form).toMatchObject({ full_name: 'Nong Test', age: '26', visa_interest: 'student', phone: '081 234 5678', program_interest: 'English course' })
     expect(body.form.intake).not.toBe('')
     expect(body.consent).toEqual({ privacy: true, marketing: false })
 
     await page.getByRole('button', { name: 'ปิดหน้านี้' }).click()
     expect(await page.evaluate(() => (window as unknown as { __liffCalls: unknown[] }).__liffCalls)).toContainEqual(['close'])
+  })
+
+  test('age and visa are required; the course question only shows for a student visa', async ({ page }) => {
+    await fakeLiff(page)
+    let body: Record<string, any> | null = null
+    await page.route(`${FN}/liff-session`, (r) => r.fulfill({ json: { ...session, draft: null, prefill: { ...session.prefill, age: null, visa_interest: null } } }))
+    await page.route(`${FN}/submit-lead`, async (r) => { body = r.request().postDataJSON(); await r.fulfill({ json: { ok: true, isFriend: true } }) })
+    await page.goto('/line')
+    await expect(page.locator('#program_interest')).toHaveCount(0)
+    await page.locator('#full_name').fill('Nong Test')
+    await page.locator('#phone').fill('0812345678')
+    await page.locator('#consent_privacy').check()
+    await page.locator('#age').fill('12')
+    await page.getByRole('button', { name: 'ส่งข้อมูลให้ทีมที่ปรึกษา' }).click()
+    await expect(page.locator('#age-error')).toBeVisible()
+    await expect(page.locator('#visa_interest-error')).toBeVisible()
+    expect(body).toBeNull()
+
+    await page.locator('#age').fill('22')
+    await page.locator('#visa_interest').selectOption('student')
+    await expect(page.locator('#program_interest')).toBeVisible()
+    await page.locator('#program_interest').selectOption('Master')
+    await page.locator('#visa_interest').selectOption('whm')
+    await expect(page.locator('#program_interest')).toHaveCount(0)
+    await page.getByRole('button', { name: 'ส่งข้อมูลให้ทีมที่ปรึกษา' }).click()
+    await expect(page.getByRole('heading', { name: 'ได้รับข้อมูลแล้วค่ะ' })).toBeVisible()
+    expect(body!.form).toMatchObject({ age: '22', visa_interest: 'whm', program_interest: '' })
   })
 
   test('server-side field errors are shown on the matching fields', async ({ page }) => {
@@ -144,6 +173,7 @@ test.describe('Budget Planner — LINE button with LIFF configured', () => {
     const answers = draft!.answers as Record<string, unknown>
     expect(answers.summary).toContain('ELICOS: 40 สัปดาห์')
     expect(answers.program_interest).toBe('English course')
+    expect(answers.visa_interest).toBe('student')
     expect(draft!.source).toMatchObject({ utm_source: 'facebook', utm_campaign: 'qa' })
     // The page itself stays on the site.
     expect(new URL(page.url()).pathname).toBe('/')
@@ -155,5 +185,56 @@ test.describe('Budget Planner — LINE button with LIFF configured', () => {
     await context.route('https://line.me/**', (r) => r.fulfill({ contentType: 'text/html', body: '<p>line</p>' }))
     const [popup] = await Promise.all([page.waitForEvent('popup'), line.click()])
     await popup.waitForURL(/^https:\/\/line\.me\//)
+  })
+})
+
+test.describe('Answers from several tools are combined', () => {
+  test.use({ lang: 'th' })
+
+  test('postcode check + budget planner reach staff as one draft from any @beyondstudy LINE link', async ({ page, context }) => {
+    await mockSupabase(page)
+    let draft: Record<string, any> | null = null
+    await page.route(`${FN}/save-draft`, async (r) => { draft = r.request().postDataJSON(); await r.fulfill({ json: { draftId: DRAFT } }) })
+    await context.route('https://liff.line.me/**', (r) => r.fulfill({ contentType: 'text/html', body: '<p>liff</p>' }))
+
+    await page.goto('/#whm')
+    await page.locator('#whm-tab-postcode').click()
+    const pc = page.locator('#whm-panel-postcode')
+    await pc.getByRole('textbox').fill('4810')
+    await pc.getByRole('button', { name: 'ตรวจสอบ' }).click()
+    await expect(pc.getByText(/4810/).first()).toBeVisible()
+
+    const line = await (async () => {
+      const panel = page.locator('#study-panel-courses')
+      await page.locator('#study-tab-courses').click()
+      await plannerShow(page, panel.getByRole('button', { name: /เรียนภาษาอังกฤษ/ }))
+      await panel.getByRole('button', { name: /เรียนภาษาอังกฤษ/ }).click()
+      await plannerShow(page, panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }))
+      await panel.getByRole('button', { name: 'On Shore (ในประเทศออสเตรเลีย)', exact: true }).click()
+      await plannerResults(page)
+      return page.locator('footer a[aria-label="LINE"]')
+    })()
+
+    await line.scrollIntoViewIfNeeded()
+    const [popup] = await Promise.all([page.waitForEvent('popup'), line.click()])
+    await popup.waitForURL(`https://liff.line.me/${LIFF_ID}?d=${DRAFT}`)
+    expect(draft!.tool).toBe('website-tools')
+    expect(draft!.answers.tools_used).toEqual(['postcode-checker', 'budget-planner'])
+    expect(draft!.answers.summary).toContain('Postcode 4810')
+    expect(draft!.answers.summary).toContain('เป้าหมายการเรียน: เรียนภาษาอังกฤษ')
+    expect(draft!.answers.visa_interest).toBe('student') // the planner was used last
+  })
+
+  test('with no answers yet, LINE links open the normal chat and nothing is saved', async ({ page, context }) => {
+    await mockSupabase(page)
+    let saved = false
+    await page.route(`${FN}/save-draft`, async (r) => { saved = true; await r.fulfill({ json: { draftId: DRAFT } }) })
+    await context.route('https://line.me/**', (r) => r.fulfill({ contentType: 'text/html', body: '<p>line</p>' }))
+    await page.goto('/')
+    const line = page.locator('footer a[aria-label="LINE"]')
+    await line.scrollIntoViewIfNeeded()
+    const [popup] = await Promise.all([page.waitForEvent('popup'), line.click()])
+    await popup.waitForURL('https://line.me/ti/p/@beyondstudy')
+    expect(saved).toBe(false)
   })
 })

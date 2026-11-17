@@ -4,7 +4,7 @@
 
 - Owner request: 2026-11-17, "capture what the visitor filled in when they add our LINE account" (LIFF option).
 - The feature is off until `NEXT_PUBLIC_LIFF_ID` is set, so none of this text is visible on the public site yet.
-- The website itself gets **no new Thai text**: the Budget Planner keeps its existing "LINE: @beyondstudy" button.
+- The website itself gets **no new Thai text**. The LINE buttons are unchanged. The answer summaries are built from each tool's existing Thai question and option labels.
 - Where it appears: the form opens **inside LINE** after the visitor taps the LINE button on the Budget Planner result (or opens the LIFF link directly). LINE messages go to the student's chat and the staff group.
 - Tone: polite, uses ค่ะ only in greetings and the confirmation title. No promised reply time (removed "within 1 business day" because it isn't a confirmed service promise).
 - Screenshots: not captured yet (the page needs a real LIFF ID to render outside tests). Mocked e2e runs show the layout: `npx playwright test tests/e2e/line-leads.spec.ts`.
@@ -24,10 +24,14 @@
 | LIFF-009 | addFriend | Green button | Add us on LINE | เพิ่มเพื่อนใน LINE | Button |
 | LIFF-010 | fullName | Field label (required) | Full name | ชื่อ-นามสกุล | " *" appended |
 | LIFF-011 | nickname | Field label | Nickname | ชื่อเล่น | |
+| LIFF-034 | age | Field label (required) | Age (years) | อายุ (ปี) | " *" appended |
+| LIFF-035 | visa | Select label (required) | Visa you're interested in | วีซ่าที่สนใจ | " *" appended |
+| LIFF-036 | errors.age | Under age field | Please enter your age as a number, 15–70 | กรุณากรอกอายุเป็นตัวเลข 15–70 | Same range as Study Pathway Finder |
+| LIFF-037 | errors.visa_interest | Under visa field | Please choose a visa | กรุณาเลือกวีซ่าที่สนใจ | |
 | LIFF-012 | phone | Field label (required) | Phone number | เบอร์โทรศัพท์ | " *" appended |
 | LIFF-013 | email | Field label | Email (optional) | อีเมล (ไม่บังคับ) | |
 | LIFF-014 | level | Select label | Current education | ระดับการศึกษาปัจจุบัน | |
-| LIFF-015 | program | Select label | Interested in | หลักสูตรที่สนใจ | |
+| LIFF-015 | program | Select label, shown only when visa = student | If studying, which course? | ถ้าเรียน สนใจหลักสูตรไหน | |
 | LIFF-016 | intake | Select label | Preferred start | อยากเริ่มเรียนช่วงไหน | |
 | LIFF-017 | message | Textarea label | Anything else? (optional) | คำถามเพิ่มเติม (ไม่บังคับ) | |
 | LIFF-018 | select | Empty select option | Select | เลือก | |
@@ -51,6 +55,11 @@
 
 | ID | Value (stored) | English | Thai (draft) | Notes |
 |---|---|---|---|---|
+| LIFF-052 | student | Student visa | วีซ่านักเรียน (Student visa) | Visa select |
+| LIFF-053 | whm | Work and Holiday (subclass 462) | Work and Holiday (วีซ่า 462) | Visa select. Site elsewhere uses "Working Holiday" / "วีซ่า 417 / 462" |
+| LIFF-054 | skilled | Skilled visa | วีซ่าแรงงานฝีมือ (Skilled visa) | Visa select. Explorer uses "Skilled Visa" |
+| LIFF-055 | employer | Employer sponsored | นายจ้างสนับสนุนวีซ่า (Employer sponsored) | Visa select |
+| LIFF-056 | unsure | Not sure yet | ยังไม่แน่ใจ | Visa select |
 | LIFF-040 | High school | High school | มัธยมปลาย | |
 | LIFF-041 | Bachelor (studying) | Studying a bachelor's degree | กำลังเรียนปริญญาตรี | |
 | LIFF-042 | Bachelor graduate | Bachelor's graduate | จบปริญญาตรีแล้ว | |
@@ -73,5 +82,9 @@
 | LIFF-062 | Student chat, closing | A counsellor will be in touch soon. Feel free to ask anything here. | ทีมที่ปรึกษาจะติดต่อกลับโดยเร็ว หากมีคำถามเพิ่มเติม พิมพ์ถามในแชทนี้ได้เลย | |
 | LIFF-063 | Tool name `budget-planner` | Budget study planner | แผนงบเรียนต่อ | Used in LIFF-061 |
 | LIFF-064 | Tool name fallback | Website | เว็บไซต์ | |
+| LIFF-065 | Tool name `website-tools` (several tools used) | Website tools | เครื่องมือบนเว็บไซต์ | Used in LIFF-061 |
+| LIFF-066 | Tool names `study-finder`, `visa-explorer`, `savings`, `postcode-checker` | Study pathway finder / Visa options explorer / Savings planner / Postcode checker | ค้นหาเส้นทางเรียน / ทางเลือกวีซ่า / วางแผนเงินเก็บ / เช็ก Postcode | Used in LIFF-061 when only that tool was used |
+
+The answer summary itself (in the form, the student message and the staff alert) reuses each tool's **existing** Thai headings, questions and option labels, joined as "คำถาม? คำตอบ" or "หัวข้อ: คำตอบ", with "■ " before each tool name and "→ " before the Visa Explorer result. Please check that this reads naturally; it doesn't change any on-site text.
 
 The staff-group alert is English only (internal).

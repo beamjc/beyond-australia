@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { explorerCopy, START_NODE, type CompareNode, type ResultNode } from "@/data/visaExplorer";
 import { fill } from "@/data/savingsCopy";
-import { getNode, progressFor, reasonsFor, type PathStep } from "@/lib/visaExplorer";
+import { explorerLeadAnswers, getNode, progressFor, reasonsFor, type PathStep } from "@/lib/visaExplorer";
+import { useRecordToolAnswers } from "@/hooks/use-record-tool-answers";
 import {
   ActionButton, AUTO_ADVANCE_MS, isToolAvailable, Card, CheckList, ConsultBlock, OfficialSourceLink, PathwayOption,
   RelatedTools, Sequence, ToolHeader, iconFor, useKeepTopInView, useT,
@@ -50,6 +51,8 @@ const VisaOptionsExplorer = ({ onHub, preset }: Props) => {
   const reset = () => setPath([{ node: START_NODE }]);
 
   const progress = node.kind === "question" ? progressFor(path) : null;
+  // LINE lead form (only when LIFF is configured): the path once it reaches a result.
+  useRecordToolAnswers("visa-explorer", explorerLeadAnswers(path));
 
   return (
     <div ref={topRef} className="scroll-mt-24">

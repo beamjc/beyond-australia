@@ -58,7 +58,7 @@ export function handler(fn: (req: Request) => Promise<Response>) {
   };
 }
 
-export async function readJson(req: Request, maxBytes = 16_000): Promise<Record<string, unknown>> {
+export async function readJson(req: Request, maxBytes = 32_000): Promise<Record<string, unknown>> {
   const text = await req.text();
   if (text.length > maxBytes) throw new HttpError(413, "Request too large");
   try {
@@ -78,7 +78,7 @@ export function str(v: unknown, max = 200): string | null {
 }
 
 // Keep only plain JSON (no huge blobs) for answers/source objects.
-export function plainObject(v: unknown, maxBytes = 8_000): Record<string, unknown> {
+export function plainObject(v: unknown, maxBytes = 16_000): Record<string, unknown> {
   if (!v || typeof v !== "object" || Array.isArray(v)) return {};
   const s = JSON.stringify(v);
   if (s.length > maxBytes) throw new HttpError(413, "Data too large");

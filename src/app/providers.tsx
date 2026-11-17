@@ -8,11 +8,16 @@ import { Toaster as Sonner } from '@/components/ui/sonner'
 import { LanguageProvider } from '@/i18n/LanguageProvider'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { rememberLeadSource } from '@/lib/leadDraft'
+import { installLineLeadInterceptor } from '@/lib/lineLeadInterceptor'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient())
-  // Keeps the visit's UTM/referrer for the LINE lead form (stays in this tab only).
-  useEffect(() => { rememberLeadSource() }, [])
+  // LINE lead form: keep the visit's UTM/referrer (this tab only), and send tool
+  // answers to the LIFF form from any @beyondstudy LINE link when LIFF is configured.
+  useEffect(() => {
+    rememberLeadSource()
+    return installLineLeadInterceptor()
+  }, [])
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>

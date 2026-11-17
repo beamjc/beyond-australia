@@ -6,6 +6,7 @@ Branch: `feat/line-liff-leads`. Nothing merged or deployed. Setup and decisions:
 - **Off by default:** nothing changes on the live site until `NEXT_PUBLIC_LIFF_ID` is set.
 - **Website:** Budget Planner's existing LINE button saves the answers as a draft and opens the LIFF form, falling back to the old link on error. No new visible text on the website.
 - **New:** `/line` LIFF form (TH/EN), Supabase tables + RLS (`supabase/line_leads.sql`, not applied), four Edge Functions (not deployed).
+- **Combined answers (owner, 2026-11-18):** Budget Planner, Study Pathway Finder, Visa Explorer, Savings and Postcode Checker save their answers in the tab. Any @beyondstudy LINE link sends all of them in one draft, via a single click handler, so no LINE button markup changed. The form now asks for age and visa interest, and asks for a course only for a student visa. Main fields: name, age, visa, course.
 - **Thai copy:** all new Thai is DRAFT, awaiting the editor: `docs/qa/thai-review-line-leads.md` (LIFF-001…064).
 - **Tests:** unit (`tests/unit/liffForm.test.ts`), Deno (`supabase/functions/_shared/line_test.ts`), e2e with mocked LINE (`tests/e2e/line-leads.spec.ts`). `playwright.config.ts` sets a dummy `NEXT_PUBLIC_LIFF_ID` for e2e.
 

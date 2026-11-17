@@ -75,6 +75,25 @@ Deno.test("input helpers trim, cap and reject oversized objects", () => {
   assertEquals(str("abcdef", 3), "abc");
   assertEquals(plainObject([1, 2]), {});
   let threw = false;
-  try { plainObject({ big: "x".repeat(9000) }); } catch { threw = true; }
+  try { plainObject({ big: "x".repeat(17000) }); } catch { threw = true; }
   assert(threw);
+});
+
+Deno.test("staff alert leads with name, age, visa and course, then the website answers", async () => {
+  const { staffMessage } = await import("./messages.ts");
+  const [m] = staffMessage({
+    isNew: true, fullName: "Nong Test", nickname: "Nong", age: 26, visaInterest: "student",
+    lineName: "Nong", phone: "0812345678", email: null, programInterest: "Master", intake: "Jan–Mar 2027",
+    currentLevel: null, tool: "website-tools", summary: "■ A\na", message: null,
+    source: { utm_source: "facebook" }, isFriend: true, marketingConsent: false,
+  });
+  const lines = String(m.text).split("\n");
+  assertEquals(lines.slice(1, 5), ["Name: Nong Test (Nong)", "Age: 26", "Visa: Student visa", "Course: Master"]);
+  assert(String(m.text).endsWith("Website answers:\n■ A\na"));
+  const [whm] = staffMessage({
+    isNew: true, fullName: "A", nickname: null, age: 22, visaInterest: "whm", lineName: null, phone: "0812345678",
+    email: null, programInterest: null, intake: null, currentLevel: null, tool: null, summary: null, message: null,
+    source: {}, isFriend: false, marketingConsent: false,
+  });
+  assert(!String(whm.text).includes("Course:"));
 });

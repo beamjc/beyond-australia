@@ -21,7 +21,7 @@ import { useLanguage } from "@/i18n/LanguageProvider";
 import { PLANNER_DATA_UPDATED } from "@/data/studyVisaRules";
 import { formatMonthYear } from "@/lib/plannerDates";
 import { formatLineMessage } from "@/lib/lineMessage";
-import type { LeadDraft } from "@/lib/leadDraft";
+import { useRecordToolAnswers } from "@/hooks/use-record-tool-answers";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -87,6 +87,9 @@ const BudgetStudyPlanner = () => {
   // accumulated rounding drift (฿800,000 → $34,072 → ฿800,011).
   const [budgetAUD, setBudgetAUD] = useState<number>(800_000 / DEFAULT_FX_THB_PER_AUD);
   const [age, setAge] = useState<number>(24);
+  // LINE lead form only: whether the visitor has used the inputs / moved the age slider.
+  const [engaged, setEngaged] = useState(false);
+  const [ageTouched, setAgeTouched] = useState(false);
   const [english, setEnglish] = useState<EnglishLevel>("5.0");
   const [goal, setGoal] = useState<Goal>("he");
   const rate = DEFAULT_FX_THB_PER_AUD;
@@ -277,26 +280,34 @@ const BudgetStudyPlanner = () => {
     ...(goal === "short" ? [{ label: "ระยะเวลาที่ต้องเรียนภาษาเพิ่ม", value: `${shortWeeks} สัปดาห์` }] : []),
   ]);
 
-  // For the LINE lead form (only used when LIFF is configured): the same answers,
-  // plus the course type mapped to the form's "interested in" options.
-  const leadDraft: LeadDraft = {
-    tool: "budget-planner",
-    answers: {
-      summary: lineMessage,
-      program_interest:
-        goal === "english" ? "English course"
-        : goal === "vet" ? "Diploma / VET"
-        : goal === "short" ? "Short course"
-        : degreeLevel === "master" ? "Master" : "Bachelor",
-      goal,
-      degree_level: goal === "he" ? degreeLevel : null,
-      budget_aud: Math.round(budgetAUD),
-      currency,
-      age,
-      english: goal !== "english" ? english : null,
-      location,
-    },
-  };
+  // For the LINE lead form (used only when LIFF is configured): saved once the
+  // visitor has a result (wizard done on phones, or any input touched on desktop).
+  // Age is sent only if they set it, not the slider's default.
+  useRecordToolAnswers(
+    "budget-planner",
+    wizDone || (engaged && !belowLg)
+      ? {
+          title: "วางแผนงบเรียนต่อออสเตรเลียเบื้องต้น",
+          lines: lineMessage.split("\n"),
+          age: wizDone || ageTouched ? age : null,
+          visaInterest: "student",
+          course:
+            goal === "english" ? "English course"
+            : goal === "vet" ? "Diploma / VET"
+            : goal === "short" ? "Short course"
+            : degreeLevel === "master" ? "Master" : "Bachelor",
+          data: {
+            goal,
+            degree_level: goal === "he" ? degreeLevel : null,
+            budget_aud: Math.round(budgetAUD),
+            currency,
+            age: wizDone || ageTouched ? age : null,
+            english: goal !== "english" ? english : null,
+            location,
+          },
+        }
+      : null,
+  );
 
   const fmtMoney = (aud: number) => (currency === "AUD" ? fmtAUD(aud) : fmtTHB(aud * rate));
 
@@ -307,7 +318,7 @@ const BudgetStudyPlanner = () => {
 
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Inputs */}
-        <Card ref={inputsRef} className="lg:col-span-2 self-start rounded-2xl border-border/60 bg-gradient-to-br from-background to-muted/40 shadow-sm">
+        <Card ref={inputsRef} onPointerDownCapture={() => setEngaged(true)} onKeyDownCapture={() => setEngaged(true)} className="lg:col-span-2 self-start rounded-2xl border-border/60 bg-gradient-to-br from-background to-muted/40 shadow-sm">
           {/* Outside CardContent: as a space-y child it would add a top margin to
               the first input group on desktop, where it is hidden. */}
           <div className="px-5 pt-5 sm:px-6 sm:pt-6 lg:hidden">
@@ -437,7 +448,7 @@ const BudgetStudyPlanner = () => {
                 </Label>
                 <span className={valueChip}>{age} ปี</span>
               </div>
-              <Slider value={[age]} min={15} max={50} step={1} onValueChange={([v]) => setAge(v)} aria-labelledby="bsp-age-label" />
+              <Slider value={[age]} min={15} max={50} step={1} onValueChange={([v]) => { setAge(v); setAgeTouched(true); }} aria-labelledby="bsp-age-label" />
             </div>
 
             {goal !== "english" && (
@@ -643,7 +654,7 @@ const BudgetStudyPlanner = () => {
             </motion.div>
           </AnimatePresence>
 
-          <BSCConsultationCTA illustration={ART.consult} lineMessage={lineMessage} leadDraft={leadDraft} />
+          <BSCConsultationCTA illustration={ART.consult} lineMessage={lineMessage} />
         </div>
       </div>
 

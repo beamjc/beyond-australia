@@ -13,7 +13,7 @@ import { CheckCircle2, Loader2, MessageCircle, TriangleAlert } from "lucide-reac
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { LIFF_ID, functionsUrl } from "@/lib/leadDraft";
 import { LINE_URL } from "@/components/shared/BSCConsultationCTA";
-import { buildIntakes, isValidEmail, isValidPhone, LEVEL_OPTIONS, PROGRAM_OPTIONS, withValue } from "@/lib/liffForm";
+import { buildIntakes, isValidAge, isValidEmail, isValidPhone, LEVEL_OPTIONS, PROGRAM_OPTIONS, VISA_OPTIONS, withValue } from "@/lib/liffForm";
 
 /* Minimal typing for the LIFF SDK loaded from LINE's CDN. */
 interface Liff {
@@ -38,10 +38,10 @@ type Session = {
   isFriend: boolean;
   returning: boolean;
   draft: { tool: string; summary: string | null } | null;
-  prefill: Record<"full_name" | "nickname" | "phone" | "email" | "current_level" | "program_interest" | "intake", string | null>;
+  prefill: Record<"full_name" | "nickname" | "phone" | "email" | "current_level" | "program_interest" | "intake" | "visa_interest", string | null> & { age: number | null };
 };
 
-type FieldKey = "full_name" | "phone" | "email" | "consent";
+type FieldKey = "full_name" | "age" | "visa_interest" | "phone" | "email" | "consent";
 type View = "loading" | "error" | "form" | "done";
 
 const T = {
@@ -57,10 +57,12 @@ const T = {
     addFriend: "เพิ่มเพื่อนใน LINE",
     fullName: "ชื่อ-นามสกุล",
     nickname: "ชื่อเล่น",
+    age: "อายุ (ปี)",
+    visa: "วีซ่าที่สนใจ",
     phone: "เบอร์โทรศัพท์",
     email: "อีเมล (ไม่บังคับ)",
     level: "ระดับการศึกษาปัจจุบัน",
-    program: "หลักสูตรที่สนใจ",
+    program: "ถ้าเรียน สนใจหลักสูตรไหน",
     intake: "อยากเริ่มเรียนช่วงไหน",
     message: "คำถามเพิ่มเติม (ไม่บังคับ)",
     select: "เลือก",
@@ -71,6 +73,8 @@ const T = {
     sending: "กำลังส่ง…",
     errors: {
       full_name: "กรุณากรอกชื่อ",
+      age: "กรุณากรอกอายุเป็นตัวเลข 15–70",
+      visa_interest: "กรุณาเลือกวีซ่าที่สนใจ",
       phone: "กรุณากรอกเบอร์โทรให้ถูกต้อง",
       email: "รูปแบบอีเมลไม่ถูกต้อง",
       consent: "กรุณาติ๊กยินยอมก่อนส่งข้อมูล",
@@ -94,10 +98,12 @@ const T = {
     addFriend: "Add us on LINE",
     fullName: "Full name",
     nickname: "Nickname",
+    age: "Age (years)",
+    visa: "Visa you're interested in",
     phone: "Phone number",
     email: "Email (optional)",
     level: "Current education",
-    program: "Interested in",
+    program: "If studying, which course?",
     intake: "Preferred start",
     message: "Anything else? (optional)",
     select: "Select",
@@ -108,6 +114,8 @@ const T = {
     sending: "Sending…",
     errors: {
       full_name: "Please enter your name",
+      age: "Please enter your age as a number, 15–70",
+      visa_interest: "Please choose a visa",
       phone: "Please enter a valid phone number",
       email: "Please check your email",
       consent: "Please tick to agree before sending",
@@ -158,6 +166,7 @@ export default function LiffLeadForm() {
   const [formError, setFormError] = useState("");
   const [sending, setSending] = useState(false);
   const [friendAtDone, setFriendAtDone] = useState(false);
+  const [visa, setVisa] = useState("");
   const draftId = useRef<string | null>(null);
   const started = useRef(false);
 
@@ -201,6 +210,7 @@ export default function LiffLeadForm() {
       const s = await api<Session>("liff-session", { idToken, draftId: draftId.current });
       store.del(RELOGIN_KEY);
       setSession(s);
+      setVisa(s.prefill.visa_interest ?? "");
       setView("form");
     } catch (e) {
       if (e instanceof ApiError && e.status === 401 && relogin()) return;
@@ -222,13 +232,16 @@ export default function LiffLeadForm() {
     setFormError("");
     const fd = new FormData(e.currentTarget);
     const form = Object.fromEntries(
-      ["full_name", "nickname", "phone", "email", "current_level", "program_interest", "intake", "message"]
+      ["full_name", "nickname", "age", "visa_interest", "phone", "email", "current_level", "program_interest", "intake", "message"]
         .map((k) => [k, String(fd.get(k) ?? "")]),
     );
     const consent = { privacy: fd.get("consent_privacy") === "on", marketing: fd.get("consent_marketing") === "on" };
 
     const errs: Partial<Record<FieldKey, boolean>> = {};
     if (!form.full_name.trim()) errs.full_name = true;
+    if (!isValidAge(form.age)) errs.age = true;
+    if (!form.visa_interest) errs.visa_interest = true;
+    if (form.visa_interest !== "student") form.program_interest = "";
     if (!isValidPhone(form.phone)) errs.phone = true;
     if (form.email.trim() && !isValidEmail(form.email)) errs.email = true;
     if (!consent.privacy) errs.consent = true;
@@ -348,6 +361,26 @@ export default function LiffLeadForm() {
                 <input id="nickname" name="nickname" autoComplete="nickname" maxLength={60}
                   defaultValue={session.prefill.nickname ?? ""} className={fieldClass} />
               </Field>
+              <Field id="age" label={`${t.age} *`} error={errors.age ? t.errors.age : ""}>
+                <input id="age" name="age" type="number" inputMode="numeric" min={15} max={70} required
+                  defaultValue={session.prefill.age ?? ""} className={fieldClass}
+                  aria-invalid={errors.age || undefined} aria-describedby={errors.age ? "age-error" : undefined}
+                  onInput={() => clearError("age")} />
+              </Field>
+              <Field id="visa_interest" label={`${t.visa} *`} error={errors.visa_interest ? t.errors.visa_interest : ""}>
+                <select id="visa_interest" name="visa_interest" value={visa} required className={fieldClass}
+                  aria-invalid={errors.visa_interest || undefined} aria-describedby={errors.visa_interest ? "visa_interest-error" : undefined}
+                  onChange={(e) => { setVisa(e.target.value); clearError("visa_interest"); }}>
+                  <option value="">{t.select}</option>
+                  {withValue(VISA_OPTIONS, session.prefill.visa_interest).map((o) => <option key={o.value} value={o.value}>{o[language]}</option>)}
+                </select>
+              </Field>
+              {visa === "student" && (
+                <Field id="program_interest" label={t.program}>
+                  <Select id="program_interest" placeholder={t.select} lang={language}
+                    options={withValue(PROGRAM_OPTIONS, session.prefill.program_interest)} value={session.prefill.program_interest} />
+                </Field>
+              )}
               <Field id="phone" label={`${t.phone} *`} error={errors.phone ? t.errors.phone : ""}>
                 <input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={30} required
                   placeholder="08x xxx xxxx / +61 4xx xxx xxx"
@@ -364,10 +397,6 @@ export default function LiffLeadForm() {
               <Field id="current_level" label={t.level}>
                 <Select id="current_level" placeholder={t.select} lang={language}
                   options={withValue(LEVEL_OPTIONS, session.prefill.current_level)} value={session.prefill.current_level} />
-              </Field>
-              <Field id="program_interest" label={t.program}>
-                <Select id="program_interest" placeholder={t.select} lang={language}
-                  options={withValue(PROGRAM_OPTIONS, session.prefill.program_interest)} value={session.prefill.program_interest} />
               </Field>
               <Field id="intake" label={t.intake}>
                 <Select id="intake" placeholder={t.select} lang={language}

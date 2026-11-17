@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
+import { useRecordToolAnswers } from "@/hooks/use-record-tool-answers";
 import { fill, savingsCopy as c } from "@/data/savingsCopy";
 import { finderCopy } from "@/data/studyFinder";
 import { readinessCopy } from "@/data/visaReadiness";
@@ -57,6 +58,27 @@ const SavingsCalculator = () => {
   }, []);
 
   const goalAUD = goalInCurrency(goal, "AUD", rate);
+
+  // LINE lead form (only when LIFF is configured): saved once the visitor has
+  // used the inputs, so the defaults are never sent as their answers.
+  const [engaged, setEngaged] = useState(false);
+  useRecordToolAnswers(
+    "savings",
+    engaged
+      ? {
+          title: c.title.th,
+          lines: [
+            `${c.goalLabel.th} ${goal.typedIn === "AUD" ? fmtA(goalAUD) : fmtB(goalInCurrency(goal, "THB", rate))}`,
+            `${c.durationLabel.th} ${yearsText(years, "th")}`,
+            visaType === "student" ? c.visaStudentSub.th : c.visaWhmSub.th,
+            `${c.incomeLabel.th}: ${fmtA(income)}`,
+            `${c.expensesLabel.th}: ${fmtA(monthly)}`,
+          ],
+          visaInterest: visaType === "student" ? "student" : "whm",
+          data: { visa_type: visaType, goal_aud: Math.round(goalAUD), years, income_aud: income, monthly_expenses_aud: monthly },
+        }
+      : null,
+  );
   const plan = useMemo(
     () => computeSavingsPlan({ visaType, annualIncome: income, monthlyExpenses: monthly, goalAUD, years }),
     [visaType, income, monthly, goalAUD, years],
@@ -119,7 +141,7 @@ const SavingsCalculator = () => {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-6 items-start">
         {/* 1–5: inputs */}
-        <div ref={inputsRef} className="scroll-mt-20 lg:col-start-1">
+        <div ref={inputsRef} onPointerDownCapture={() => setEngaged(true)} onKeyDownCapture={() => setEngaged(true)} className="scroll-mt-20 lg:col-start-1">
           {/* Outside the space-y list: as its first child it would add a top
               margin to the first card on desktop, where it is hidden. */}
           <div className="mb-4 lg:hidden">

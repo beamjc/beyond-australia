@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react";
+import { useRecordToolAnswers } from "@/hooks/use-record-tool-answers";
 import { motion, useReducedMotion } from "framer-motion";
 import { Search, CheckCircle2, XCircle, ExternalLink, AlertTriangle, MinusCircle } from "lucide-react";
 import {
@@ -85,6 +86,21 @@ const PostcodeChecker = () => {
   const reduceMotion = useReducedMotion();
   // NT postcodes start with 0; show "872" as "0872" in the result.
   const shown = postcode.padStart(4, "0");
+
+  // LINE lead form (only when LIFF is configured): the last postcode checked.
+  useRecordToolAnswers(
+    "postcode-checker",
+    searched && result
+      ? {
+          title: th.title,
+          lines: result.eligible
+            ? [th.listedHeading(shown), ...result.work.map(({ type }) => `- ${th.work[type].title}`)]
+            : [th.notListedHeading(shown)],
+          visaInterest: "whm",
+          data: { postcode: shown, eligible: result.eligible, work: result.work.map((w) => w.type) },
+        }
+      : null,
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

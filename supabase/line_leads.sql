@@ -12,7 +12,7 @@ create extension if not exists pgcrypto;
 --    Drafts should hold tool answers only, not contact details.
 create table public.lead_drafts (
   id          text primary key,
-  tool        text not null,                       -- e.g. 'eligibility-checker'
+  tool        text not null,                       -- 'budget-planner', or 'website-tools' when several were used
   answers     jsonb not null default '{}'::jsonb,  -- tool inputs and results
   source      jsonb not null default '{}'::jsonb,  -- utm_*, referrer, landing page
   created_at  timestamptz not null default now(),
@@ -34,10 +34,12 @@ create table public.leads (
 
   full_name        text,
   nickname         text,
+  age              smallint check (age between 15 and 70),
+  visa_interest    text check (visa_interest in ('student','whm','skilled','employer','unsure')),
   phone            text,
   email            text,
   current_level    text,                 -- current education level
-  program_interest text,
+  program_interest text,                 -- course type, when visa_interest = 'student'
   intake           text,
   message          text,
 
@@ -59,6 +61,7 @@ create table public.leads (
 );
 
 create index leads_status_idx on public.leads (status, created_at desc);
+create index leads_visa_idx on public.leads (visa_interest, created_at desc);
 
 -- 3. Submissions: every form submit, kept as history (a lead may submit
 --    several times, e.g. after using different tools).

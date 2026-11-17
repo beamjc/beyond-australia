@@ -5,7 +5,20 @@ import type { LineMessage } from "./line.ts";
 export const TOOL_LABELS: Record<string, { th: string; en: string }> = {
   // Thai labels pending editor review: docs/qa/thai-review-line-leads.md
   "budget-planner": { th: "แผนงบเรียนต่อ", en: "Budget study planner" },
+  "website-tools": { th: "เครื่องมือบนเว็บไซต์", en: "Website tools" },
+  "study-finder": { th: "ค้นหาเส้นทางเรียน", en: "Study pathway finder" },
+  "visa-explorer": { th: "ทางเลือกวีซ่า", en: "Visa options explorer" },
+  "savings": { th: "วางแผนเงินเก็บ", en: "Savings planner" },
+  "postcode-checker": { th: "เช็ก Postcode", en: "Postcode checker" },
   "contact": { th: "เว็บไซต์", en: "Website" },
+};
+
+export const VISA_LABELS: Record<string, string> = {
+  student: "Student visa",
+  whm: "Work and Holiday (462)",
+  skilled: "Skilled visa",
+  employer: "Employer sponsored",
+  unsure: "Not sure yet",
 };
 
 export function toolLabel(tool: string | null) {
@@ -40,6 +53,8 @@ type StaffMsgInput = {
   isNew: boolean;
   fullName: string | null;
   nickname: string | null;
+  age: number | null;
+  visaInterest: string | null;
   lineName: string | null;
   phone: string | null;
   email: string | null;
@@ -62,16 +77,19 @@ export function staffMessage(i: StaffMsgInput): LineMessage[] {
   const lines = [
     i.isNew ? "🔔 New lead" : "🔁 Returning lead (submitted again)",
     `Name: ${i.fullName ?? "-"}${i.nickname ? ` (${i.nickname})` : ""}`,
+    `Age: ${i.age ?? "-"}`,
+    `Visa: ${(i.visaInterest && VISA_LABELS[i.visaInterest]) || "-"}`,
+    i.visaInterest === "student" ? `Course: ${i.programInterest ?? "-"}` : "",
     `LINE: ${i.lineName ?? "-"}${i.isFriend ? "" : "  ⚠️ not a friend, can't message on LINE"}`,
     `Phone: ${i.phone ?? "-"}`,
     i.email ? `Email: ${i.email}` : "",
-    `Interested in: ${i.programInterest ?? "-"}`,
     `Intake: ${i.intake ?? "-"}`,
     i.currentLevel ? `Current level: ${i.currentLevel}` : "",
-    `From: ${toolLabel(i.tool).en}${i.summary ? `: ${i.summary}` : ""}`,
+    `From: ${toolLabel(i.tool).en}`,
     `Source: ${src}`,
     `Marketing consent: ${i.marketingConsent ? "yes" : "no"}`,
     i.message ? `\nMessage: ${i.message}` : "",
+    i.summary ? `\nWebsite answers:\n${i.summary}` : "",
   ].filter(Boolean);
 
   return [{ type: "text", text: lines.join("\n").slice(0, 5000) }];

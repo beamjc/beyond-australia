@@ -16,7 +16,16 @@ export const LEVEL_OPTIONS: Option[] = [
   { value: "Working", th: "ทำงานแล้ว", en: "Working" },
 ];
 
-// Values match what the Budget Planner sends (see BudgetStudyPlanner leadDraft).
+// Values match VisaInterest in src/lib/visitorAnswers.ts.
+export const VISA_OPTIONS: Option[] = [
+  { value: "student", th: "วีซ่านักเรียน (Student visa)", en: "Student visa" },
+  { value: "whm", th: "Work and Holiday (วีซ่า 462)", en: "Work and Holiday (subclass 462)" },
+  { value: "skilled", th: "วีซ่าแรงงานฝีมือ (Skilled visa)", en: "Skilled visa" },
+  { value: "employer", th: "นายจ้างสนับสนุนวีซ่า (Employer sponsored)", en: "Employer sponsored" },
+  { value: "unsure", th: "ยังไม่แน่ใจ", en: "Not sure yet" },
+];
+
+// Values match what the website tools send (see BudgetStudyPlanner leadDraft).
 export const PROGRAM_OPTIONS: Option[] = [
   { value: "English course", th: "เรียนภาษาอังกฤษ", en: "English course" },
   { value: "Short course", th: "คอร์สระยะสั้น / เพิ่มทักษะ", en: "Short course / upskilling" },
@@ -64,4 +73,11 @@ export function isValidPhone(v: string): boolean {
 
 export function isValidEmail(v: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+}
+
+/** Whole years, 15–70 (same range as the Study Pathway Finder). */
+export function isValidAge(v: string): boolean {
+  if (!/^\d{1,2}$/.test(v.trim())) return false;
+  const n = Number(v);
+  return n >= 15 && n <= 70;
 }
