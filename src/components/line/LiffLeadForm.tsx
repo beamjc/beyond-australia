@@ -12,7 +12,11 @@ import Image from "next/image";
 import { CheckCircle2, Loader2, MessageCircle, TriangleAlert } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { LIFF_ID, functionsUrl } from "@/lib/leadDraft";
-import { LINE_URL } from "@/components/shared/BSCConsultationCTA";
+// The LINE Official Account linked to the LIFF app. Set NEXT_PUBLIC_LINE_OA_ID to a
+// test account (e.g. "@123abcde") while testing; the website's own LINE buttons
+// always stay on @beyondstudy.
+const OA_ID = process.env.NEXT_PUBLIC_LINE_OA_ID || "@beyondstudy";
+const LINE_URL = `https://line.me/R/ti/p/${encodeURIComponent(OA_ID).replace(/^%40/, "@")}`;
 import { buildIntakes, isValidAge, isValidEmail, isValidPhone, LEVEL_OPTIONS, PROGRAM_OPTIONS, VISA_OPTIONS, withValue } from "@/lib/liffForm";
 
 /* Minimal typing for the LIFF SDK loaded from LINE's CDN. */
@@ -315,7 +319,7 @@ export default function LiffLeadForm() {
               {t.retry}
             </button>
             <a href={LINE_URL} className="mt-2.5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl font-semibold text-white" style={{ backgroundColor: "#00B900" }}>
-              <MessageCircle className="h-4 w-4" aria-hidden /> LINE: @beyondstudy
+              <MessageCircle className="h-4 w-4" aria-hidden /> LINE: {OA_ID}
             </a>
           </div>
         )}

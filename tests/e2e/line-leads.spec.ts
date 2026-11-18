@@ -58,7 +58,7 @@ test.describe('LIFF lead form (/line)', () => {
     expect(await page.evaluate(() => (window as unknown as { __liffCalls: unknown[] }).__liffCalls)).toContainEqual(['init', LIFF_ID])
 
     await expect(page.getByText('ELICOS: 40 สัปดาห์')).toBeVisible()
-    await expect(page.getByRole('link', { name: /เพิ่มเพื่อนใน LINE/ })).toHaveAttribute('href', 'https://line.me/ti/p/@beyondstudy')
+    await expect(page.getByRole('link', { name: /เพิ่มเพื่อนใน LINE/ })).toHaveAttribute('href', 'https://line.me/R/ti/p/@beyondstudy')
     await expect(page.locator('#program_interest')).toHaveValue('English course')
     await expect(page.locator('#nickname')).toHaveValue('Nong')
     await expect(page.locator('#age')).toHaveValue('26')

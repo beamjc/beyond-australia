@@ -42,6 +42,20 @@ If tools disagree, the most recently used one wins for age, visa and course. The
 | `src/lib/lineLeadInterceptor.ts` | One click handler (installed in `src/app/providers.tsx`) for every @beyondstudy LINE link. |
 | `src/lib/leadDraft.ts` | UTM capture, save draft, open LIFF. |
 
+## Testing with your own LINE test account first
+
+You can build and test the whole flow with a free LINE Official Account you own, before touching @beyondstudy:
+
+1. Create the test account in LINE Official Account Manager, then turn on Messaging API (Settings → Messaging API) under a **test provider**, e.g. "Beyond (test)".
+2. Follow the setup below with the test account. Leave the LIFF channel in **Developing** mode: only channel admins and the testers you add in the console can log in, which is ideal for testing.
+3. Set `NEXT_PUBLIC_LINE_OA_ID=@<test-oa-id>`, so the form's "Add us on LINE" buttons point at the test account. The website's own LINE buttons stay on @beyondstudy, and tapping them still opens your test LIFF form.
+4. Use your own LINE group as the "staff" group.
+
+**Switching to @beyondstudy later is a fresh setup, not a rename:**
+- LINE gives each user a different ID per provider, so leads saved during testing won't match real users. Empty the test data first: `truncate lead_submissions, leads, lead_drafts, line_groups cascade;`
+- Create the LIFF app again under the real account's provider, then replace `LIFF_CHANNEL_ID`, `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET`, `STAFF_GROUP_ID`, `NEXT_PUBLIC_LIFF_ID`, and unset `NEXT_PUBLIC_LINE_OA_ID`.
+- Point the real account's webhook at the same `line-webhook` URL. The code doesn't change.
+
 ## Setup checklist
 
 ### 1. LINE Developers Console (needs an admin of the @beyondstudy OA)
