@@ -1,3 +1,13 @@
+# Change log — Facebook posts as articles (2026-11-18)
+
+Branch: `feat/facebook-blog`. Nothing merged or deployed. Setup: `docs/facebook-blog-setup.md`.
+
+- **Owner decision (2026-11-18):** pull Page posts into Articles; `#BeyondBlog` posts publish automatically, others arrive as drafts for staff review.
+- **Scope note:** this adds admin UI, schema (`supabase/facebook_blog.sql`, not applied) and Edge Functions (not deployed), which the QA-pass rules put out of scope; the owner asked for this feature.
+- **Public pages:** an article with an empty English title now falls back to the Thai text with a "Thai only" label in English mode, instead of showing a blank title. That applies to manual articles too. Imported articles get a "View the original post on Facebook" link.
+- **Thai copy:** one new string (FB-001), DRAFT pending the editor: `docs/qa/thai-review-facebook-blog.md`.
+- **Tests:** Deno (`supabase/functions/_shared/facebook_test.ts`), unit (`tests/unit/articleText.test.ts`), e2e with mocked rows (`tests/e2e/facebook-articles.spec.ts`).
+
 # Change log — QA pass 1 (2026-09-23)
 
 Branch: `claude/tender-tesla-7g4bgt`. Nothing merged or deployed.

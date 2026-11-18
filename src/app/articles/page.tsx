@@ -8,6 +8,7 @@ import Navbar from '@/components/shared/Navbar'
 import Footer from '@/components/shared/Footer'
 import ArticleCard from '@/components/articles/ArticleCard'
 import { useLanguage } from '@/i18n/LanguageProvider'
+import { localizedArticle } from '@/lib/articleText'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Search } from 'lucide-react'
@@ -34,7 +35,7 @@ export default function ArticlesPage() {
   const allTags = Array.from(new Set(articles.flatMap((a) => a.tags ?? [])))
 
   const filtered = articles.filter((a) => {
-    const title = (language === 'th' ? a.title_th : a.title_en) ?? ''
+    const title = localizedArticle(a, language).title
     const matchSearch = title.toLowerCase().includes(search.toLowerCase())
     const matchTag = !activeTag || (a.tags ?? []).includes(activeTag)
     return matchSearch && matchTag

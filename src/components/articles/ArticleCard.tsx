@@ -6,11 +6,11 @@ import { Calendar } from 'lucide-react'
 import { format } from 'date-fns'
 import { Article } from '@/types/article'
 import { useLanguage } from '@/i18n/LanguageProvider'
+import { localizedArticle } from '@/lib/articleText'
 
 const ArticleCard = ({ article }: { article: Article }) => {
   const { language } = useLanguage()
-  const title = language === 'th' ? article.title_th : article.title_en
-  const excerpt = language === 'th' ? article.excerpt_th : article.excerpt_en
+  const { title, excerpt, thaiOnly, lang } = localizedArticle(article, language)
 
   return (
     <Link href={`/articles/${article.slug}`} className="group block h-full">
@@ -21,13 +21,14 @@ const ArticleCard = ({ article }: { article: Article }) => {
           </div>
         )}
         <div className="p-5">
-          {(article.tags ?? []).length > 0 && (
+          {((article.tags ?? []).length > 0 || thaiOnly) && (
             <div className="flex flex-wrap gap-1.5 mb-3">
+              {thaiOnly && <Badge variant="outline" className="text-xs">Thai only</Badge>}
               {(article.tags ?? []).slice(0, 3).map((tag) => <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>)}
             </div>
           )}
-          <h3 className="font-display font-semibold text-lg leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">{title}</h3>
-          {excerpt && <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{excerpt}</p>}
+          <h3 lang={lang} className="font-display font-semibold text-lg leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">{title}</h3>
+          {excerpt && <p lang={lang} className="text-sm text-muted-foreground line-clamp-3 mb-4">{excerpt}</p>}
           {article.published_at && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Calendar className="w-3.5 h-3.5" />

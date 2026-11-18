@@ -9,7 +9,8 @@ import Navbar from '@/components/shared/Navbar'
 import Footer from '@/components/shared/Footer'
 import { useLanguage } from '@/i18n/LanguageProvider'
 import { Badge } from '@/components/ui/badge'
-import { Calendar, ArrowLeft } from 'lucide-react'
+import { Calendar, ArrowLeft, ExternalLink } from 'lucide-react'
+import { localizedArticle } from '@/lib/articleText'
 import { format } from 'date-fns'
 
 export default function ArticlePage() {
@@ -58,8 +59,8 @@ export default function ArticlePage() {
     </div>
   )
 
-  const title = language === 'th' ? article.title_th : article.title_en
-  const content = language === 'th' ? article.content_th : article.content_en
+  const { title, content, thaiOnly, lang } = localizedArticle(article, language)
+  const fromFacebook = article.source === 'facebook' && article.fb_permalink?.startsWith('https://www.facebook.com/')
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -77,19 +78,32 @@ export default function ArticlePage() {
               <img src={article.cover_image_url} alt={title} className="w-full h-full object-cover" />
             </div>
           )}
-          {(article.tags ?? []).length > 0 && (
+          {((article.tags ?? []).length > 0 || thaiOnly) && (
             <div className="flex flex-wrap gap-2 mb-4">
+              {thaiOnly && <Badge variant="outline">Thai only</Badge>}
               {(article.tags ?? []).map((tag) => <Badge key={tag} variant="secondary">{tag}</Badge>)}
             </div>
           )}
-          <h1 className="font-display font-bold text-3xl md:text-4xl leading-tight mb-4">{title}</h1>
+          <h1 lang={lang} className="font-display font-bold text-3xl md:text-4xl leading-tight mb-4">{title}</h1>
           {article.published_at && (
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-10 pb-8 border-b border-border">
               <Calendar className="w-4 h-4" />
               {format(new Date(article.published_at), 'MMMM d, yyyy')}
             </div>
           )}
-          <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: content ?? '' }} />
+          <div lang={lang} className="prose prose-lg max-w-none article-body" dangerouslySetInnerHTML={{ __html: content ?? '' }} />
+          {fromFacebook && (
+            <a
+              href={article.fb_permalink!}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-10 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-medium hover:bg-muted"
+            >
+              {/* Thai copy pending editor review: docs/qa/thai-review-facebook-blog.md */}
+              {language === 'th' ? 'ดูโพสต์ต้นฉบับบน Facebook' : 'View the original post on Facebook'}
+              <ExternalLink className="h-4 w-4" aria-hidden />
+            </a>
+          )}
         </div>
       </main>
       <Footer />

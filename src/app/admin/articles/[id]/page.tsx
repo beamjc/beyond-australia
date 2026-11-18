@@ -39,6 +39,8 @@ export default function AdminArticleEdit() {
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<'en' | 'th'>('en')
   const [form, setForm] = useState<FormState>(defaultForm)
+  // Imported from Facebook: the Thai text and photos come from the post.
+  const [fbPermalink, setFbPermalink] = useState<string | null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -46,6 +48,7 @@ export default function AdminArticleEdit() {
       setAuthChecked(true)
       if (!isNew) {
         supabase.from('articles').select('*').eq('id', id).single().then(({ data }) => {
+          if (data?.source === 'facebook') setFbPermalink(data.fb_permalink ?? '')
           if (data) setForm({
             title_en: data.title_en, title_th: data.title_th, slug: data.slug,
             excerpt_en: data.excerpt_en ?? '', excerpt_th: data.excerpt_th ?? '',
@@ -84,7 +87,10 @@ export default function AdminArticleEdit() {
       title_en: form.title_en, title_th: form.title_th,
       slug: form.slug || slugify(form.title_en),
       excerpt_en: form.excerpt_en || null, excerpt_th: form.excerpt_th || null,
-      content_en: form.content_en || null, content_th: form.content_th || null,
+      content_en: form.content_en || null,
+      // Facebook articles: the Thai body is generated from the post (videos,
+      // photo gallery) and the editor would drop parts of it, so it's not saved here.
+      ...(fbPermalink === null ? { content_th: form.content_th || null } : {}),
       cover_image_url: form.cover_image_url || null,
       tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
       is_published: isPublished,
@@ -132,6 +138,17 @@ export default function AdminArticleEdit() {
         </div>
       </header>
       <main className="container py-8">
+        {fbPermalink !== null && (
+          <div className="max-w-6xl mx-auto mb-6 rounded-lg border border-[#1877F2]/30 bg-[#1877F2]/5 p-4 text-sm">
+            <p className="font-medium">Imported from Facebook</p>
+            <p className="mt-1 text-muted-foreground">
+              The Thai title, text and photos come from the Facebook post and are replaced whenever the post is edited there.
+              The Thai body can&apos;t be edited here: edit the post on Facebook instead. You can add an English version,
+              and publishing or hiding it here sticks.
+              {fbPermalink && <> <a href={fbPermalink} target="_blank" rel="noopener noreferrer" className="text-primary underline">Open the post</a></>}
+            </p>
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="lg:col-span-2 space-y-6">
             <div className="flex gap-0 border-b border-border">
