@@ -7,5 +7,16 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
+  },
+  // Staging copy for testing (LINE LIFF etc.): npm run deploy:staging
+  // -> https://beyond-australia-staging.<account>.workers.dev. The live site is untouched.
+  "env": {
+    "staging": {
+      "name": "beyond-australia-staging",
+      "assets": {
+        "directory": ".open-next/assets",
+        "binding": "ASSETS"
+      }
+    }
   }
 }

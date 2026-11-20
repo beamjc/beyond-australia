@@ -9,6 +9,7 @@
     "lint": "next lint",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:staging": "bash scripts/deploy-staging.sh",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },

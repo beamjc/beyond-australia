@@ -50,6 +50,13 @@ You can build and test the whole flow with a free LINE Official Account you own,
 2. Follow the setup below with the test account. Leave the LIFF channel in **Developing** mode: only channel admins and the testers you add in the console can log in, which is ideal for testing.
 3. Set `NEXT_PUBLIC_LINE_OA_ID=@<test-oa-id>`, so the form's "Add us on LINE" buttons point at the test account. The website's own LINE buttons stay on @beyondstudy, and tapping them still opens your test LIFF form.
 4. Use your own LINE group as the "staff" group.
+5. **Staging site:** the LIFF endpoint needs the `/line` page online over HTTPS. Deploy the branch to a separate worker, so the live site isn't touched:
+   ```bash
+   cp .env.staging.example .env.staging.local   # fill in the anon key, LIFF ID, test OA ID
+   npx wrangler login                            # once
+   npm run deploy:staging
+   ```
+   This creates `https://beyond-australia-staging.<account>.workers.dev`. Use `<that URL>/line` as the LIFF endpoint, and the URL as `ALLOWED_ORIGINS`.
 
 **Switching to @beyondstudy later is a fresh setup, not a rename:**
 - LINE gives each user a different ID per provider, so leads saved during testing won't match real users. Empty the test data first: `truncate lead_submissions, leads, lead_drafts, line_groups cascade;`
