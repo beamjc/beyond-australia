@@ -22,5 +22,8 @@ done
 
 echo "Deploying branch $(git rev-parse --abbrev-ref HEAD) to STAGING…"
 npx opennextjs-cloudflare build
+# OPEN_NEXT_DEPLOY=true: newer wrangler versions otherwise hand "deploy" back to
+# opennextjs-cloudflare with the raw --env flag, which it rejects.
 # DRY_RUN=1 npm run deploy:staging builds but only prints the deploy command.
+export OPEN_NEXT_DEPLOY=true
 ${DRY_RUN:+echo} npx opennextjs-cloudflare deploy -- --env staging
