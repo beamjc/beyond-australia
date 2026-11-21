@@ -1,11 +1,10 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Route, Calculator, Shield, Search, Trophy, PiggyBank } from "lucide-react";
+import { Route, Calculator, Search, Trophy, PiggyBank } from "lucide-react";
 import PlanningPathwayHub, { type HubRequest } from "../plan/PlanningPathwayHub";
 import { HIDDEN_STUDY_TABS, PlanNavContext } from "../plan/shared";
 import FinancialCalculator from "./FinancialCalculator";
-import VisaStrengthAssessment from "./VisaStrengthAssessment";
 import BudgetStudyPlanner from "./BudgetStudyPlanner";
 import TopUniversities from "./TopUniversities";
 import SavingsCalculator from "./SavingsCalculator";
@@ -14,13 +13,12 @@ import { useLanguage } from "@/i18n/LanguageProvider";
 import type { TranslationKey } from "@/i18n/translations";
 import SectionHeader from "../shared/SectionHeader";
 
-const subTabs: { id: "courses" | "universities" | "options" | "calculator" | "savings" | "strength"; labelKey: TranslationKey; icon: typeof Search }[] = [
+const subTabs: { id: "courses" | "universities" | "options" | "calculator" | "savings"; labelKey: TranslationKey; icon: typeof Search }[] = [
   { id: "courses", labelKey: "study.tabs.courses", icon: Search },
   { id: "universities", labelKey: "study.tabs.universities", icon: Trophy },
   { id: "options", labelKey: "study.tabs.options", icon: Route },
   { id: "calculator", labelKey: "study.tabs.calculator", icon: Calculator },
   { id: "savings", labelKey: "study.tabs.savings", icon: PiggyBank },
-  { id: "strength", labelKey: "study.tabs.strength", icon: Shield },
 ];
 
 type SubTab = (typeof subTabs)[number]["id"];
@@ -124,9 +122,6 @@ const StudySection = () => {
         </div>
         <div role="tabpanel" id="study-panel-savings" aria-labelledby="study-tab-savings" hidden={activeTab !== "savings"}>
           <SavingsCalculator />
-        </div>
-        <div role="tabpanel" id="study-panel-strength" aria-labelledby="study-tab-strength" hidden={activeTab !== "strength"}>
-          <VisaStrengthAssessment />
         </div>
       </div>
     </section>

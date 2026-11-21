@@ -13,7 +13,7 @@ import { useT } from "../study/savings/shared";
 export { useT };
 
 /** Study tabs other tools can open (provided by StudySection). */
-export type StudyTabId = "courses" | "universities" | "options" | "calculator" | "savings" | "strength";
+export type StudyTabId = "courses" | "universities" | "options" | "calculator" | "savings";
 
 /**
  * Study tabs hidden for now (owner request 2026-10-05: hide the cost
@@ -37,11 +37,11 @@ export const iconFor: Record<IconKey, typeof Plane> = {
 };
 
 const toolIcon: Record<ToolId, typeof Plane> = {
-  studyFinder: Route, planner: Search, calculator: Calculator, savings: PiggyBank, strength: Shield, universities: Landmark,
+  studyFinder: Route, planner: Search, calculator: Calculator, savings: PiggyBank, universities: Landmark,
 };
 
 const toolTab: Partial<Record<ToolId, StudyTabId>> = {
-  planner: "courses", calculator: "calculator", savings: "savings", strength: "strength", universities: "universities",
+  planner: "courses", calculator: "calculator", savings: "savings", universities: "universities",
 };
 
 /** False for tools whose Study tab is hidden. */

@@ -9,11 +9,10 @@ import {
   nextStepCopy, pathwayInfo, qualificationOptions, timingOptions, type GoalId, type NextStepId, type PathwayId,
 } from "@/data/studyFinder";
 import { fill } from "@/data/savingsCopy";
-import type { Bi } from "@/data/visaReadiness";
-import type { ToolId } from "@/data/visaExplorer";
+import { readinessCopy, readinessFactors, type Bi } from "@/data/visaReadiness";
 import {
   emptyStudyAnswers, isValidAge, isValidExperience, recommendStudyPathway,
-  studyFinderLeadAnswers, type StudyAnswers, type StudyRecommendation,
+  studyFinderLeadAnswers, visaPrepPoints, type StudyAnswers, type StudyRecommendation,
 } from "@/lib/studyFinder";
 import {
   AUTO_ADVANCE_MS, Card, CheckList, PathwayOption, Sequence, ToolHeader,
@@ -228,6 +227,31 @@ const PathwayBlock = ({ p, rec, lead }: { p: PathwayId; rec: StudyRecommendation
   );
 };
 
+/** What to prepare for the student visa, based on the finder answers (replaces the old readiness tab). */
+const VisaPrep = ({ answers, rec }: { answers: StudyAnswers; rec: StudyRecommendation }) => {
+  const { t } = useT();
+  const points = visaPrepPoints(answers, rec)
+    .map((id) => readinessFactors.find((f) => f.id === id))
+    .filter((f): f is (typeof readinessFactors)[number] => !!f);
+  return (
+    <Card>
+      <p className="text-sm font-semibold text-foreground">{t(readinessCopy.priorityTitle)}</p>
+      {points.length === 0 ? (
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(readinessCopy.priorityEmpty)}</p>
+      ) : (
+        <ul className="mt-3 space-y-3">
+          {points.map((f) => (
+            <li key={f.id} className="rounded-xl bg-muted/40 p-3">
+              <p className="text-sm font-semibold text-foreground">{t(f.action.title)}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t(f.priority)}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+};
+
 const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswers; rec: StudyRecommendation; onRestart: () => void; onEdit: () => void }) => {
   const { t } = useT();
   useRecordToolAnswers("study-finder", studyFinderLeadAnswers(answers, rec));
@@ -280,6 +304,8 @@ const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswer
           <p className="mt-1 text-sm text-muted-foreground">{t(pathwayInfo[rec.alternative].desc)}</p>
         </Card>
       )}
+
+      <VisaPrep answers={answers} rec={rec} />
 
       <Card>
         <p className="text-sm font-semibold text-foreground">{t(c.nextTitle)}</p>

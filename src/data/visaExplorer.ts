@@ -10,7 +10,7 @@ import { officialLinks as L, visaFacts } from "./visaFacts";
 const AGE = visaFacts.whm462Thailand.ageRange.value;
 const PASS = visaFacts.skilledPointsTest.passMark.value;
 
-export type ToolId = "studyFinder" | "planner" | "calculator" | "savings" | "strength" | "universities";
+export type ToolId = "studyFinder" | "planner" | "calculator" | "savings" | "universities";
 export type IconKey = "plane" | "cap" | "briefcase" | "building" | "help" | "check" | "wallet" | "book";
 
 export type Action =
@@ -176,7 +176,7 @@ export const explorerNodes: ExplorerNode[] = [
       bi("ตรวจสอบเงื่อนไข Student Visa", "Check the Student visa requirements"),
     ],
     actions: [toStudy, { kind: "link", label: bi("ดูข้อมูลจาก Home Affairs", "See Home Affairs information"), href: L.student500, external: true }],
-    related: ["calculator", "strength"],
+    related: ["calculator"],
     sources: [HA(bi("Student visa (subclass 500)", "Student visa (subclass 500)"), L.student500)],
     consult: "study",
   },
@@ -270,7 +270,7 @@ export const explorerNodes: ExplorerNode[] = [
       bi("เงื่อนไขการได้รับ invitation", "Invitation requirements"),
     ],
     actions: [{ kind: "link", label: bi("เปิด Points Calculator ของ Home Affairs", "Open the Home Affairs points calculator"), href: L.pointsCalculator, external: true }],
-    related: ["strength"],
+    related: [],
     sources: [HA(bi("Points calculator", "Points calculator"), L.pointsCalculator), HA(bi("Skilled occupation list", "Skilled occupation list"), L.skilledOccupationList)],
     consult: "migration",
   },
@@ -425,7 +425,6 @@ export const toolLabels: Record<ToolId, Bi> = {
   planner: bi("วางแผนเรียน & งบประมาณ", "Study & budget planner"),
   calculator: bi("คำนวณค่าเรียน", "Estimate study costs"),
   savings: bi("วางแผนเงินเก็บ", "Plan your savings"),
-  strength: bi("เช็กความพร้อมก่อนยื่นวีซ่า", "Visa readiness check"),
   universities: bi("ค้นหามหาวิทยาลัย", "Find universities"),
 };
 

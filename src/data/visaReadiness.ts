@@ -1,4 +1,7 @@
-// Content for the Visa Readiness Check (Study → "strength" tab).
+// Content from the retired Visa Readiness Check (Study → "strength" tab, removed
+// at owner request 2026-11-21). Its per-factor guidance (action/priority) now
+// shows in the Study Pathway Finder result; readinessCopy is still used there
+// and by the Savings planner.
 // Scoring weights and directions are unchanged from the original Visa Strength
 // Assessment; see src/lib/visaReadiness.ts for the calculation.
 //

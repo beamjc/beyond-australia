@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { emptyStudyAnswers, recommendStudyPathway, scoreStudyAnswers, isValidAge, isValidExperience, minAnnualTuition, type StudyAnswers } from '@/lib/studyFinder'
+import { emptyStudyAnswers, recommendStudyPathway, scoreStudyAnswers, isValidAge, isValidExperience, minAnnualTuition, visaPrepPoints, type StudyAnswers } from '@/lib/studyFinder'
 
 const answers = (a: Partial<StudyAnswers>): StudyAnswers => ({ ...emptyStudyAnswers, age: '25', ...a })
 const th = (r: { th: string }[]) => r.map((x) => x.th)
@@ -102,5 +102,24 @@ describe('Study Pathway Finder — rules', () => {
     expect(['15', '70', '24'].map(isValidAge)).toEqual([true, true, true])
     expect(['', '0', '50'].map(isValidExperience)).toEqual([true, true, true])
     expect(['-1', '51', '2.5', 'abc'].map(isValidExperience)).toEqual([false, false, false, false])
+  })
+})
+
+describe('Study Pathway Finder — visa preparation points (from the retired readiness check)', () => {
+  const base = { ...emptyStudyAnswers, age: '25', english: '60to65', goals: ['qualification'], budget: 'over35k', interest: 'he', qualification: 'highSchool', timing: 'within6' } as StudyAnswers
+  it('shows nothing extra for a typical first-degree applicant', () => {
+    expect(visaPrepPoints(base, recommendStudyPathway(base))).toEqual([])
+  })
+  it('age from 30, career change, already in Australia', () => {
+    expect(visaPrepPoints({ ...base, age: '29' }, { showDowngradeNote: false })).toEqual([])
+    expect(visaPrepPoints({ ...base, age: '30' }, { showDowngradeNote: false })).toEqual(['age'])
+    expect(visaPrepPoints({ ...base, goals: ['career'] }, { showDowngradeNote: false })).toEqual(['fieldChange'])
+    expect(visaPrepPoints({ ...base, timing: 'inAustralia' }, { showDowngradeNote: false })).toEqual(['timeInAustralia'])
+  })
+  it('lower-level course follows the existing downgrade rule (degree holder shown VET)', () => {
+    const a = { ...base, qualification: 'master', interest: 'vet', goals: ['career'], budget: '10to20k' } as StudyAnswers
+    const rec = recommendStudyPathway(a)
+    expect(rec.showDowngradeNote).toBe(true)
+    expect(visaPrepPoints(a, rec)).toEqual(['downgrade', 'fieldChange'])
   })
 })

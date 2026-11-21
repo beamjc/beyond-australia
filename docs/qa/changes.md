@@ -298,3 +298,15 @@ Tests: e2e desktop + mobile, public + line-leads: 92 passed before the new asser
 5. Visa readiness check: owner raised removing it. Not changed yet; recommendation sent to the owner.
 
 Tests: e2e public + mobile + line-leads, desktop + mobile: 102 passed, 8 skipped. The savings test now checks there are no preset buttons, the expense slider defaults to 2000, and moving it to 2500 updates the result (Student: A$21,480).
+
+## 2026-11-21: Visa readiness check folded into the Study Pathway Finder (owner decision)
+
+- **Removed** the Study tab "เช็กความพร้อมก่อนยื่นวีซ่า" / "Visa Readiness Check": the 8 sliders and the readiness score. Study now has 4 visible tabs (calculator is still hidden). Deleted `VisaStrengthAssessment.tsx`, `study/readiness/*`, `lib/visaReadiness.ts` and its unit test; all are in git history if it needs to come back.
+- **Kept the useful part.** The Study Pathway Finder result now has a card, "สิ่งที่ควรเตรียมก่อนยื่นวีซ่า" (existing readiness heading). It lists each factor's existing action title and priority line, and only for the factors the finder answers trigger (`visaPrepPoints` in `lib/studyFinder.ts`):
+  - course level: the existing downgrade rule (bachelor/master holder shown VET)
+  - field change: goal "เปลี่ยนสายงาน / เพิ่มโอกาสด้านอาชีพ"
+  - time in Australia: timing "อยู่ที่ออสเตรเลียแล้ว"
+  - age: 30 or older (planning assumption; the old slider ran from "under 25" to "over 35")
+- When nothing is triggered, the card shows the existing readiness line "ยังไม่พบประเด็นที่ต้องเตรียมเป็นพิเศษ…".
+- Not carried over: study gap, visa history, supporting documents and post-study plans, because the finder doesn't ask about them. No new Thai: every string is existing readiness copy.
+- Tests: unit 99 passed (−6 scoring tests, +3 trigger tests). e2e desktop + mobile 102 passed, 8 skipped: the finder result shows the expected points, and the readiness tab is gone.

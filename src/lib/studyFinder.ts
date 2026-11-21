@@ -135,6 +135,23 @@ export function recommendStudyPathway(a: StudyAnswers): StudyRecommendation {
   };
 }
 
+/**
+ * Visa-preparation points carried over from the retired Visa Readiness Check
+ * (owner request 2026-11-21). Only factors the finder already asks about are
+ * used; study gap and visa history are not asked here. The age threshold sits
+ * between the old slider's "under 25" and "over 35" ends (planning assumption).
+ */
+export const VISA_PREP_AGE = 30;
+export type VisaPrepId = "age" | "downgrade" | "fieldChange" | "timeInAustralia";
+export function visaPrepPoints(a: StudyAnswers, rec: Pick<StudyRecommendation, "showDowngradeNote">): VisaPrepId[] {
+  const out: VisaPrepId[] = [];
+  if (rec.showDowngradeNote) out.push("downgrade");
+  if (a.goals.includes("career")) out.push("fieldChange");
+  if (a.timing === "inAustralia") out.push("timeInAustralia");
+  if (isValidAge(a.age) && Number(a.age) >= VISA_PREP_AGE) out.push("age");
+  return out;
+}
+
 /** Age must be a whole number from 15 to 70 (same rule as before). */
 export const isValidAge = (age: string) => {
   const n = Number(age);

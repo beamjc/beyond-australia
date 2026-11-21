@@ -66,7 +66,6 @@ export const translations = {
         options: "Plan your pathway",
         calculator: "Financial Calculator",
         savings: "Savings Calculator",
-        strength: "Visa Readiness Check",
       },
     },
     visa: {
@@ -229,7 +228,6 @@ export const translations = {
         options: "วางแผนเรียนต่อ",
         calculator: "คำนวณค่าเรียน",
         savings: "คำนวณเงินออม",
-        strength: "เช็กความพร้อมก่อนยื่นวีซ่า",
       },
     },
     visa: {
