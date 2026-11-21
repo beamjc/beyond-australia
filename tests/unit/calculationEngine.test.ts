@@ -73,6 +73,21 @@ describe('computePathway', () => {
     expect(c.coverage).toBeCloseTo((20_000 / 33_162.67) * 100, 4)
   })
 
+  it('university total tuition range spans the cheapest to dearest annual fee', () => {
+    const pkg = calcEnglishPackage(6.5, 'he')
+    // Bachelor 3 yrs: $28,000 × 3 = 84,000 → $60,000 × 3 = 180,000
+    const bachelor = computePathway(tier('he-avg'), pkg, 'offshore', 24, 0)
+    expect(bachelor.totalCourseValueLow).toBe(84_000)
+    expect(bachelor.totalCourseValueHigh).toBe(180_000)
+    // Master 2 yrs (planner overrides duration): 56,000 → 120,000
+    const master = computePathway({ ...tier('he-avg'), durationYears: 2 }, pkg, 'offshore', 24, 0)
+    expect(master.totalCourseValueLow).toBe(56_000)
+    expect(master.totalCourseValueHigh).toBe(120_000)
+    // The planning midpoint total sits inside the range
+    expect(master.totalCourseValue).toBeGreaterThan(master.totalCourseValueLow)
+    expect(master.totalCourseValue).toBeLessThan(master.totalCourseValueHigh)
+  })
+
   it('offers a single university card', () => {
     expect(tiers.filter((t) => t.sector === 'he').map((t) => t.id)).toEqual(['he-avg'])
   })

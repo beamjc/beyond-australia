@@ -906,7 +906,9 @@ const PathwayCard = ({
           <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2 mb-4">
             <div className="rounded-xl bg-muted/50 px-3 py-2.5">
               <p className="text-xs text-muted-foreground">ค่าเรียนทั้งหมด</p>
-              <p className="text-base font-semibold text-foreground tabular-nums">{fmtMoney(calc.totalCourseValue)}</p>
+              <p className="text-base font-semibold text-foreground tabular-nums">
+                {isDegree ? <MoneyRange low={calc.totalCourseValueLow} high={calc.totalCourseValueHigh} fmtMoney={fmtMoney} /> : fmtMoney(calc.totalCourseValue)}
+              </p>
             </div>
             <div className="rounded-xl bg-muted/50 px-3 py-2.5 flex items-center gap-2">
               <Clock className="w-4 h-4 text-primary shrink-0" aria-hidden />
@@ -958,7 +960,11 @@ const PathwayCard = ({
                     <div className={breakdownTotals}>
                       <Row label="ค่าใช้จ่ายที่ต้องจ่ายวันที่สมัครเรียน" value={fmtMoney(calc.upfront)} bold />
                       <Row label="ค่าเทอมที่เหลือ" value={fmtMoney(calc.remainingTuition)} muted />
-                      <Row label="ค่าเรียนทั้งหมด" value={fmtMoney(calc.totalCourseValue)} muted />
+                      <Row
+                        label="ค่าเรียนทั้งหมด"
+                        value={isDegree ? <MoneyRange low={calc.totalCourseValueLow} high={calc.totalCourseValueHigh} fmtMoney={fmtMoney} /> : fmtMoney(calc.totalCourseValue)}
+                        muted
+                      />
                     </div>
                   </div>
                 </motion.div>
@@ -977,13 +983,23 @@ const locationLabel = (loc: Location) =>
 const breakdownBox = "space-y-2 text-xs rounded-xl border border-border/60 bg-muted/30 p-3 mt-1 mb-1";
 const breakdownTotals = "border-t border-border pt-2 mt-2 space-y-1.5";
 
-const Row = ({ label, sub, value, bold, muted }: { label: string; sub?: string; value: string; bold?: boolean; muted?: boolean }) => (
+// "low – high" money range. Each amount stays on one line so a narrow
+// screen wraps at the dash, never inside a number.
+const MoneyRange = ({ low, high, fmtMoney }: { low: number; high: number; fmtMoney: (aud: number) => string }) => (
+  <>
+    <span className="whitespace-nowrap">{fmtMoney(low)}</span>
+    {" – "}
+    <span className="whitespace-nowrap">{fmtMoney(high)}</span>
+  </>
+);
+
+const Row = ({ label, sub, value, bold, muted }: { label: string; sub?: string; value: ReactNode; bold?: boolean; muted?: boolean }) => (
   <div className="flex items-center justify-between gap-3">
     <div className="min-w-0">
       <p className={`${bold ? "font-semibold text-foreground" : muted ? "text-muted-foreground" : "text-foreground"}`}>{label}</p>
       {sub && <p className="text-[10px] text-muted-foreground">{sub}</p>}
     </div>
-    <span className={`tabular-nums ${bold ? "font-bold text-foreground" : muted ? "text-muted-foreground" : "text-foreground"}`}>{value}</span>
+    <span className={`tabular-nums text-right ${bold ? "font-bold text-foreground" : muted ? "text-muted-foreground" : "text-foreground"}`}>{value}</span>
   </div>
 );
 

@@ -208,6 +208,11 @@ export interface PathwayCalc {
   upfront: number;
   remainingTuition: number;
   totalCourseValue: number;
+  // Tuition-only total at the tier's cheapest and most expensive annual fee
+  // (annualLow/High × duration). Shown as a range because fees vary by
+  // university and faculty.
+  totalCourseValueLow: number;
+  totalCourseValueHigh: number;
   baseRate: number; // sector average for this location, all ages
   adjusted: number; // official rate for the visitor's age group (or average)
   ageSpecific: boolean; // false = age group too small, legacy age-factor estimate shown
@@ -243,6 +248,8 @@ export function computePathway(
   // Total course value reflects tuition only (annual × duration).
   // English tuition is shown separately under Initial Payment.
   const totalCourseValue = totalTuition;
+  const totalCourseValueLow = tier.annualLow * tier.durationYears;
+  const totalCourseValueHigh = tier.annualHigh * tier.durationYears;
 
   const grant = grantRateFor(tier.sector, location, age);
   const baseRate = grant.sectorAverage;
@@ -254,6 +261,7 @@ export function computePathway(
     englishWeeks: englishPkg.weeks, englishCost: englishPkg.cost,
     visaFee: VISA_FEE_AUD, oshc, visaMonths,
     upfront, remainingTuition, totalCourseValue,
+    totalCourseValueLow, totalCourseValueHigh,
     baseRate, adjusted, ageSpecific: grant.ageSpecific, coverage,
   };
 }

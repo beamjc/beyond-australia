@@ -268,3 +268,9 @@ Checks: vitest 75/75; `tsc --noEmit` clean; lint has only pre-existing warnings;
 
 - On iOS/Android, "LINE: @beyondstudy" under the planner results opens `line.me/R/oaMessage/%40beyondstudy/?…`. The message box is filled with the answers (goal, budget, age, IELTS, Off/On Shore, plus the ELICOS or short-course weeks). The visitor can edit it or choose not to send it. Desktop and LINE for PC keep `line.me/ti/p/@beyondstudy`, because LINE for PC does not support the scheme. Source and limits: `issues.md` DEC-LINE-001.
 - Tests: `tests/unit/lineMessage.test.ts` (encoding, Thai round-trip, device detection). The e2e "Budget Planner — LINE button" test checks the link with a desktop and an iPhone user agent without opening it.
+
+## 2026-11-21: Budget Planner degree tuition shown as a range (owner request)
+
+- **ค่าเรียนทั้งหมด** on the ปริญญาตรี and ปริญญาโท cards (headline tile and the breakdown row) now shows a low–high range instead of one figure, because fees differ by university and faculty. The range uses the existing `he-avg` tier bounds ($28,000–$60,000 a year) × duration: bachelor 3 yrs = $84,000–$180,000 (฿1,974,000–฿4,230,000 at 23.5); master 2 yrs = $56,000–$120,000 (฿1,316,000–฿2,820,000). No new Thai wording.
+- Unchanged: the headline "จำนวนเงินคร่าวๆที่ต้องใช้", ค่าเรียนเทอมแรก and ค่าเทอมที่เหลือ still use the planning midpoint ($41,667/yr). VET cards still show a single total.
+- Tests: `calculationEngine.test.ts` "university total tuition range…". Screenshots: `screenshots/tuition-range/`.
