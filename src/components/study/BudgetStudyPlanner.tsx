@@ -867,6 +867,15 @@ const VET_TIER_NOTES: Record<string, string> = {
   "vet-prem": "หลักสูตรสายอาชีพค่าเรียนสูงกว่า จ่ายค่าเรียนเทอมแรก 50%",
 };
 
+// Example course types per VET tier (owner request 2026-11-21). Typical
+// Australian course groups at each fee band, kept in English as students
+// search for them. Owner to confirm against the courses Beyond Study offers.
+const VET_TIER_EXAMPLES: Record<string, string> = {
+  "vet-budget": "Business, Leadership & Management, Marketing",
+  "vet-std": "Early Childhood Education (Childcare), Hospitality Management, Commercial Cookery",
+  "vet-prem": "Automotive, Carpentry, Electrotechnology",
+};
+
 const PathwayCard = ({
   tier, calc, fmtMoney, elicosWeekly, degreeLevel,
 }: {
@@ -910,6 +919,11 @@ const PathwayCard = ({
           {!isDegree && VET_TIER_NOTES[tier.id] && (
             <div className="-mt-2 mb-4 text-xs leading-relaxed text-muted-foreground">
               <p>{VET_TIER_NOTES[tier.id]}</p>
+              {VET_TIER_EXAMPLES[tier.id] && (
+                <p className="mt-1">
+                  <span className="font-medium text-foreground/80">ตัวอย่างคอร์ส:</span> {VET_TIER_EXAMPLES[tier.id]}
+                </p>
+              )}
               <p className="mt-1 tabular-nums">
                 ค่าเรียนประมาณ <MoneyRange low={tier.annualLow} high={tier.annualHigh} fmtMoney={fmtMoney} /> ต่อปี
               </p>
