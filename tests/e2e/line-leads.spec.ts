@@ -70,6 +70,11 @@ test.describe('LIFF lead form (/line)', () => {
     await expect(page.locator('#full_name')).toBeFocused()
     await expect(page.locator('#full_name-error')).toBeVisible()
     await expect(page.locator('#consent-error')).toBeVisible()
+    // Owner request 2026-11-21: phone is optional, and there is no news/marketing checkbox.
+    await expect(page.locator('#phone-error')).toHaveCount(0)
+    await expect(page.locator('#phone')).not.toHaveAttribute('required', /.*/)
+    await expect(page.locator('input[name="consent_marketing"]')).toHaveCount(0)
+    await expect(page.getByText('รับข่าวสารและทุนการศึกษาทาง LINE')).toHaveCount(0)
     expect(submitReq).toBeNull()
 
     await page.locator('#full_name').fill('Nong Test')
@@ -85,7 +90,7 @@ test.describe('LIFF lead form (/line)', () => {
     expect(body.idToken).toBe('fake.id.token.for.qa.only.0123456789')
     expect(body.form).toMatchObject({ full_name: 'Nong Test', age: '26', visa_interest: 'student', phone: '081 234 5678', program_interest: 'English course' })
     expect(body.form.intake).not.toBe('')
-    expect(body.consent).toEqual({ privacy: true, marketing: false })
+    expect(body.consent).toEqual({ privacy: true })
 
     await page.getByRole('button', { name: 'ปิดหน้านี้' }).click()
     expect(await page.evaluate(() => (window as unknown as { __liffCalls: unknown[] }).__liffCalls)).toContainEqual(['close'])
@@ -99,13 +104,15 @@ test.describe('LIFF lead form (/line)', () => {
     await page.goto('/line')
     await expect(page.locator('#program_interest')).toHaveCount(0)
     await page.locator('#full_name').fill('Nong Test')
-    await page.locator('#phone').fill('0812345678')
+    await page.locator('#phone').fill('12')   // optional, but a malformed number is still caught
     await page.locator('#consent_privacy').check()
     await page.locator('#age').fill('12')
     await page.getByRole('button', { name: 'ส่งข้อมูลให้ทีมที่ปรึกษา' }).click()
     await expect(page.locator('#age-error')).toBeVisible()
     await expect(page.locator('#visa_interest-error')).toBeVisible()
+    await expect(page.locator('#phone-error')).toBeVisible()
     expect(body).toBeNull()
+    await page.locator('#phone').fill('')        // blank phone is fine
 
     await page.locator('#age').fill('22')
     await page.locator('#visa_interest').selectOption('student')
@@ -115,7 +122,7 @@ test.describe('LIFF lead form (/line)', () => {
     await expect(page.locator('#program_interest')).toHaveCount(0)
     await page.getByRole('button', { name: 'ส่งข้อมูลให้ทีมที่ปรึกษา' }).click()
     await expect(page.getByRole('heading', { name: 'ได้รับข้อมูลแล้วค่ะ' })).toBeVisible()
-    expect(body!.form).toMatchObject({ age: '22', visa_interest: 'whm', program_interest: '' })
+    expect(body!.form).toMatchObject({ age: '22', visa_interest: 'whm', program_interest: '', phone: '' })
   })
 
   test('server-side field errors are shown on the matching fields', async ({ page }) => {

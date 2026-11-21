@@ -72,7 +72,6 @@ const T = {
     select: "เลือก",
     consent: "ยินยอมให้ Beyond Study Center เก็บและใช้ข้อมูลนี้เพื่อติดต่อให้คำปรึกษาเรื่องเรียนต่อ",
     privacy: "อ่านนโยบายความเป็นส่วนตัว",
-    marketing: "รับข่าวสารและทุนการศึกษาทาง LINE (ไม่บังคับ)",
     submit: "ส่งข้อมูลให้ทีมที่ปรึกษา",
     sending: "กำลังส่ง…",
     errors: {
@@ -113,7 +112,6 @@ const T = {
     select: "Select",
     consent: "I agree that Beyond Study Center may keep and use this information to contact me about studying in Australia.",
     privacy: "Read the privacy policy",
-    marketing: "Send me news and scholarships on LINE (optional)",
     submit: "Send to a counsellor",
     sending: "Sending…",
     errors: {
@@ -239,14 +237,16 @@ export default function LiffLeadForm() {
       ["full_name", "nickname", "age", "visa_interest", "phone", "email", "current_level", "program_interest", "intake", "message"]
         .map((k) => [k, String(fd.get(k) ?? "")]),
     );
-    const consent = { privacy: fd.get("consent_privacy") === "on", marketing: fd.get("consent_marketing") === "on" };
+    // No news/marketing opt-in on the form any more (owner request 2026-11-21); the server keeps any earlier answer.
+    const consent = { privacy: fd.get("consent_privacy") === "on" };
 
     const errs: Partial<Record<FieldKey, boolean>> = {};
     if (!form.full_name.trim()) errs.full_name = true;
     if (!isValidAge(form.age)) errs.age = true;
     if (!form.visa_interest) errs.visa_interest = true;
     if (form.visa_interest !== "student") form.program_interest = "";
-    if (!isValidPhone(form.phone)) errs.phone = true;
+    // Phone is optional (owner request 2026-11-21) but must be valid if given.
+    if (form.phone.trim() && !isValidPhone(form.phone)) errs.phone = true;
     if (form.email.trim() && !isValidEmail(form.email)) errs.email = true;
     if (!consent.privacy) errs.consent = true;
     setErrors(errs);
@@ -385,8 +385,8 @@ export default function LiffLeadForm() {
                     options={withValue(PROGRAM_OPTIONS, session.prefill.program_interest)} value={session.prefill.program_interest} />
                 </Field>
               )}
-              <Field id="phone" label={`${t.phone} *`} error={errors.phone ? t.errors.phone : ""}>
-                <input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={30} required
+              <Field id="phone" label={t.phone} error={errors.phone ? t.errors.phone : ""}>
+                <input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={30}
                   placeholder="08x xxx xxxx / +61 4xx xxx xxx"
                   defaultValue={session.prefill.phone ?? ""} className={fieldClass}
                   aria-invalid={errors.phone || undefined} aria-describedby={errors.phone ? "phone-error" : undefined}
@@ -425,10 +425,6 @@ export default function LiffLeadForm() {
                 </label>
                 {errors.consent && <p id="consent-error" className="mt-1 text-sm text-destructive">{t.errors.consent}</p>}
               </div>
-              <label className="flex items-start gap-3 text-sm">
-                <input name="consent_marketing" type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-primary" />
-                <span>{t.marketing}</span>
-              </label>
 
               {formError && <p className="text-sm text-destructive" role="alert">{formError}</p>}
               <button type="submit" disabled={sending}

@@ -339,3 +339,14 @@ Tests: e2e public + mobile + line-leads, desktop + mobile: 102 passed, 8 skipped
 - Below md (768px) the six service cards are a horizontal swipe carousel: CSS scroll-snap, each card 85% wide so the next one peeks in, plus 6 position dots (buttons "n / 6", aria-current, tap to jump). md+ keeps the 2/3-column grid. At 390px the section dropped from ~1,904px to ~798px tall.
 - Fix found while testing: on phones the floating LINE/Facebook buttons tucked away by sliding 80px to the right, which briefly made the page wider than the screen (scrollWidth 390 → 395–445). They now slide down out of view instead. Full-page scroll scans show no sideways overflow.
 - Test added: carousel on mobile (scrolls, dots, jump to 4/6) and grid on desktop (no dots, no track overflow). e2e 104 passed, 8 skipped.
+
+## 2026-11-21: LINE lead form: phone optional, no marketing checkbox (owner request)
+
+- Removed the "รับข่าวสารและทุนการศึกษาทาง LINE (ไม่บังคับ)" checkbox. The form now sends `consent: { privacy }` only.
+- Phone: no longer required (no `*`, no `required`). A typed number must still be valid.
+- `submit-lead` (Supabase Edge Function), matching changes:
+  - A blank phone is accepted and stored as null (the `leads.phone` column is already nullable; the staff message shows "Phone: -").
+  - A malformed phone is still rejected.
+  - Marketing consent: when the form doesn't send it, the lead's **existing** `consent_marketing_at` is kept instead of being cleared, so people who opted in before keep that. The staff message reports that stored value. An explicit true/false (older cached clients) still applies.
+- **Needs redeploying the function** (`supabase functions deploy submit-lead`). Until then the live function still rejects a blank phone with "Please check the form".
+- Tests: line-leads e2e 16/16 (blank phone OK, malformed caught, no marketing box, payload). `deno check submit-lead` clean; `_shared` Deno tests 6/6.

@@ -49,7 +49,8 @@ Deno.serve(handler(async (req) => {
   if (!full_name) errors.full_name = "required";
   if (!age) errors.age = "invalid";
   if (!visa_interest) errors.visa_interest = "required";
-  if (!phone) errors.phone = "invalid";
+  // Phone is optional (owner request 2026-11-21); reject only a malformed one.
+  if (str(form.phone, 30) && !phone) errors.phone = "invalid";
   if (emailRaw && !email) errors.email = "invalid";
   if (consent.privacy !== true) errors.consent = "required";
   if (Object.keys(errors).length) return json(req, { error: "Please check the form", fields: errors }, 422);
@@ -69,7 +70,10 @@ Deno.serve(handler(async (req) => {
   };
 
   const now = new Date().toISOString();
-  const marketing = consent.marketing === true;
+  // The form no longer asks for marketing consent (owner request 2026-11-21).
+  // When the answer is absent, keep whatever the lead said before rather than
+  // clearing it; an explicit true/false (older clients) still applies.
+  const marketingAsked = typeof consent.marketing === "boolean";
 
   // Existing lead?
   const { data: existing, error: selErr } = await db
@@ -94,7 +98,9 @@ Deno.serve(handler(async (req) => {
     latest_answers: answers,
     latest_source: source,
     consent_privacy_at: now,
-    consent_marketing_at: marketing ? (existing?.consent_marketing_at ?? now) : null,
+    consent_marketing_at: marketingAsked
+      ? (consent.marketing === true ? (existing?.consent_marketing_at ?? now) : null)
+      : (existing?.consent_marketing_at ?? null),
     consent_version: CONSENT_VERSION,
   };
 
@@ -163,7 +169,7 @@ Deno.serve(handler(async (req) => {
       message: fields.message,
       source,
       isFriend: friend,
-      marketingConsent: marketing,
+      marketingConsent: marketingAsked ? consent.marketing === true : !!existing?.consent_marketing_at,
     })));
   }
   await Promise.allSettled(tasks);
