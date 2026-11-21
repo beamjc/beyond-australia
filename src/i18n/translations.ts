@@ -18,7 +18,7 @@ export const translations = {
       titleHighlight: "Australia",
       titleLine2: "Starts Here",
       subtitle:
-        "Plan your Working Holiday visa and your next visa after it, with the Beyond Australia team.",
+        "Get advice on planning your Working Holiday visa or other visas from the Beyond Australia team.",
       ctaPrimary: "View WHM Timeline",
       ctaSecondary: "Explore Visa Pathways",
       stats: {
@@ -180,7 +180,7 @@ export const translations = {
       titleHighlight: "ออสเตรเลีย",
       titleLine2: "ของคุณที่นี่",
       subtitle:
-        "วางแผนวีซ่า Work and Holiday และวีซ่าตัวถัดไป โดยมีทีมงาน Beyond Australia",
+        "ปรึกษาวางแผนวีซ่า Work and Holiday หรือวีซ่าตัวอื่นๆ โดยทีมงาน Beyond Australia",
       ctaPrimary: "ดูข้อมูล Work and Holiday",
       ctaSecondary: "ดูตัวเลือกวีซ่าอื่นๆ",
       stats: {

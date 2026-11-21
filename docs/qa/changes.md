@@ -350,3 +350,4 @@ Tests: e2e public + mobile + line-leads, desktop + mobile: 102 passed, 8 skipped
   - Marketing consent: when the form doesn't send it, the lead's **existing** `consent_marketing_at` is kept instead of being cleared, so people who opted in before keep that. The staff message reports that stored value. An explicit true/false (older cached clients) still applies.
 - **Needs redeploying the function** (`supabase functions deploy submit-lead`). Until then the live function still rejects a blank phone with "Please check the form".
 - Tests: line-leads e2e 16/16 (blank phone OK, malformed caught, no marketing box, payload). `deno check submit-lead` clean; `_shared` Deno tests 6/6.
+- 2026-11-21: Hero subtitle TH (owner wording) → "ปรึกษาวางแผนวีซ่า Work and Holiday หรือวีซ่าตัวอื่นๆ โดยทีมงาน Beyond Australia"; EN aligned ("Get advice on planning your Working Holiday visa or other visas from the Beyond Australia team.").
