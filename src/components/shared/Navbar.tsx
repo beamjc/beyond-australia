@@ -8,6 +8,10 @@ import { Menu, X, Languages } from 'lucide-react'
 import { useLanguage } from '@/i18n/LanguageProvider'
 import type { Language, TranslationKey } from '@/i18n/translations'
 
+// Hidden for now (owner request 2026-11-21); set to true to bring the "กิจกรรม" link back.
+// The /events page itself still works.
+const SHOW_EVENTS_NAV = false;
+
 export const sectionLinks: { key: TranslationKey; href: string }[] = [
   { key: 'nav.whm', href: '#whm' },
   { key: 'nav.study', href: '#study' },
@@ -54,9 +58,11 @@ const Navbar = () => {
               ? <a key={link.href} href={link.href} className="text-sm font-medium text-white/80 hover:text-white transition-colors">{t(link.key)}</a>
               : <Link key={link.href} href={`/${link.href}`} className="text-sm font-medium text-white/80 hover:text-white transition-colors">{t(link.key)}</Link>
           ))}
+{SHOW_EVENTS_NAV && (
           <Link href="/events" className={`text-sm font-medium transition-colors ${pathname.startsWith('/events') ? 'text-white' : 'text-white/80 hover:text-white'}`}>
             {t('nav.events')}
           </Link>
+          )}
           <Link href="/articles" className={`text-sm font-medium transition-colors ${pathname.startsWith('/articles') ? 'text-white' : 'text-white/80 hover:text-white'}`}>
             {language === 'th' ? 'บทความ' : 'Articles'}
           </Link>
@@ -82,9 +88,11 @@ const Navbar = () => {
                 ? <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-sm font-medium text-white/80 hover:text-white py-2">{t(link.key)}</a>
                 : <Link key={link.href} href={`/${link.href}`} onClick={() => setOpen(false)} className="text-sm font-medium text-white/80 hover:text-white py-2">{t(link.key)}</Link>
             ))}
+{SHOW_EVENTS_NAV && (
             <Link href="/events" onClick={() => setOpen(false)} className="text-sm font-medium text-white/80 hover:text-white py-2">
               {t('nav.events')}
             </Link>
+            )}
             <Link href="/articles" onClick={() => setOpen(false)} className="text-sm font-medium text-white/80 hover:text-white py-2">
               {language === 'th' ? 'บทความ' : 'Articles'}
             </Link>

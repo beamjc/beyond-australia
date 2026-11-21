@@ -704,6 +704,16 @@ test('services: swipe carousel with dots on mobile, grid on desktop', async ({ p
   await noHorizontalOverflow(page)
 })
 
+// Owner request 2026-11-21: the Events link is hidden from the header (desktop and mobile menu); /events still works.
+test('header has no Events link', async ({ page }) => {
+  await mockSupabase(page)
+  await page.goto('/')
+  const nav = page.locator('nav').first()
+  if (page.viewportSize()!.width < 1024) await nav.getByRole('button', { name: /menu/i }).click()
+  await expect(nav.getByRole('link', { name: 'Articles' }).first()).toBeVisible()
+  await expect(nav.locator('a[href="/events"]')).toHaveCount(0)
+})
+
 test('placeholder reviews are never rendered', async ({ page }) => {
   await mockSupabase(page)
   await page.goto('/')
