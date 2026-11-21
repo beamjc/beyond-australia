@@ -286,4 +286,4 @@ Owner wording applied verbatim (1, 6); removals at owner request (4, 5, 7).
 6. Explorer sources heading TH: "แหล่งข้อมูลทางการ" → **"Reference"** (EN stays "Official sources"). Two other sentences that contain the phrase are unchanged: studyFinder `visaInfo` and the visaExplorer "ยังไม่แน่ใจ? เช็กได้จาก…" title.
 7. Study Pathway Finder: "ติดต่อปรึกษาเราได้เลย" now opens LINE (`line.me/ti/p/@beyondstudy`). When LIFF is configured, the site-wide interceptor turns it into the LIFF lead form with the visitor's answers. The duplicate "ยังไม่แน่ใจว่าจะเริ่มจากตรงไหน?" card under it was removed.
 
-Tests: e2e desktop + mobile, public + line-leads: 92 passed before the new assertions. The Finder (LINE href, card gone) and Explorer (no adviser block) tests were then re-run, 4/4 passed. Unit tests 103 passed. Screenshots: `screenshots/owner-batch-2026-11-21/`.
+Tests: e2e desktop + mobile, public + line-leads: 92 passed before the new assertions. The Finder (LINE href, card gone) and Explorer (no adviser block) tests were then re-run, 4/4 passed. Unit tests 102 passed. Screenshots: `screenshots/owner-batch-2026-11-21/`.
