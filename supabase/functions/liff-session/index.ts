@@ -4,6 +4,7 @@ import { db } from "../_shared/db.ts";
 import { loadDraft } from "../_shared/drafts.ts";
 import { handler, json, readJson } from "../_shared/http.ts";
 import { isFriend, verifyIdToken } from "../_shared/line.ts";
+import { buildPrefill } from "../_shared/prefill.ts";
 
 Deno.serve(handler(async (req) => {
   const body = await readJson(req, 8_000);
@@ -11,7 +12,7 @@ Deno.serve(handler(async (req) => {
 
   const { data: lead, error } = await db
     .from("leads")
-    .select("id, full_name, nickname, age, visa_interest, phone, email, current_level, program_interest, intake")
+    .select("id, full_name, nickname, age, phone, email")
     .eq("line_user_id", me.userId)
     .maybeSingle();
   if (error) throw error;
@@ -21,27 +22,15 @@ Deno.serve(handler(async (req) => {
     isFriend(me.userId),
   ]);
 
-  // Pre-fill: answers from the website tool win over older saved details,
-  // so a returning student sees what they just chose.
-  const a = (draft?.answers ?? {}) as Record<string, unknown>;
-  const pick = (k: string) => (typeof a[k] === "string" ? a[k] : null);
-  const draftAge = typeof a.age === "number" && a.age >= 15 && a.age <= 70 ? Math.round(a.age) : null;
+  // Personal details from last time; plan details only from this visit (see _shared/prefill.ts).
+  const answers = (draft?.answers ?? {}) as Record<string, unknown>;
+  const summary = typeof answers.summary === "string" ? answers.summary : null;
 
   return json(req, {
     profile: { name: me.name, picture: me.picture },
     isFriend: friend,
     returning: Boolean(lead),
-    draft: draft ? { tool: draft.tool, summary: pick("summary") } : null,
-    prefill: {
-      full_name: lead?.full_name ?? null,
-      nickname: lead?.nickname ?? me.name,
-      age: draftAge ?? lead?.age ?? null,
-      visa_interest: pick("visa_interest") ?? lead?.visa_interest ?? null,
-      phone: lead?.phone ?? null,
-      email: lead?.email ?? me.email,
-      current_level: pick("current_level") ?? lead?.current_level ?? null,
-      program_interest: pick("program_interest") ?? lead?.program_interest ?? null,
-      intake: pick("intake") ?? lead?.intake ?? null,
-    },
+    draft: draft ? { tool: draft.tool, summary } : null,
+    prefill: buildPrefill(lead, answers, me),
   });
 }));
