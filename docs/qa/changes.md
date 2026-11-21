@@ -352,3 +352,4 @@ Tests: e2e public + mobile + line-leads, desktop + mobile: 102 passed, 8 skipped
 - Tests: line-leads e2e 16/16 (blank phone OK, malformed caught, no marketing box, payload). `deno check submit-lead` clean; `_shared` Deno tests 6/6.
 - 2026-11-21: Hero subtitle TH (owner wording) → "ปรึกษาวางแผนวีซ่า Work and Holiday หรือวีซ่าตัวอื่นๆ โดยทีมงาน Beyond Australia"; EN aligned ("Get advice on planning your Working Holiday visa or other visas from the Beyond Australia team.").
 - 2026-11-21: Header "กิจกรรม" / "Events" link hidden on desktop and in the mobile menu (`SHOW_EVENTS_NAV = false` in Navbar.tsx). The /events page and the home-page events preview are unchanged. Test added.
+- 2026-11-21: Hero subtitle box widened on laptop/desktop (`lg:max-w-4xl`) so the Thai subtitle fits on one line from 1024px up; phones still wrap (2 lines at 390px).

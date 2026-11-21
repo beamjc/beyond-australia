@@ -95,7 +95,7 @@ const HeroSection = () => {
                       <span className="leading-normal">{t(slide.titleLine2Key)}</span>
                     </h1>
 
-                    <p className="text-lg md:text-xl text-secondary-foreground/80 max-w-2xl mb-10 font-light leading-relaxed">
+                    <p className="text-lg md:text-xl text-secondary-foreground/80 max-w-2xl lg:max-w-4xl mb-10 font-light leading-relaxed">
                       {t(slide.subtitleKey)}
                     </p>
 
