@@ -4,20 +4,10 @@
 
 import type { Bi } from "./visaReadiness";
 
-export const INCOME_PRESETS: { value: number; label: Bi; hint?: Bi }[] = [
-  { value: 49301, label: { th: "ขั้นต่ำ", en: "Min wage" }, hint: { th: "$24.95/ชม. × 38 ชม./สัปดาห์", en: "$24.95/hr × 38 hr/week" } },
-  { value: 40000, label: { th: "ต่ำ", en: "Low" } },
-  { value: 60000, label: { th: "กลาง", en: "Mid" } },
-  { value: 72000, label: { th: "มัธยฐาน", en: "Median" } },
-  { value: 100000, label: { th: "เฉลี่ย", en: "Average" } },
-  { value: 183100, label: { th: "สูง", en: "High" } },
-];
-
-export const EXPENSE_PRESETS: { value: number; label: Bi }[] = [
-  { value: 2000, label: { th: "ประหยัด", en: "Budget" } },
-  { value: 2500, label: { th: "ทั่วไป", en: "Moderate" } },
-  { value: 3200, label: { th: "สบายขึ้น", en: "Comfortable" } },
-];
+// Monthly-expenses slider range (AUD). Presets removed at owner request
+// 2026-11-21; the planner defaults to $2,000/month (SavingsCalculator).
+export const EXPENSE_MIN = 500;
+export const EXPENSE_MAX = 6000;
 
 export const savingsCopy = {
   title: { th: "วางแผนเงินเก็บในออสเตรเลีย", en: "Plan your savings in Australia" },
@@ -63,7 +53,6 @@ export const savingsCopy = {
   },
 
   incomeLabel: { th: "รายได้ก่อนหักภาษีต่อปี", en: "Yearly income before tax" },
-  incomeHelper: { th: "เลือกช่วงรายได้ หรือเลื่อนเพื่อกำหนดรายได้เอง", en: "Pick a range, or use the slider to set your own." },
   incomeCustom: { th: "กำหนดรายได้ต่อปีเอง (AUD)", en: "Your own yearly income (AUD)" },
   studentHours: {
     th: "รายได้นี้ต้องทำงานประมาณ {h} ชั่วโมงต่อ 2 สัปดาห์ (คิดจากค่าแรงขั้นต่ำ) ซึ่งเกิน 48 ชั่วโมงที่ผู้ถือวีซ่านักเรียนทำงานได้ในช่วงเปิดเรียน",

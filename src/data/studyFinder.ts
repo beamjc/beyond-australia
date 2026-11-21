@@ -176,8 +176,6 @@ export const finderCopy = {
   nextTitle: { th: "สิ่งที่ควรทำต่อ", en: "What to do next" },
   cityNote: { th: "เมืองที่สนใจ: {city}", en: "Preferred city: {city}" },
   primaryCta: { th: "ติดต่อปรึกษาเราได้เลย", en: "Contact us for advice" },
-  visaBridgeTitle: { th: "กำลังวางแผนเรื่องวีซ่าด้วย?", en: "Planning your visa too?" },
-  visaBridgeCta: { th: "สำรวจตัวเลือกวีซ่าที่เกี่ยวข้อง", en: "Explore related visa options" },
   disclaimer: {
     th: "คำแนะนำนี้เป็นข้อมูลเบื้องต้นจากคำตอบที่คุณให้ไว้ หลักสูตรและเงื่อนไขการสมัครแตกต่างกันในแต่ละสถาบัน ควรตรวจสอบรายละเอียดอีกครั้งก่อนตัดสินใจ",
     en: "These suggestions are general guidance based on your answers. Courses and entry requirements differ between institutions, so check the details before you decide.",

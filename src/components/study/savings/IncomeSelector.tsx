@@ -2,8 +2,8 @@
 
 import { forwardRef } from "react";
 import { AlertTriangle } from "lucide-react";
-import { INCOME_PRESETS, fill, savingsCopy as c } from "@/data/savingsCopy";
-import { Section, choiceClass, fmtA, inputClass, useT } from "./shared";
+import { fill, savingsCopy as c } from "@/data/savingsCopy";
+import { Section, fmtA, inputClass, useT } from "./shared";
 
 interface Props { income: number; setIncome: (n: number) => void; studentHours: number | null }
 
@@ -12,24 +12,8 @@ const IncomeSelector = forwardRef<HTMLInputElement, Props>(({ income, setIncome,
   return (
     <Section
       title={t(c.incomeLabel)}
-      helper={t(c.incomeHelper)}
       aside={<span className="shrink-0 text-right text-lg font-bold text-foreground tabular-nums">{fmtA(income)}<span className="block text-xs font-normal text-muted-foreground">{t(c.slashYear)}</span></span>}
     >
-      <div className="grid grid-cols-3 gap-2">
-        {INCOME_PRESETS.map((p) => (
-          <button
-            key={p.value}
-            type="button"
-            aria-pressed={income === p.value}
-            onClick={() => setIncome(p.value)}
-            title={p.hint ? t(p.hint) : undefined}
-            className={choiceClass(income === p.value)}
-          >
-            <span className="block">{t(p.label)}</span>
-            <span className="block text-xs opacity-80 tabular-nums">A${Math.round(p.value / 1000)}k</span>
-          </button>
-        ))}
-      </div>
       <input
         type="range"
         min={1000}
@@ -38,7 +22,7 @@ const IncomeSelector = forwardRef<HTMLInputElement, Props>(({ income, setIncome,
         value={income}
         onChange={(e) => setIncome(parseInt(e.target.value, 10))}
         aria-label={t(c.incomeCustom)}
-        className="mt-5 w-full accent-primary h-10 lg:h-6"
+        className="mt-1 w-full accent-primary h-10 lg:h-6"
       />
       <input
         ref={ref}

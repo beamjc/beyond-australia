@@ -486,8 +486,17 @@ test.describe('Savings planner', () => {
     await expect(result).toContainText('− A$8,520')    // 2026–27 resident: 15% × 26,800 + 30% × 15,000
     await expect(result).toContainText('A$27,480')
     await expect(panel.locator('#sav-goal')).toHaveValue('1,000,000')
-    await stepShow(page, '#study-panel-savings', panel.getByRole('button', { name: 'ประหยัด' }))
-    await expect(panel.getByRole('button', { name: 'ประหยัด' })).toHaveAttribute('aria-pressed', 'true')
+    // Owner request 2026-11-21: income and expenses are slider + typed amount only (no preset buttons).
+    const expSlider = panel.getByRole('slider', { name: 'กำหนดค่าใช้จ่ายต่อเดือนเอง (AUD)' })
+    await stepShow(page, '#study-panel-savings', expSlider)
+    await expect(expSlider).toHaveValue('2000')
+    for (const gone of ['ประหยัด', 'ทั่วไป', 'สบายขึ้น', 'ขั้นต่ำ', 'มัธยฐาน', 'เฉลี่ย']) {
+      await expect(panel.getByRole('button', { name: gone })).toHaveCount(0)
+    }
+    await expSlider.fill('2500')
+    await expect(panel.getByRole('textbox', { name: 'กำหนดค่าใช้จ่ายต่อเดือนเอง (AUD)' })).toHaveValue('2,500')
+    await expect(result).toContainText('A$21,480')     // Student: 51,480 − 30,000
+    await expSlider.fill('2000')
     await stepShow(page, '#study-panel-savings', panel.locator('#sav-goal'))
     const aud = panel.getByRole('button', { name: 'AUD', exact: true })
     const thb = panel.getByRole('button', { name: 'THB', exact: true })

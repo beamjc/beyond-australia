@@ -288,3 +288,13 @@ Owner wording applied verbatim (1, 6); removals at owner request (4, 5, 7).
 
 Tests: e2e desktop + mobile, public + line-leads: 92 passed before the new assertions. The Finder (LINE href, card gone) and Explorer (no adviser block) tests were then re-run, 4/4 passed. Unit tests 102 passed. Screenshots: `screenshots/owner-batch-2026-11-21/`.
 - 2026-11-21 follow-up (owner request): each VET card also shows "ตัวอย่างคอร์ส:". Budget: Business, Leadership & Management, Marketing. Standard: Early Childhood Education (Childcare), Hospitality Management, Commercial Cookery. Premium: Automotive, Carpentry, Electrotechnology. These are typical examples for each fee band, pending owner confirmation (BSP-140e).
+
+## 2026-11-21: Owner batch 2 (Study Pathway Finder, Visa Options Explorer, Savings planner)
+
+1. Study Pathway Finder result: removed the "กำลังวางแผนเรื่องวีซ่าด้วย?" card and its "สำรวจตัวเลือกวีซ่าที่เกี่ยวข้อง" button.
+2. Removed the "เครื่องมือที่อาจช่วยคุณต่อ" related-tools block from both the Study Pathway Finder and the Visa Options Explorer results.
+3. Savings: yearly income now has only the slider and the typed amount; the six preset buttons are gone. The helper line "เลือกช่วงรายได้ หรือเลื่อนเพื่อกำหนดรายได้เอง" was removed too, because it told people to pick a range that no longer exists. No new Thai.
+4. Savings: monthly expenses now use a slider (A$500–A$6,000, step A$50) plus the typed amount; the three preset buttons are gone. The default stays A$2,000. A typed amount outside the range still counts; the slider just sits at its end.
+5. Visa readiness check: owner raised removing it. Not changed yet; recommendation sent to the owner.
+
+Tests: e2e public + mobile + line-leads, desktop + mobile: 102 passed, 8 skipped. The savings test now checks there are no preset buttons, the expense slider defaults to 2000, and moving it to 2500 updates the result (Student: A$21,480).

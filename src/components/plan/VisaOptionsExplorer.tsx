@@ -8,7 +8,7 @@ import { explorerLeadAnswers, getNode, progressFor, reasonsFor, type PathStep } 
 import { useRecordToolAnswers } from "@/hooks/use-record-tool-answers";
 import {
   ActionButton, AUTO_ADVANCE_MS, isToolAvailable, Card, CheckList, ConsultBlock, OfficialSourceLink, PathwayOption,
-  RelatedTools, Sequence, ToolHeader, iconFor, useKeepTopInView, useT,
+  Sequence, ToolHeader, iconFor, useKeepTopInView, useT,
 } from "./shared";
 
 interface Props {
@@ -159,7 +159,6 @@ const ExplorerResult = ({ node, path, onNode, onBack }: { node: ResultNode; path
         </Card>
       )}
 
-      <RelatedTools tools={node.related} />
       <ConsultBlock kind={node.consult} />
     </div>
   );

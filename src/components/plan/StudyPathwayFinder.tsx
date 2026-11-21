@@ -16,7 +16,7 @@ import {
   studyFinderLeadAnswers, type StudyAnswers, type StudyRecommendation,
 } from "@/lib/studyFinder";
 import {
-  AUTO_ADVANCE_MS, Card, CheckList, PathwayOption, RelatedTools, Sequence, ToolHeader,
+  AUTO_ADVANCE_MS, Card, CheckList, PathwayOption, Sequence, ToolHeader,
   btnPrimary, btnSecondary, useKeepTopInView, usePlanNav, useT,
 } from "./shared";
 
@@ -238,7 +238,6 @@ const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswer
   };
   const shown = [rec.primary, ...(rec.tieWith ? [rec.tieWith] : [])];
   const city = answers.city && answers.city !== "any" ? answers.city : null;
-  const related: ToolId[] = ["savings", "calculator", shown.includes("he") ? "universities" : "strength"];
 
   return (
     <div className="space-y-4">
@@ -307,14 +306,6 @@ const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswer
         </div>
       </Card>
 
-      <Card className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-semibold text-foreground">{t(c.visaBridgeTitle)}</p>
-        <button type="button" onClick={() => nav.openTool("visa", "student")} className={btnSecondary}>
-          {t(c.visaBridgeCta)} <ArrowRight className="h-4 w-4" aria-hidden />
-        </button>
-      </Card>
-
-      <RelatedTools tools={related} />
 
       <div className="space-y-1 px-1 text-xs leading-relaxed text-muted-foreground">
         <p>{t(c.disclaimer)}</p>
