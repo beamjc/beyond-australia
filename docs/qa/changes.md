@@ -332,3 +332,10 @@ Tests: e2e public + mobile + line-leads, desktop + mobile: 102 passed, 8 skipped
 - FAQ 2026: removed the stats bar (7 หมวดหมู่ / 19 คำถาม / 8 เม.ษ. วันกดโควต้า / 2026 รุ่นล่าสุด).
 - Test fix: `line-leads.spec.ts` "expired login" sometimes failed: it read the fake LIFF call list before it existed. Now it waits for the list instead (64/64 on repeat).
 - Tests: unit 99 passed; e2e desktop + mobile 101 passed + the fixed one, 8 skipped. Added checks for checklist persistence (reload keeps ticks, untick clears storage), no area chips, no COVID sentence, no FAQ stats.
+
+## 2026-11-21: Services subtitle + mobile carousel (owner request)
+
+- Subtitle TH (owner wording): "ให้เราช่วยดูแลการเตรียมยื่นวีซ่า WHM, วีซ่านักเรียน หรือ วางแผน Pathway to PR". EN: "…WHM visa, student visa or your pathway to PR."
+- Below md (768px) the six service cards are a horizontal swipe carousel: CSS scroll-snap, each card 85% wide so the next one peeks in, plus 6 position dots (buttons "n / 6", aria-current, tap to jump). md+ keeps the 2/3-column grid. At 390px the section dropped from ~1,904px to ~798px tall.
+- Fix found while testing: on phones the floating LINE/Facebook buttons tucked away by sliding 80px to the right, which briefly made the page wider than the screen (scrollWidth 390 → 395–445). They now slide down out of view instead. Full-page scroll scans show no sideways overflow.
+- Test added: carousel on mobile (scrolls, dots, jump to 4/6) and grid on desktop (no dots, no track overflow). e2e 104 passed, 8 skipped.

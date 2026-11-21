@@ -76,7 +76,7 @@ export const translations = {
       eyebrow: "How can we help?",
       title: "Services & Support",
       subtitle:
-        "Let us take care of your WHM visa, student visa and long-term migration planning.",
+        "Let us take care of your WHM visa, student visa or your pathway to PR.",
       items: {
         ielts: {
           title: "Looking for an IELTS or PTE prep course?",
@@ -238,7 +238,7 @@ export const translations = {
       eyebrow: "ให้เราช่วยดูแลอะไรได้บ้าง?",
       title: "บริการและการดูแลจากเรา",
       subtitle:
-        "ให้เราช่วยดูแลการเตรียมยื่นวีซ่า WHM, วีซ่านักเรียน และการวางแผนย้ายถิ่นฐานระยะยาว",
+        "ให้เราช่วยดูแลการเตรียมยื่นวีซ่า WHM, วีซ่านักเรียน หรือ วางแผน Pathway to PR",
       items: {
         ielts: {
           title: "หาคอร์สเรียนเตรียมสอบ IELTS หรือ PTE?",

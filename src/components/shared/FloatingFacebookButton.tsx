@@ -24,7 +24,7 @@ const FloatingFacebookButton = () => {
       tabIndex={tucked ? -1 : undefined}
       aria-hidden={tucked || undefined}
       initial={{ opacity: 0, scale: 0.8 }}
-      animate={tucked ? { opacity: 0, scale: 0.8, x: 80 } : { opacity: 1, scale: 1, x: 0 }}
+      animate={tucked ? { opacity: 0, scale: 0.8, y: 120 } : { opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       className={`fixed z-50 flex items-center justify-center rounded-full shadow-lg hover:scale-105 transition-transform ${tucked ? "pointer-events-none" : ""}`}
       style={{

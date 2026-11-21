@@ -683,6 +683,27 @@ test.describe('WHM checklist & FAQ', () => {
   })
 })
 
+// Owner request 2026-11-21: on phones the services cards are a swipe carousel with dots; md+ keeps the grid.
+test('services: swipe carousel with dots on mobile, grid on desktop', async ({ page }) => {
+  await mockSupabase(page)
+  await page.goto('/')
+  const track = page.getByTestId('services-track')
+  await track.scrollIntoViewIfNeeded()
+  const dots = page.locator('#services').getByRole('button', { name: / \/ 6$/ })
+  if (page.viewportSize()!.width < 768) {
+    expect(await track.evaluate((e) => e.scrollWidth > e.clientWidth)).toBe(true)
+    await expect(dots).toHaveCount(6)
+    await expect(dots.first()).toHaveAttribute('aria-current', 'true')
+    await page.locator('#services').getByRole('button', { name: '4 / 6' }).click()
+    await expect(page.locator('#services').getByRole('button', { name: '4 / 6' })).toHaveAttribute('aria-current', 'true')
+    expect(await track.evaluate((e) => e.scrollLeft)).toBeGreaterThan(0)
+  } else {
+    await expect(dots.first()).toBeHidden()
+    expect(await track.evaluate((e) => e.scrollWidth <= e.clientWidth + 1)).toBe(true)
+  }
+  await noHorizontalOverflow(page)
+})
+
 test('placeholder reviews are never rendered', async ({ page }) => {
   await mockSupabase(page)
   await page.goto('/')
