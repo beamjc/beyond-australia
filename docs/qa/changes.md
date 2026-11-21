@@ -318,3 +318,17 @@ Tests: e2e public + mobile + line-leads, desktop + mobile: 102 passed, 8 skipped
 - Community card: "ThaiWahClub" and "Beyond Study Center" link to facebook.com/Thaiwahclub and facebook.com/BeyondStudyCenter (new tab).
 - Layout: the longer copy no longer fits fixed-height cards with text over half the width. Cards now grow with their text (`min-h-48`), text takes 3/5, and the illustration 2/5, so they don't overlap. Checked at 390 / 768 / 1440 px.
 - Business claim to note: "Partner กับ Migration Agents หลายท่าน" is owner-supplied.
+
+## 2026-11-21: Hero + WHM section (owner batch)
+
+- Hero subtitle TH (owner wording): "วางแผนวีซ่า Work and Holiday และวีซ่าตัวถัดไป โดยมีทีมงาน Beyond Australia". EN aligned.
+- Checklist: removed the eyebrow "เช็คกับ ดย. แล้ว ✓". The item named "Checklist ฉบับเต็ม 2026 (เช็คกับ ดย. แล้ว)" is unchanged.
+- Checklist: ticks are now **saved in the visitor's browser** (localStorage `ba.whmChecklist.v1`, keyed by stage + item name, expires after 120 days, cleared when everything is unticked). Nothing is sent or stored on a server. If storage is blocked (e.g. private mode), the checklist works as before.
+- Tab label TH (owner wording): "WHM ปีที่ 2/3" → "Check postcode สำหรับต่อวีซ่า WHM ปี2/3". EN: "Check postcode for 2nd/3rd year WHM".
+- Postcode checker:
+  - Removed the COVID-19 healthcare exception sentence (TH + EN).
+  - Result heading TH → "Postcode {pc} สามารถทำงานเพื่อเก็บชั่วโมงได้" (owner); EN aligned.
+  - Removed all area/date chips under each work type (e.g. "พื้นที่ห่างไกล (Remote and Very Remote) · งานตั้งแต่ 22 มิ.ย. 2564", Regional/Northern, bushfire/disaster dates). The eligibility data in `postcodeData.ts` is unchanged.
+- FAQ 2026: removed the stats bar (7 หมวดหมู่ / 19 คำถาม / 8 เม.ษ. วันกดโควต้า / 2026 รุ่นล่าสุด).
+- Test fix: `line-leads.spec.ts` "expired login" sometimes failed: it read the fake LIFF call list before it existed. Now it waits for the list instead (64/64 on repeat).
+- Tests: unit 99 passed; e2e desktop + mobile 101 passed + the fixed one, 8 skipped. Added checks for checklist persistence (reload keeps ticks, untick clears storage), no area chips, no COVID sentence, no FAQ stats.

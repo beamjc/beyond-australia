@@ -575,21 +575,6 @@ const FAQ2026 = () => {
 
   return (
     <div>
-      {/* Stats bar */}
-      <div className="flex flex-wrap gap-6 mb-8 p-4 rounded-xl bg-secondary text-secondary-foreground">
-        {[
-          { num: "7", label: "หมวดหมู่" },
-          { num: "19", label: "คำถาม" },
-          { num: "8 เม.ษ.", label: "วันกดโควต้า" },
-          { num: "2026", label: "รุ่นล่าสุด" },
-        ].map((s) => (
-          <div key={s.label}>
-            <div className="font-display text-2xl font-bold">{s.num}</div>
-            <div className="text-[10px] uppercase tracking-widest text-secondary-foreground/50 mt-0.5">{s.label}</div>
-          </div>
-        ))}
-      </div>
-
       {/* Category tabs */}
       <div className="overflow-x-auto -mx-2 px-2 mb-8">
         <div className="flex gap-1 min-w-max">

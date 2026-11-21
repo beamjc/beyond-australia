@@ -5,7 +5,7 @@ import { useRecordToolAnswers } from "@/hooks/use-record-tool-answers";
 import { motion, useReducedMotion } from "framer-motion";
 import { Search, CheckCircle2, XCircle, ExternalLink, AlertTriangle, MinusCircle } from "lucide-react";
 import {
-  checkPostcode, OFFICIAL_URL, type AreaId, type PostcodeResult, type WorkType,
+  checkPostcode, OFFICIAL_URL, type PostcodeResult, type WorkType,
 } from "@/data/postcodeData";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import type { Language } from "@/i18n/translations";
@@ -17,12 +17,12 @@ const en = {
   intro: "Enter the postcode where you work to see which jobs there count as specified work for a 2nd or 3rd year Work and Holiday visa (subclass 462).",
   placeholder: "Enter postcode (e.g. 4810)",
   check: "Check",
-  listedHeading: (pc: string) => `Work that counts at postcode ${pc}`,
+  listedHeading: (pc: string) => `Postcode ${pc}: you can work here to count your days`,
   listedBody: "Your work here counts only if it is one of these types.",
   otherTitle: "Other jobs",
   otherBody: "Usually these don't count. Home Affairs may currently accept support roles within the industries above.",
   notListedHeading: (pc: string) => `Postcode ${pc} is not in a specified work area`,
-  notListedBody: "Work at this postcode won't count towards a 2nd or 3rd year visa. The only exception is critical COVID-19 work in healthcare and medicine, which counts anywhere in Australia.",
+  notListedBody: "Work at this postcode won't count towards a 2nd or 3rd year visa.",
   disclaimer: "This is a guide only, based on the Home Affairs postcode list updated 24 September 2026. Check the latest rules on the",
   officialLink: "Department of Home Affairs website",
   work: {
@@ -34,14 +34,6 @@ const en = {
     bushfireRecovery: { title: "Bushfire recovery", examples: "Rebuilding, clean-up, caring for wildlife — paid or volunteer" },
     disasterRecovery: { title: "Flood, cyclone and storm recovery", examples: "Clean-up, repairs, helping affected people — paid or volunteer" },
   } satisfies Record<WorkType, { title: string; examples: string }>,
-  // Where the work counts, plus any date condition from that area's list.
-  areas: {
-    remote: "Remote and Very Remote Australia · work from 22 June 2021",
-    northern: "Northern Australia",
-    regional: "Regional Australia",
-    bushfire: "Bushfire declared area · work after 31 July 2019",
-    disaster: "Natural disaster declared area · work after 31 Dec 2021",
-  } satisfies Record<AreaId, string>,
 };
 
 const th: typeof en = {
@@ -49,12 +41,12 @@ const th: typeof en = {
   intro: "ใส่ Postcode ของเมืองที่สนใจ เพื่อเช็กว่างานประเภทไหนสามารถยื่นวีซ่า Work and Holiday ปีที่ 2 หรือ 3 ได้",
   placeholder: "ใส่ Postcode (เช่น 4810)",
   check: "ตรวจสอบ",
-  listedHeading: (pc: string) => `งานที่นับได้ใน Postcode ${pc}`,
+  listedHeading: (pc: string) => `Postcode ${pc} สามารถทำงานเพื่อเก็บชั่วโมงได้`,
   listedBody: "งานด้านล่างนี้นับเป็นชั่วโมงสำหรับยื่นวีซ่าปีที่ 2/3 ได้",
   otherTitle: "งานอื่น ๆ",
   otherBody: "โดยปกตินับไม่ได้ แต่ช่วงนี้ Home Affairs อาจเปิดให้ยื่นได้สำหรับบางอาชีพตามด้านบน",
   notListedHeading: (pc: string) => `Postcode ${pc} ไม่อยู่ในพื้นที่ Specified Work`,
-  notListedBody: "งานใน Postcode นี้เก็บชั่วโมงเพื่อยื่นวีซ่าปีที่ 2 หรือ 3 ไม่ได้ ยกเว้นงานด้านสุขภาพและการแพทย์ที่สำคัญต่อการรับมือ COVID-19 ซึ่งนับได้ทุกพื้นที่ในออสเตรเลีย",
+  notListedBody: "งานใน Postcode นี้เก็บชั่วโมงเพื่อยื่นวีซ่าปีที่ 2 หรือ 3 ไม่ได้",
   disclaimer: "ผลนี้เป็นข้อมูลเบื้องต้น อ้างอิงรายการ Postcode ของ Home Affairs ฉบับอัปเดต 24 ก.ย. 2569 โปรดตรวจสอบเงื่อนไขล่าสุดที่",
   officialLink: "เว็บไซต์ Department of Home Affairs",
   work: {
@@ -65,13 +57,6 @@ const th: typeof en = {
     construction: { title: "งานก่อสร้าง", examples: "ไซต์ก่อสร้าง จัดภูมิทัศน์ไซต์ก่อสร้าง ทาสีอาคารใหม่ นั่งร้าน" },
     bushfireRecovery: { title: "ฟื้นฟูหลังไฟป่า", examples: "ซ่อมสร้าง เก็บกวาด ดูแลสัตว์ป่า (ทั้งงานมีค่าจ้างและงานอาสา)" },
     disasterRecovery: { title: "ฟื้นฟูหลังน้ำท่วม และพายุ", examples: "เก็บกวาด ซ่อมแซม ช่วยเหลือผู้ได้รับผลกระทบ (ทั้งงานมีค่าจ้างและงานอาสา)" },
-  },
-  areas: {
-    remote: "พื้นที่ห่างไกล (Remote and Very Remote) · งานตั้งแต่ 22 มิ.ย. 2564",
-    northern: "(Northern Australia)",
-    regional: "(Regional Australia)",
-    bushfire: "พื้นที่ประกาศภัยไฟป่า · งานหลัง 31 ก.ค. 2562",
-    disaster: "พื้นที่ประกาศภัยพิบัติ · งานหลัง 31 ธ.ค. 2564",
   },
 };
 
@@ -166,19 +151,12 @@ const PostcodeChecker = () => {
                 </div>
 
                 <ul className="divide-y divide-border">
-                  {result.work.map(({ type, areas }) => (
+                  {result.work.map(({ type }) => (
                     <li key={type} className="flex items-start gap-3 px-5 py-4">
                       <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" aria-hidden />
                       <div className="min-w-0">
                         <p className="font-semibold text-foreground">{text.work[type].title}</p>
                         <p className="text-sm text-muted-foreground mt-0.5">{text.work[type].examples}</p>
-                        <ul className="mt-2 flex flex-wrap gap-1.5">
-                          {areas.map((id) => (
-                            <li key={id} className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-foreground/80">
-                              {text.areas[id]}
-                            </li>
-                          ))}
-                        </ul>
                       </div>
                     </li>
                   ))}

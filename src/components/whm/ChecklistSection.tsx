@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2,
@@ -306,9 +306,49 @@ const alertIcons = {
   danger: AlertTriangle,
 };
 
+// Ticked items are kept in this browser only (owner request 2026-11-21), so a
+// visitor who comes back sees their progress. Nothing is sent anywhere. Keys use
+// the item name, so editing the list doesn't shift ticks onto other items;
+// saved ticks expire after 120 days.
+const STORAGE_KEY = "ba.whmChecklist.v1";
+const MAX_AGE_MS = 120 * 24 * 60 * 60 * 1000;
+const itemKey = (stageId: string, name: string) => `${stageId}::${name}`;
+const validKeys = new Set(stages.flatMap((s) => s.items.map((it) => itemKey(s.id, it.name))));
+
+const loadChecked = (): Set<string> => {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return new Set();
+    const saved = JSON.parse(raw) as { keys?: unknown; savedAt?: unknown };
+    if (typeof saved.savedAt !== "number" || Date.now() - saved.savedAt > MAX_AGE_MS || !Array.isArray(saved.keys)) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return new Set();
+    }
+    return new Set(saved.keys.filter((k): k is string => typeof k === "string" && validKeys.has(k)));
+  } catch {
+    return new Set();
+  }
+};
+
 const ChecklistSection = ({ embedded = false }: { embedded?: boolean }) => {
   const [expandedStage, setExpandedStage] = useState<string | null>("pre-quota");
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const loaded = useRef(false);
+
+  useEffect(() => {
+    setCheckedItems(loadChecked());
+    loaded.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!loaded.current) return;
+    try {
+      if (checkedItems.size === 0) window.localStorage.removeItem(STORAGE_KEY);
+      else window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ keys: Array.from(checkedItems), savedAt: Date.now() }));
+    } catch {
+      /* storage unavailable (private mode etc.): ticks just aren't kept */
+    }
+  }, [checkedItems]);
 
   const toggleCheck = (key: string) => {
     setCheckedItems((prev) => {
@@ -326,7 +366,6 @@ const ChecklistSection = ({ embedded = false }: { embedded?: boolean }) => {
   const content = (
     <>
       <SectionHeader
-        eyebrow="เช็คกับ ดย. แล้ว ✓"
         title="Checklist WHM 2026"
         subtitle="รายการเอกสารครบทุกรอบ ตั้งแต่ก่อนกดโควต้าจนถึงยื่นวีซ่า — อัพเดทล่าสุด 2 เมษายน 2026"
       />
@@ -355,8 +394,8 @@ const ChecklistSection = ({ embedded = false }: { embedded?: boolean }) => {
       <div className="max-w-3xl mx-auto space-y-4">
         {stages.map((stage) => {
           const isExpanded = expandedStage === stage.id;
-          const stageChecked = stage.items.filter((_, i) =>
-            checkedItems.has(`${stage.id}-${i}`)
+          const stageChecked = stage.items.filter((it) =>
+            checkedItems.has(itemKey(stage.id, it.name))
           ).length;
 
           return (
@@ -458,7 +497,7 @@ const ChecklistSection = ({ embedded = false }: { embedded?: boolean }) => {
                       {/* Items */}
                       <div className="space-y-2">
                         {stage.items.map((item, i) => {
-                          const key = `${stage.id}-${i}`;
+                          const key = itemKey(stage.id, item.name);
                           const isChecked = checkedItems.has(key);
 
                           return (

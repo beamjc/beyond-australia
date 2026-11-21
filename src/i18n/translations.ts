@@ -18,7 +18,7 @@ export const translations = {
       titleHighlight: "Australia",
       titleLine2: "Starts Here",
       subtitle:
-        "Plan your Working Holiday visa and your next visa after it, with advice from our team when you need it.",
+        "Plan your Working Holiday visa and your next visa after it, with the Beyond Australia team.",
       ctaPrimary: "View WHM Timeline",
       ctaSecondary: "Explore Visa Pathways",
       stats: {
@@ -35,7 +35,7 @@ export const translations = {
       tabs: {
         timeline: "Timeline",
         checklist: "Checklist",
-        postcode: "2nd/3rd WHM",
+        postcode: "Check postcode for 2nd/3rd year WHM",
         faq2026: "FAQ 2026",
       },
       timeline: {
@@ -180,7 +180,7 @@ export const translations = {
       titleHighlight: "ออสเตรเลีย",
       titleLine2: "ของคุณที่นี่",
       subtitle:
-        "วางแผนวีซ่า Work and Holiday และวีซ่าตัวถัดไป โดยมีทีมงานช่วยให้คำแนะนำเมื่อคุณต้องการ",
+        "วางแผนวีซ่า Work and Holiday และวีซ่าตัวถัดไป โดยมีทีมงาน Beyond Australia",
       ctaPrimary: "ดูข้อมูล Work and Holiday",
       ctaSecondary: "ดูตัวเลือกวีซ่าอื่นๆ",
       stats: {
@@ -197,7 +197,7 @@ export const translations = {
       tabs: {
         timeline: "ไทม์ไลน์",
         checklist: "เช็กลิสต์",
-        postcode: "WHM ปีที่ 2/3",
+        postcode: "Check postcode สำหรับต่อวีซ่า WHM ปี2/3",
         faq2026: "คำถามพบบ่อย 2026",
       },
       timeline: {

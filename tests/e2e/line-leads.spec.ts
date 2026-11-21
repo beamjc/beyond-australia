@@ -136,7 +136,7 @@ test.describe('LIFF lead form (/line)', () => {
     let calls = 0
     await page.route(`${FN}/liff-session`, (r) => { calls++; return r.fulfill({ status: 401, json: { error: 'expired' } }) })
     await page.goto('/line')
-    await expect.poll(() => page.evaluate(() => (window as unknown as { __liffCalls: unknown[][] }).__liffCalls.map((c) => c[0]))).toContain('login')
+    await expect.poll(() => page.evaluate(() => ((window as unknown as { __liffCalls?: unknown[][] }).__liffCalls ?? []).map((c) => c[0]))).toContain('login')
     // Second load in the same tab (the fake login does not navigate): shows the error, no second login.
     await page.reload()
     await expect(page.getByRole('heading', { name: 'เปิดแบบฟอร์มไม่สำเร็จ' })).toBeVisible()
