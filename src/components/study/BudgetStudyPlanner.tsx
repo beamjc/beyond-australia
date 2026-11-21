@@ -858,6 +858,15 @@ const Gauge = ({ pct }: { pct: number }) => {
   );
 };
 
+// Owner request 2026-11-21: one line per VET tier so visitors can tell them
+// apart. Drafted from the tier data (fees, deposit, 485
+// badge); pending the Thai editor (thai-review-budget-planner.md BSP-140).
+const VET_TIER_NOTES: Record<string, string> = {
+  "vet-budget": "ดิพลอมาค่าเรียนประหยัดที่สุด เหมาะกับคนที่เน้นคุมงบ แต่ใช้ต่อวีซ่า 485 หลังเรียนจบไม่ได้",
+  "vet-std": "หลักสูตรสายอาชีพที่เน้นทักษะสำหรับทำงาน ค่าเรียนระดับกลาง จ่ายค่าเรียนเทอมแรก 25%",
+  "vet-prem": "หลักสูตรสายอาชีพค่าเรียนสูงกว่า จ่ายค่าเรียนเทอมแรก 50%",
+};
+
 const PathwayCard = ({
   tier, calc, fmtMoney, elicosWeekly, degreeLevel,
 }: {
@@ -897,6 +906,15 @@ const PathwayCard = ({
             </div>
             {tier.badge && <Badge variant="outline" className="text-[10px] shrink-0">{tier.badge}</Badge>}
           </div>
+
+          {!isDegree && VET_TIER_NOTES[tier.id] && (
+            <div className="-mt-2 mb-4 text-xs leading-relaxed text-muted-foreground">
+              <p>{VET_TIER_NOTES[tier.id]}</p>
+              <p className="mt-1 tabular-nums">
+                ค่าเรียนประมาณ <MoneyRange low={tier.annualLow} high={tier.annualHigh} fmtMoney={fmtMoney} /> ต่อปี
+              </p>
+            </div>
+          )}
 
           <div className="mb-4">
             <p className="text-xs text-muted-foreground">จำนวนเงินคร่าวๆที่ต้องใช้</p>
@@ -1027,7 +1045,7 @@ const ElicosCard = ({
 
         <div className="mt-4">
           <p className="text-xs text-muted-foreground">
-            {partPay ? "ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก (กรณีที่จ่ายก่อน 50%)" : "ค่าใช้จ่ายที่ต้องจ่ายทั้งหมด"}
+            {partPay ? "ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก (กรณีที่จ่ายค่าเรียนก่อน 50%)" : "ค่าใช้จ่ายที่ต้องจ่ายทั้งหมด"}
           </p>
           <p className="text-2xl font-bold tracking-tight text-foreground tabular-nums">{fmtMoney(calc.upfront)}</p>
         </div>
@@ -1256,7 +1274,6 @@ const ShortPathwaySection = ({
           shortSkill="none"
           fmtMoney={fmtMoney}
           budgetAUD={budgetAUD}
-          tourCta
         />
       </div>
 
@@ -1265,7 +1282,7 @@ const ShortPathwaySection = ({
 };
 
 const ShortCard = ({
-  icon, title, tagline, calc, elicosWeekly, shortSkill, fmtMoney, budgetAUD, tourCta,
+  icon, title, tagline, calc, elicosWeekly, shortSkill, fmtMoney, budgetAUD,
 }: {
   icon: React.ReactNode;
   title: string;
@@ -1275,7 +1292,6 @@ const ShortCard = ({
   shortSkill: SkillBoosterKey;
   fmtMoney: (aud: number) => string;
   budgetAUD: number;
-  tourCta?: boolean;
 }) => {
   const [open, setOpen] = useState(true);
   const visaLabel = calc.visaType === "whm" ? "ค่าวีซ่า WHM" : calc.visaType === "tourist" ? "ค่าวีซ่าท่องเที่ยว" : "ค่าวีซ่านักเรียน";
@@ -1352,17 +1368,6 @@ const ShortCard = ({
             {covers ? "คุณมีเงินเพียงพอแล้วที่จะสมัครเรียนได้" : `ยังขาดอยู่ ${fmtMoney(Math.max(0, calc.upfrontHigh - budgetAUD))}`}
           </Badge>
 
-          {tourCta && (
-            <a
-              href="https://line.me/R/ti/p/@beyondstudy"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 flex min-h-11 items-center justify-between gap-2 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <span>อยากปรึกษาเพิ่มเติม? ทักทีมงานได้เลย</span>
-              <ArrowRight className="w-3 h-3 shrink-0" aria-hidden />
-            </a>
-          )}
         </CardContent>
       </Card>
     </div>

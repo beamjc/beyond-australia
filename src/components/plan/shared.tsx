@@ -233,21 +233,8 @@ export const OfficialSourceLink = ({ label, href }: { label: Bi; href: string })
 /** Consultation block. Migration topics point to qualified advisers, not BSC. */
 export const ConsultBlock = ({ kind, title, sub, siteLabel }: { kind: "study" | "migration"; title?: Bi; sub?: Bi; siteLabel?: Bi }) => {
   const { t } = useT();
-  if (kind === "migration") {
-    return (
-      <div className="rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground">
-        <p>{t(explorerCopy.consultMigration)}</p>
-        <a
-          href="https://portal.mara.gov.au/search-the-register-of-migration-agents/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 inline-flex min-h-[36px] items-center gap-1.5 font-medium text-primary hover:underline"
-        >
-          {t(explorerCopy.consultMigrationLink)} <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-        </a>
-      </div>
-    );
-  }
+  // Owner request 2026-11-21: no migration-adviser block on visa results.
+  if (kind === "migration") return null;
   return (
     <div className="rounded-xl bg-primary/5 p-4 sm:p-5 dark:bg-primary/10">
       <p className="font-semibold text-foreground">{t(title ?? explorerCopy.consultStudyTitle)}</p>

@@ -183,3 +183,12 @@ Below 1024 px the planner asks one input group per screen, then shows the result
 | BSP-143 **DRAFT** | `WizardNav` | Last step: shows the results | See results | ดูผลการคำนวณ | ดูผลการคำนวณ | **New string — please review.** Button ~180 px on phones. |
 | BSP-144 | `WizardHeader` (results) | Link under the answer list; reopens step 1 | Edit answers | แก้ไขคำตอบ | — (reused, `visaReadiness.ts` `editAnswers`) | — |
 | BSP-145 | `WizardHeader` (results) | Answer list row labels | Study goal · Your budget · Age · IELTS · Applying from | เป้าหมายการเรียน · งบที่เตรียมไว้ · อายุผู้สมัคร · IELTS · ยื่นวีซ่าจากที่ไหน | — (planner's own field labels; "IELTS" short for the IELTS question) | Each row reopens its step |
+
+### 2026-11-21 additions (applied at owner request, editor review pending)
+
+| ID | Source | Where | English | Current Thai (live, Claude draft) | Suggested Thai | Constraints |
+|---|---|---|---|---|---|---|
+| BSP-140a | BudgetStudyPlanner.tsx `VET_TIER_NOTES["vet-budget"]` | Under the Budget Diploma title | The lowest-cost diploma; suits students on a tight budget, but can't lead to a 485 visa after graduating. | ดิพลอมาค่าเรียนประหยัดที่สุด เหมาะกับคนที่เน้นคุมงบ แต่ใช้ต่อวีซ่า 485 หลังเรียนจบไม่ได้ | — | ≤ 2 lines on mobile. Same claim as BSP-062 (owner-kept, FC-08 UNVERIFIED). |
+| BSP-140b | `VET_TIER_NOTES["vet-std"]` | Under Skilled (Standard) | Skills-focused vocational course, mid-range fees, 25% of the first year's fee upfront. | หลักสูตรสายอาชีพที่เน้นทักษะสำหรับทำงาน ค่าเรียนระดับกลาง จ่ายค่าเรียนเทอมแรก 25% | — | Owner may want course examples. |
+| BSP-140c | `VET_TIER_NOTES["vet-prem"]` | Under Skilled (Premium) | Higher-fee vocational course, 50% of the first year's fee upfront. | หลักสูตรสายอาชีพค่าเรียนสูงกว่า จ่ายค่าเรียนเทอมแรก 50% | — | Owner to say what the higher fee buys. |
+| BSP-140d | PathwayCard (VET) | Second line under each VET title | About {low} – {high} a year | ค่าเรียนประมาณ {low} – {high} ต่อปี | — | Follows THB/AUD toggle. |

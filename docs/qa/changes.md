@@ -274,3 +274,16 @@ Checks: vitest 75/75; `tsc --noEmit` clean; lint has only pre-existing warnings;
 - **ค่าเรียนทั้งหมด** on the ปริญญาตรี and ปริญญาโท cards (headline tile and the breakdown row) now shows a low–high range instead of one figure, because fees differ by university and faculty. The range uses the existing `he-avg` tier bounds ($28,000–$60,000 a year) × duration: bachelor 3 yrs = $84,000–$180,000 (฿1,974,000–฿4,230,000 at 23.5); master 2 yrs = $56,000–$120,000 (฿1,316,000–฿2,820,000). No new Thai wording.
 - Unchanged: the headline "จำนวนเงินคร่าวๆที่ต้องใช้", ค่าเรียนเทอมแรก and ค่าเทอมที่เหลือ still use the planning midpoint ($41,667/yr). VET cards still show a single total.
 - Tests: `calculationEngine.test.ts` "university total tuition range…". Screenshots: `screenshots/tuition-range/`.
+
+## 2026-11-21: Owner batch (Budget Planner, Study Pathway Finder, Visa Options Explorer)
+
+Owner wording applied verbatim (1, 6); removals at owner request (4, 5, 7).
+
+1. ELICOS card label: "ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก (กรณีที่จ่ายก่อน 50%)" → **"…(กรณีที่จ่ายค่าเรียนก่อน 50%)"**.
+3. VET cards (Budget Diploma / Skilled (Standard) / Skilled (Premium)) get a short description plus "ค่าเรียนประมาณ {low} – {high} ต่อปี" from the tier's annualLow/High (follows THB/AUD). The descriptions are **my drafts, not the owner's wording**, so they're pending the Thai editor (BSP-140 in thai-review-budget-planner.md). They only use what the tier data already says (fee band, deposit %, the owner-kept "No 485 pathway" badge, FC-08). I didn't use the 1- vs 2-month post-course stay (`extraStayMonths`) as a selling point: it's a model setting, not a sourced visa rule.
+4. Tour-visa card: removed "อยากปรึกษาเพิ่มเติม? ทักทีมงานได้เลย".
+5. Visa Options Explorer: removed the migration-adviser block (sentence + "ค้นหา Registered Migration Agent" link) from every result and comparison. The separate "ปรึกษาผู้เชี่ยวชาญด้าน Migration" action button on the employer-sponsored result is unchanged.
+6. Explorer sources heading TH: "แหล่งข้อมูลทางการ" → **"Reference"** (EN stays "Official sources"). Two other sentences that contain the phrase are unchanged: studyFinder `visaInfo` and the visaExplorer "ยังไม่แน่ใจ? เช็กได้จาก…" title.
+7. Study Pathway Finder: "ติดต่อปรึกษาเราได้เลย" now opens LINE (`line.me/ti/p/@beyondstudy`). When LIFF is configured, the site-wide interceptor turns it into the LIFF lead form with the visitor's answers. The duplicate "ยังไม่แน่ใจว่าจะเริ่มจากตรงไหน?" card under it was removed.
+
+Tests: e2e desktop + mobile, public + line-leads: 92 passed before the new assertions. The Finder (LINE href, card gone) and Explorer (no adviser block) tests were then re-run, 4/4 passed. Unit tests 103 passed. Screenshots: `screenshots/owner-batch-2026-11-21/`.

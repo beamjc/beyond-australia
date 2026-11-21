@@ -178,12 +178,6 @@ export const finderCopy = {
   primaryCta: { th: "ติดต่อปรึกษาเราได้เลย", en: "Contact us for advice" },
   visaBridgeTitle: { th: "กำลังวางแผนเรื่องวีซ่าด้วย?", en: "Planning your visa too?" },
   visaBridgeCta: { th: "สำรวจตัวเลือกวีซ่าที่เกี่ยวข้อง", en: "Explore related visa options" },
-  consultTitle: { th: "ยังไม่แน่ใจว่าจะเริ่มจากตรงไหน?", en: "Not sure where to start?" },
-  consultSub: {
-    th: "ทีม Beyond Study Center ช่วยดูตัวเลือกหลักสูตรและวางแผนเส้นทางเรียนเบื้องต้นให้คุณได้",
-    en: "The Beyond Study Center team can help you look at course options and plan a study pathway.",
-  },
-  consultLine: { th: "ปรึกษาฟรีทาง LINE", en: "Free chat on LINE" },
   disclaimer: {
     th: "คำแนะนำนี้เป็นข้อมูลเบื้องต้นจากคำตอบที่คุณให้ไว้ หลักสูตรและเงื่อนไขการสมัครแตกต่างกันในแต่ละสถาบัน ควรตรวจสอบรายละเอียดอีกครั้งก่อนตัดสินใจ",
     en: "These suggestions are general guidance based on your answers. Courses and entry requirements differ between institutions, so check the details before you decide.",

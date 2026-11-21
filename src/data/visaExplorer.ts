@@ -438,12 +438,7 @@ export const explorerCopy = {
   whyTitle: bi("ทำไมตัวเลือกนี้จึงขึ้นมา?", "Why this appeared"),
   sequenceTitle: bi("ตัวอย่างเส้นทาง", "Example pathway"),
   relatedTitle: bi("เครื่องมือที่อาจช่วยคุณต่อ", "Tools that may help next"),
-  sourcesTitle: bi("แหล่งข้อมูลทางการ", "Official sources"),
-  consultMigration: bi(
-    "หากต้องการคำแนะนำเฉพาะด้านวีซ่า ควรปรึกษาผู้ให้คำแนะนำด้าน Migration ที่มีคุณสมบัติเหมาะสม",
-    "For advice about your visa, talk to a suitably qualified migration adviser.",
-  ),
-  consultMigrationLink: bi("ค้นหา Registered Migration Agent", "Find a registered migration agent"),
+  sourcesTitle: bi("Reference", "Official sources"),
   consultStudyTitle: bi("ยังไม่แน่ใจว่าควรเริ่มจากตรงไหน?", "Not sure where to start?"),
   consultStudySub: bi(
     "ทีม Beyond Study Center ช่วยดูตัวเลือกหลักสูตรและวางแผนการเรียนเบื้องต้นให้ได้ฟรี",

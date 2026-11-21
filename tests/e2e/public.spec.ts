@@ -133,7 +133,7 @@ test.describe('Budget Study Planner', () => {
     await panel.getByRole('button', { name: /^40 สัปดาห์/ }).click()
     await expect(heading).toHaveCount(1)
     await expect(heading).toHaveText(/40 สัปดาห์/)
-    await expect(panel.getByText('ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก (กรณีที่จ่ายก่อน 50%)', { exact: true })).toBeVisible()
+    await expect(panel.getByText('ค่าใช้จ่ายที่ต้องจ่ายครั้งแรก (กรณีที่จ่ายค่าเรียนก่อน 50%)', { exact: true })).toBeVisible()
     await expect(panel.getByText('จ่ายก่อน 50% ได้')).toBeVisible()
   })
 })
@@ -427,6 +427,9 @@ test.describe('Planning hub — Study Pathway Finder', () => {
     await panel.getByRole('button', { name: 'See suggestions' }).click()
     await expect(panel.getByRole('heading', { name: 'Vocational education (VET)' })).toBeVisible()
     await expect(panel.getByText("If you're considering a course below your current qualification level")).toBeVisible()
+    // Owner request 2026-11-21: the contact button opens LINE (LIFF form when configured); the duplicate consult card is gone.
+    await expect(panel.getByRole('link', { name: 'Contact us for advice' })).toHaveAttribute('href', 'https://line.me/ti/p/@beyondstudy')
+    await expect(panel.getByText('The Beyond Study Center team can help you look at course options')).toHaveCount(0)
     expect(external.slice(before)).toEqual([])
   })
 })
@@ -455,6 +458,8 @@ test.describe('Planning hub — Visa Options Explorer', () => {
       outcomes.add(heading)
       await expect(panel.locator('a[href^="https://immi.homeaffairs.gov.au/"]:visible').first()).toBeVisible()
       await expect(panel).not.toContainText(/competitive|Fastest|guarantee/i)
+      // Owner request 2026-11-21: no migration-adviser block.
+      await expect(panel).not.toContainText('talk to a suitably qualified migration adviser')
     }
     expect(outcomes.size).toBeGreaterThanOrEqual(12)
     // Back and Start over

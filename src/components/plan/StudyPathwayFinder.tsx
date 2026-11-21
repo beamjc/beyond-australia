@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRecordToolAnswers } from "@/hooks/use-record-tool-answers";
-import { ArrowLeft, ArrowRight, ExternalLink, Info, RotateCcw } from "lucide-react";
-import { SITE_URL } from "../shared/BSCConsultationCTA";
+import { ArrowLeft, ArrowRight, Info, MessageCircle, RotateCcw } from "lucide-react";
+import { LINE_URL } from "../shared/BSCConsultationCTA";
 import {
   budgetOptions, cityOptions, englishOptions, finderCopy as c, goalOptions, interestOptions,
   nextStepCopy, pathwayInfo, qualificationOptions, timingOptions, type GoalId, type NextStepId, type PathwayId,
@@ -16,7 +16,7 @@ import {
   studyFinderLeadAnswers, type StudyAnswers, type StudyRecommendation,
 } from "@/lib/studyFinder";
 import {
-  AUTO_ADVANCE_MS, Card, CheckList, ConsultBlock, PathwayOption, RelatedTools, Sequence, ToolHeader,
+  AUTO_ADVANCE_MS, Card, CheckList, PathwayOption, RelatedTools, Sequence, ToolHeader,
   btnPrimary, btnSecondary, useKeepTopInView, usePlanNav, useT,
 } from "./shared";
 
@@ -300,8 +300,9 @@ const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswer
         </ol>
         {city && <p className="mt-4 text-xs text-muted-foreground">{fill(t(c.cityNote), { city })}</p>}
         <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <a href={SITE_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
-            {t(c.primaryCta)} <ExternalLink className="h-4 w-4" aria-hidden />
+          <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
+            <MessageCircle className="h-4 w-4" aria-hidden />
+            {t(c.primaryCta)}
           </a>
         </div>
       </Card>
@@ -314,7 +315,6 @@ const StudyResult = ({ answers, rec, onRestart, onEdit }: { answers: StudyAnswer
       </Card>
 
       <RelatedTools tools={related} />
-      <ConsultBlock kind="study" title={c.consultTitle} sub={c.consultSub} />
 
       <div className="space-y-1 px-1 text-xs leading-relaxed text-muted-foreground">
         <p>{t(c.disclaimer)}</p>
