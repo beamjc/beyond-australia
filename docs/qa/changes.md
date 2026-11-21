@@ -310,3 +310,11 @@ Tests: e2e public + mobile + line-leads, desktop + mobile: 102 passed, 8 skipped
 - When nothing is triggered, the card shows the existing readiness line "ยังไม่พบประเด็นที่ต้องเตรียมเป็นพิเศษ…".
 - Not carried over: study gap, visa history, supporting documents and post-study plans, because the finder doesn't ask about them. No new Thai: every string is existing readiness copy.
 - Tests: unit 99 passed (−6 scoring tests, +3 trigger tests). e2e desktop + mobile 102 passed, 8 skipped: the finder result shows the expected points, and the readiness tab is gone.
+
+## 2026-11-21: Services section "ให้เราช่วยดูแลอะไรได้บ้าง?" (owner wording)
+
+- Eyebrow, subtitle and all 6 service titles and descriptions replaced with the owner's Thai, verbatim apart from two obvious typo fixes: "สอบถาม**ถาม**เบื้องต้น" → "สอบถามเบื้องต้น" and "คำแนะด้าน" → "คำแนะ**นำ**ด้าน".
+- English rewritten to match the new Thai meaning (not reviewed by the owner).
+- Community card: "ThaiWahClub" and "Beyond Study Center" link to facebook.com/Thaiwahclub and facebook.com/BeyondStudyCenter (new tab).
+- Layout: the longer copy no longer fits fixed-height cards with text over half the width. Cards now grow with their text (`min-h-48`), text takes 3/5, and the illustration 2/5, so they don't overlap. Checked at 390 / 768 / 1440 px.
+- Business claim to note: "Partner กับ Migration Agents หลายท่าน" is owner-supplied.

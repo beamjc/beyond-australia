@@ -14,6 +14,24 @@ const serviceItems = [
   { image: "/icons/community.png", key: "community" as const },
 ];
 
+// Page names in a description that become links (owner request 2026-11-21).
+const PAGE_LINKS: Record<string, string> = {
+  ThaiWahClub: "https://www.facebook.com/Thaiwahclub",
+  "Beyond Study Center": "https://www.facebook.com/BeyondStudyCenter",
+};
+const linkPages = (text: string) => {
+  const parts = text.split(new RegExp(`(${Object.keys(PAGE_LINKS).join("|")})`));
+  return parts.map((part, i) =>
+    PAGE_LINKS[part] ? (
+      <a key={i} href={PAGE_LINKS[part]} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#081F5C] underline underline-offset-2 hover:no-underline">
+        {part}
+      </a>
+    ) : (
+      part
+    ),
+  );
+};
+
 const ServicesSection = () => {
   const { t } = useLanguage();
   return (
@@ -40,17 +58,17 @@ const ServicesSection = () => {
               transition={{ delay: index * 0.08 }}
               className={
                 isDark
-                  ? "group relative h-48 overflow-hidden rounded-2xl border border-[#7096D1] bg-[#7096D1] transition-all hover:shadow-warm"
-                  : "group relative h-48 overflow-hidden rounded-2xl border border-[#7096D1]/40 bg-[#D0E3FF] transition-all hover:border-[#334eac]/60 hover:shadow-warm"
+                  ? "group relative min-h-48 overflow-hidden rounded-2xl border border-[#7096D1] bg-[#7096D1] transition-all hover:shadow-warm"
+                  : "group relative min-h-48 overflow-hidden rounded-2xl border border-[#7096D1]/40 bg-[#D0E3FF] transition-all hover:border-[#334eac]/60 hover:shadow-warm"
               }
             >
-              <div className="absolute inset-y-0 right-0 w-1/2">
+              <div className="absolute inset-y-0 right-0 w-2/5">
                 <Image
                   src={service.image}
                   alt=""
                   aria-hidden="true"
                   fill
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 17vw"
+                  sizes="(max-width: 768px) 40vw, (max-width: 1024px) 20vw, 14vw"
                   className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
@@ -61,7 +79,7 @@ const ServicesSection = () => {
                     : "pointer-events-none absolute inset-0 bg-gradient-to-r from-[#D0E3FF] via-[#D0E3FF]/70 to-transparent"
                 }
               />
-              <div className="relative z-10 flex h-full w-1/2 flex-col justify-center p-6">
+              <div className="relative z-10 flex min-h-48 w-3/5 flex-col justify-center p-6">
                 <h3 className="text-lg font-bold text-[#081F5C] mb-2">
                   {title}
                 </h3>
@@ -72,7 +90,7 @@ const ServicesSection = () => {
                       : "text-sm text-[#334eac]/80 leading-relaxed"
                   }
                 >
-                  {description}
+                  {service.key === "community" ? linkPages(description) : description}
                 </p>
               </div>
             </motion.div>

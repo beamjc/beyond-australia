@@ -73,41 +73,41 @@ export const translations = {
       title: "Find Your Pathway",
     },
     services: {
-      eyebrow: "How We Help",
+      eyebrow: "How can we help?",
       title: "Services & Support",
       subtitle:
-        "We help with WHM applications, student visas and longer-term migration planning.",
+        "Let us take care of your WHM visa, student visa and long-term migration planning.",
       items: {
         ielts: {
-          title: "IELTS & PTE Prep",
-          description: "Discount codes, classes, and self-paced courses to hit your target score.",
+          title: "Looking for an IELTS or PTE prep course?",
+          description: "Ask for information or advice. The Beyond team is here to help, and some courses have special discounts, so don't forget to ask :)",
           tag: "Test Prep",
         },
         student: {
-          title: "Student Visa Pathways",
-          description: "VET, ELICOS, and Higher Education options — offshore or onshore after WHM.",
+          title: "Student visa advice",
+          description: "Advice on further study, whether it's an English course, a vocational course or a degree. Our team is always here to help.",
           tag: "Education",
         },
         insurance: {
-          title: "Travel Insurance",
-          description: "Travel insurance options for your time in Australia.",
+          title: "Looking for travel insurance?",
+          description: "Ask us for travel insurance advice and current promotions.",
           tag: "Insurance",
         },
         shortCourses: {
-          title: "WHM Short Courses",
+          title: "Short course advice",
           description:
-            "Short courses such as aged care, childcare, English and barista skills, useful for common WHM jobs.",
+            "Looking for a short course to build your skills, such as Aged Care, Child Care or Barista? Message the Beyond team.",
           tag: "Courses",
         },
         migration: {
-          title: "Migration Referrals",
-          description: "We refer you to registered migration agents for visa advice.",
+          title: "Looking for a migration agent?",
+          description: "We partner with several migration agents who can give advice that suits you.",
           tag: "Migration",
         },
         community: {
-          title: "Community & Events",
+          title: "Meet friends and the Beyond team",
           description:
-            "Online, in-person and hybrid events in Thailand and Australia.",
+            "Beyond runs events all year, from visa updates to course information. Follow our pages ThaiWahClub or Beyond Study Center.",
           tag: "Community",
         },
       },
@@ -235,44 +235,44 @@ export const translations = {
       title: "ค้นหาเส้นทางของคุณ",
     },
     services: {
-      eyebrow: "เราช่วยอะไรคุณได้บ้าง?",
+      eyebrow: "ให้เราช่วยดูแลอะไรได้บ้าง?",
       title: "บริการและการดูแลจากเรา",
       subtitle:
-        "เราช่วยได้ทั้งการเตรียมยื่น WHM วีซ่านักเรียน และการวางแผนย้ายถิ่นฐานระยะยาว",
+        "ให้เราช่วยดูแลการเตรียมยื่นวีซ่า WHM, วีซ่านักเรียน และการวางแผนย้ายถิ่นฐานระยะยาว",
       items: {
         ielts: {
-          title: "ติว IELTS และ PTE",
+          title: "หาคอร์สเรียนเตรียมสอบ IELTS หรือ PTE?",
           description:
-            "มีส่วนลดค่าเรียน ทั้งคลาสสดและคอร์สเรียนด้วยตัวเอง สำหรับเตรียมสอบให้ได้คะแนนตามเป้า",
+            "ขอข้อมูล ปรึกษา หรือ สอบถามเบื้องต้นได้ พี่ๆ ทีม Beyond พร้อมให้การดูแล บางคอร์สอาจจะมีส่วนลดพิเศษ อย่าลืมสอบถามพี่ๆล่ะ :)",
           tag: "เตรียมสอบ",
         },
         student: {
-          title: "เส้นทางวีซ่านักเรียน",
+          title: "ปรึกษาเรื่องวีซ่านักเรียน",
           description:
-            "ครอบคลุมทุกทางเลือกทั้ง VET, ELICOS และระดับอุดมศึกษา",
+            "ปรึกษาเรื่องการเรียนต่อไม่ว่าจะเป็นคอร์สเรียนภาษา, คอร์สวิชาชีพ หรือ ระดับปริญญา เรามีทีมพร้อมดูแลตลอดค่ะ",
           tag: "การศึกษา",
         },
         insurance: {
-          title: "ประกันการเดินทาง",
+          title: "กำลังมองหาประกันเดินทาง",
           description:
-            "แนะนำประกันการเดินทางสำหรับช่วงที่อยู่ออสเตรเลีย",
+            "ปรึกษาขอคำแนะนำด้านประกันเดินทางรวมถึงโปรโมชั่นต่างๆได้เลย",
           tag: "ประกัน",
         },
         shortCourses: {
-          title: "คอร์สระยะสั้นสำหรับ WHM",
+          title: "ปรึกษาเรียนคอร์สระยะสั้น",
           description:
-            "คอร์สสั้น เช่น ดูแลผู้สูงอายุ ดูแลเด็ก ภาษาอังกฤษ และบาริสต้า ซึ่งเป็นทักษะที่ใช้ในงานที่คน WHM ทำกันบ่อย",
+            "กำลังมองหาคอร์สระยะสั้นเพื่อเพิ่มสกิลให้ตัวเองอยู่หรือเปล่า ไม่ว่าจะเป็น Aged Care, Child Care หรือ Barista สนใจทักหาทีม Beyond ได้เลย",
           tag: "คอร์สเรียน",
         },
         migration: {
-          title: "แนะนำตัวแทนย้ายถิ่นฐาน",
+          title: "กำลังมองหา Migration Agent อยู่หรือเปล่า",
           description:
-            "แนะนำ Migration Agent ที่ขึ้นทะเบียนถูกต้อง สำหรับปรึกษาเรื่องวีซ่า",
+            "ทางเราเป็น Partner กับ Migration Agents หลายท่านที่พร้อมให้คำปรึกษาที่เหมาะกับตัวคุณได้",
           tag: "ย้ายถิ่นฐาน",
         },
         community: {
-          title: "ชุมชนและกิจกรรม",
-          description: "กิจกรรมออนไลน์ ออฟไลน์ และไฮบริดทั้งในไทยและออสเตรเลียเพื่อสนับสนุนคุณ",
+          title: "พบปะสังสรรค์กับเพื่อนๆและพี่ๆทีม Beyond",
+          description: "Beyond มีจัดกิจกรรมตลอดทั้งปีไม่ว่าจะเป็นการอัพเดทเรื่องวีซ่า คอร์สเรียนต่างๆ กดติดตามเพจเรา ThaiWahClub หรือ Beyond Study Center ไว้เลย",
           tag: "ชุมชน",
         },
       },
